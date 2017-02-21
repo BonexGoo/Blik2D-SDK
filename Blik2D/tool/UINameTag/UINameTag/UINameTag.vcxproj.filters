@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Blik2D">
+      <UniqueIdentifier>{ee75d574-ad7b-4d56-ba99-49418b192d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\core">
+      <UniqueIdentifier>{41d9b1dc-9a1a-4122-a308-034ca021cdfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\element">
+      <UniqueIdentifier>{e550c8e1-7311-4f62-a475-bf0477c76f4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\format">
+      <UniqueIdentifier>{a2b1a92a-de59-4bf9-a507-630e8af76430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\platform">
+      <UniqueIdentifier>{b9820336-c881-4e89-b902-d1cfcfa60d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\service">
+      <UniqueIdentifier>{0bd63108-e731-411a-ae4a-6c7e864b011f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blik2D\addon">
+      <UniqueIdentifier>{c9ba5382-26c3-4c28-bf01-6d2758894dfe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UINameTag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GetTextDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik.h">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_array.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_asset.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_buffer.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_counter.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_library.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_map.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_math.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_memory.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_mutex.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_object.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_parser.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_profile.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_property.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_queue.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_remote.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_share.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_storage.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_string.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_tasking.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_updater.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\core\blik_wstring.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_clip.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_color.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_font.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_image.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_matrix.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_point.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_rect.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_size.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_tween.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\element\blik_vector.hpp">
+      <Filter>Blik2D\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\format\blik_bmp.hpp">
+      <Filter>Blik2D\format</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\format\blik_png.hpp">
+      <Filter>Blik2D\format</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\format\blik_zen.hpp">
+      <Filter>Blik2D\format</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform_blank.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform_cocos2dx.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform_impl.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform_native.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\platform\blik_platform_qt5.hpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\service\blik_viewmanager.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addon\blik_addon.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\service\blik_imagebuilder.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UINameTag.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GetTextDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_asset.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_buffer.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_library.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_math.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_memory.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_mutex.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_parser.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_profile.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_property.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_remote.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_share.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_storage.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_string.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_tasking.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_updater.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\core\blik_wstring.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_clip.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_color.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_font.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_image.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_matrix.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_point.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_rect.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_size.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_tween.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\element\blik_vector.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\format\blik_bmp.cpp">
+      <Filter>Blik2D\format</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\format\blik_png.cpp">
+      <Filter>Blik2D\format</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\format\blik_zen.cpp">
+      <Filter>Blik2D\format</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\platform\blik_platform_blank.cpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\platform\blik_platform_cocos2dx.cpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\platform\blik_platform_impl.cpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\platform\blik_platform_native.cpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\platform\blik_platform_qt5.cpp">
+      <Filter>Blik2D\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\service\blik_viewmanager.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addon\blik_addon.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\service\blik_imagebuilder.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UINameTag.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\UINameTag.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\UINameTag.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

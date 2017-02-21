@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\addon\blik_addon.cpp" />
+    <ClCompile Include="..\addon\blik_addon_aac.cpp" />
+    <ClCompile Include="..\addon\blik_addon_alpr.cpp" />
+    <ClCompile Include="..\addon\blik_addon_curl.cpp" />
+    <ClCompile Include="..\addon\blik_addon_git.cpp" />
+    <ClCompile Include="..\addon\blik_addon_h264.cpp" />
+    <ClCompile Include="..\addon\blik_addon_jpg.cpp" />
+    <ClCompile Include="..\addon\blik_addon_tesseract.cpp" />
+    <ClCompile Include="..\addon\blik_fakewin.cpp" />
+    <ClCompile Include="..\addon\blik_integration_curl-7.51.0.c" />
+    <ClCompile Include="..\addon\blik_integration_fdk-aac-0.1.4.cpp" />
+    <ClCompile Include="..\addon\blik_integration_libgit2-0.22.2.c" />
+    <ClCompile Include="..\addon\blik_integration_libssh2-1.6.0.c" />
+    <ClCompile Include="..\addon\blik_integration_openalpr-2.3.0.cpp" />
+    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0.cpp" />
+    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.c" />
+    <ClCompile Include="..\addon\blik_integration_openh264-1.6.0.cpp" />
+    <ClCompile Include="..\addon\blik_integration_openssl-1.1.0c.c" />
+    <ClCompile Include="..\addon\blik_integration_rtmpdump-2.4.c" />
+    <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp" />
+    <ClCompile Include="..\core\blik.cpp" />
+    <ClCompile Include="..\core\blik_asset.cpp" />
+    <ClCompile Include="..\core\blik_buffer.cpp" />
+    <ClCompile Include="..\core\blik_library.cpp" />
+    <ClCompile Include="..\core\blik_math.cpp" />
+    <ClCompile Include="..\core\blik_memory.cpp" />
+    <ClCompile Include="..\core\blik_mutex.cpp" />
+    <ClCompile Include="..\core\blik_parser.cpp" />
+    <ClCompile Include="..\core\blik_profile.cpp" />
+    <ClCompile Include="..\core\blik_property.cpp" />
+    <ClCompile Include="..\core\blik_remote.cpp" />
+    <ClCompile Include="..\core\blik_share.cpp" />
+    <ClCompile Include="..\core\blik_storage.cpp" />
+    <ClCompile Include="..\core\blik_string.cpp" />
+    <ClCompile Include="..\core\blik_tasking.cpp" />
+    <ClCompile Include="..\core\blik_updater.cpp" />
+    <ClCompile Include="..\core\blik_wstring.cpp" />
+    <ClCompile Include="..\element\blik_clip.cpp" />
+    <ClCompile Include="..\element\blik_color.cpp" />
+    <ClCompile Include="..\element\blik_font.cpp" />
+    <ClCompile Include="..\element\blik_image.cpp" />
+    <ClCompile Include="..\element\blik_matrix.cpp" />
+    <ClCompile Include="..\element\blik_point.cpp" />
+    <ClCompile Include="..\element\blik_rect.cpp" />
+    <ClCompile Include="..\element\blik_size.cpp" />
+    <ClCompile Include="..\element\blik_tween.cpp" />
+    <ClCompile Include="..\element\blik_vector.cpp" />
+    <ClCompile Include="..\format\blik_bmp.cpp" />
+    <ClCompile Include="..\format\blik_png.cpp" />
+    <ClCompile Include="..\format\blik_zen.cpp" />
+    <ClCompile Include="..\platform\android\OpenGLES_Functions.cpp" />
+    <ClCompile Include="..\platform\blik_platform_blank.cpp" />
+    <ClCompile Include="..\platform\blik_platform_cocos2dx.cpp" />
+    <ClCompile Include="..\platform\blik_platform_impl.cpp" />
+    <ClCompile Include="..\platform\blik_platform_native.cpp" />
+    <ClCompile Include="..\platform\blik_platform_qt5.cpp" />
+    <ClCompile Include="..\service\blik_asyncfilemanager.cpp" />
+    <ClCompile Include="..\service\blik_batchbuilder.cpp" />
+    <ClCompile Include="..\service\blik_imagebuilder.cpp" />
+    <ClCompile Include="..\service\blik_kiwiservice.cpp" />
+    <ClCompile Include="..\service\blik_viewmanager.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_blik_platform_qt5.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\addon\blik_addon.hpp" />
+    <ClInclude Include="..\addon\blik_addon_aac.hpp" />
+    <ClInclude Include="..\addon\blik_addon_alpr.hpp" />
+    <ClInclude Include="..\addon\blik_addon_curl.hpp" />
+    <ClInclude Include="..\addon\blik_addon_git.hpp" />
+    <ClInclude Include="..\addon\blik_addon_h264.hpp" />
+    <ClInclude Include="..\addon\blik_addon_jpg.hpp" />
+    <ClInclude Include="..\addon\blik_addon_tesseract.hpp" />
+    <ClInclude Include="..\addon\blik_fakewin.h" />
+    <ClInclude Include="..\addon\blik_integration_curl-7.51.0.h" />
+    <ClInclude Include="..\addon\blik_integration_fdk-aac-0.1.4.h" />
+    <ClInclude Include="..\addon\blik_integration_libgit2-0.22.2.h" />
+    <ClInclude Include="..\addon\blik_integration_libssh2-1.6.0.h" />
+    <ClInclude Include="..\addon\blik_integration_openalpr-2.3.0.h" />
+    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0.h" />
+    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.h" />
+    <ClInclude Include="..\addon\blik_integration_openh264-1.6.0.h" />
+    <ClInclude Include="..\addon\blik_integration_openssl-1.1.0c.h" />
+    <ClInclude Include="..\addon\blik_integration_rtmpdump-2.4.h" />
+    <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h" />
+    <ClInclude Include="..\core\blik.h" />
+    <ClInclude Include="..\core\blik.hpp" />
+    <ClInclude Include="..\core\blik_array.hpp" />
+    <ClInclude Include="..\core\blik_asset.hpp" />
+    <ClInclude Include="..\core\blik_buffer.hpp" />
+    <ClInclude Include="..\core\blik_counter.hpp" />
+    <ClInclude Include="..\core\blik_library.hpp" />
+    <ClInclude Include="..\core\blik_map.hpp" />
+    <ClInclude Include="..\core\blik_math.hpp" />
+    <ClInclude Include="..\core\blik_memory.hpp" />
+    <ClInclude Include="..\core\blik_mutex.hpp" />
+    <ClInclude Include="..\core\blik_object.hpp" />
+    <ClInclude Include="..\core\blik_parser.hpp" />
+    <ClInclude Include="..\core\blik_profile.hpp" />
+    <ClInclude Include="..\core\blik_property.hpp" />
+    <ClInclude Include="..\core\blik_queue.hpp" />
+    <ClInclude Include="..\core\blik_remote.hpp" />
+    <ClInclude Include="..\core\blik_share.hpp" />
+    <ClInclude Include="..\core\blik_storage.hpp" />
+    <ClInclude Include="..\core\blik_string.hpp" />
+    <ClInclude Include="..\core\blik_tasking.hpp" />
+    <ClInclude Include="..\core\blik_updater.hpp" />
+    <ClInclude Include="..\core\blik_wstring.hpp" />
+    <ClInclude Include="..\element\blik_clip.hpp" />
+    <ClInclude Include="..\element\blik_color.hpp" />
+    <ClInclude Include="..\element\blik_font.hpp" />
+    <ClInclude Include="..\element\blik_image.hpp" />
+    <ClInclude Include="..\element\blik_matrix.hpp" />
+    <ClInclude Include="..\element\blik_point.hpp" />
+    <ClInclude Include="..\element\blik_rect.hpp" />
+    <ClInclude Include="..\element\blik_size.hpp" />
+    <ClInclude Include="..\element\blik_tween.hpp" />
+    <ClInclude Include="..\element\blik_vector.hpp" />
+    <ClInclude Include="..\format\blik_bmp.hpp" />
+    <ClInclude Include="..\format\blik_png.hpp" />
+    <ClInclude Include="..\format\blik_zen.hpp" />
+    <ClInclude Include="..\platform\android\OpenGLES_Functions.h" />
+    <ClInclude Include="..\platform\blik_platform.hpp" />
+    <ClInclude Include="..\platform\blik_platform_blank.hpp" />
+    <ClInclude Include="..\platform\blik_platform_cocos2dx.hpp" />
+    <ClInclude Include="..\platform\blik_platform_impl.hpp" />
+    <ClInclude Include="..\platform\blik_platform_native.hpp" />
+    <ClInclude Include="..\platform\win32\glew.h" />
+    <ClInclude Include="..\service\blik_asyncfilemanager.hpp" />
+    <ClInclude Include="..\service\blik_batchbuilder.hpp" />
+    <ClInclude Include="..\service\blik_imagebuilder.hpp" />
+    <ClInclude Include="..\service\blik_kiwiservice.hpp" />
+    <ClInclude Include="..\service\blik_viewmanager.hpp" />
+    <CustomBuild Include="..\platform\blik_platform_qt5.hpp">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing blik_platform_qt5.hpp...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing blik_platform_qt5.hpp...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -DBLIK_NDEBUG=0  "-I.\..\..\Blik2D\core" "-I.\..\..\Blik2D" "-I$(SolutionDir)..\source" "-I." "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -DBLIK_NDEBUG=0  "-I.\..\..\Blik2D\core" "-I.\..\..\Blik2D" "-I$(SolutionDir)..\source" "-I." "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtWidgets"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing blik_platform_qt5.hpp...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing blik_platform_qt5.hpp...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -DQT_NO_DEBUG -DNDEBUG -DBLIK_NDEBUG=1  "-I.\..\..\Blik2D\core" "-I.\..\..\Blik2D" "-I$(SolutionDir)..\source" "-I." "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -DQT_NO_DEBUG -DNDEBUG -DBLIK_NDEBUG=1  "-I.\..\..\Blik2D\core" "-I.\..\..\Blik2D" "-I$(SolutionDir)..\source" "-I." "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtWidgets"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
+    <Keyword>Qt4VSv1.0</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\[blik2d]\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\[blik2d]\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\[blik2d]\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\[blik2d]\$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_MULTIMEDIA_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_SERIALPORT_LIB;QT_WIDGETS_LIB;BLIK_NDEBUG=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Blik2D\core;..\..\Blik2D;$(SolutionDir)..\source;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5SerialPortd.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_MULTIMEDIA_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_SERIALPORT_LIB;QT_WIDGETS_LIB;BLIK_NDEBUG=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Blik2D\core;..\..\Blik2D;$(SolutionDir)..\source;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Multimediad.lib;Qt5Networkd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5SerialPortd.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_MULTIMEDIA_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_SERIALPORT_LIB;QT_WIDGETS_LIB;QT_NO_DEBUG;NDEBUG;BLIK_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Blik2D\core;..\..\Blik2D;$(SolutionDir)..\source;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5SerialPort.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_MULTIMEDIA_LIB;QT_NETWORK_LIB;QT_OPENGL_LIB;QT_SERIALPORT_LIB;QT_WIDGETS_LIB;QT_NO_DEBUG;NDEBUG;BLIK_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Blik2D\core;..\..\Blik2D;$(SolutionDir)..\source;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Multimedia.lib;Qt5Network.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5SerialPort.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\[blik2d]\bin\$(PlatformTarget)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="msvc2015" Qt5Version_x0020_x64="msvc2015_64" MocOptions="" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

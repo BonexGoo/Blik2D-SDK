@@ -1,0 +1,147 @@
+﻿#include <blik.h>
+#if BLIK_NEED_ADDON_CURL
+
+#if BLIK_WINDOWS
+	#pragma comment(lib, "ws2_32.lib")
+	#pragma comment(lib, "wldap32.lib")
+#endif
+
+#pragma warning(disable : 4090)
+
+// 도구준비
+#include "blik_integration_curl-7.51.0.h"
+
+#include <addon/curl-7.51.0_for_blik/lib/amigaos.c>
+#include <addon/curl-7.51.0_for_blik/lib/asyn-ares.c>
+#include <addon/curl-7.51.0_for_blik/lib/asyn-thread.c>
+#include <addon/curl-7.51.0_for_blik/lib/base64.c>
+#include <addon/curl-7.51.0_for_blik/lib/conncache.c>
+#include <addon/curl-7.51.0_for_blik/lib/connect.c>
+#include <addon/curl-7.51.0_for_blik/lib/content_encoding.c>
+#include <addon/curl-7.51.0_for_blik/lib/cookie.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_addrinfo.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_des.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_endian.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_fnmatch.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_gethostname.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_gssapi.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_memrchr.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_multibyte.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_ntlm_core.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_ntlm_wb.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_rtmp.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_sasl.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/curl_threads.c>
+#include <addon/curl-7.51.0_for_blik/lib/dict.c>
+#include <addon/curl-7.51.0_for_blik/lib/dotdot.c>
+#include <addon/curl-7.51.0_for_blik/lib/easy.c>
+#include <addon/curl-7.51.0_for_blik/lib/escape.c>
+#include <addon/curl-7.51.0_for_blik/lib/file.c>
+#include <addon/curl-7.51.0_for_blik/lib/fileinfo.c>
+#include <addon/curl-7.51.0_for_blik/lib/formdata.c>
+#include <addon/curl-7.51.0_for_blik/lib/ftp.c>
+#include <addon/curl-7.51.0_for_blik/lib/ftplistparser.c>
+#include <addon/curl-7.51.0_for_blik/lib/getenv.c>
+#include <addon/curl-7.51.0_for_blik/lib/getinfo.c>
+#include <addon/curl-7.51.0_for_blik/lib/gopher.c>
+#include <addon/curl-7.51.0_for_blik/lib/hash.c>
+#include <addon/curl-7.51.0_for_blik/lib/hmac.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostasyn.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostcheck.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostip.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostip4.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostip6.c>
+#include <addon/curl-7.51.0_for_blik/lib/hostsyn.c>
+#include <addon/curl-7.51.0_for_blik/lib/http.c>
+#include <addon/curl-7.51.0_for_blik/lib/http2.c>
+#include <addon/curl-7.51.0_for_blik/lib/http_chunks.c>
+#include <addon/curl-7.51.0_for_blik/lib/http_digest.c>
+#include <addon/curl-7.51.0_for_blik/lib/http_negotiate.c>
+#include <addon/curl-7.51.0_for_blik/lib/http_ntlm.c>
+#include <addon/curl-7.51.0_for_blik/lib/http_proxy.c>
+#include <addon/curl-7.51.0_for_blik/lib/idn_win32.c>
+#include <addon/curl-7.51.0_for_blik/lib/if2ip.c>
+#include <addon/curl-7.51.0_for_blik/lib/imap.c>
+#include <addon/curl-7.51.0_for_blik/lib/inet_ntop.c>
+#include <addon/curl-7.51.0_for_blik/lib/inet_pton.c>
+#include <addon/curl-7.51.0_for_blik/lib/krb5.c>
+#include <addon/curl-7.51.0_for_blik/lib/ldap.c>
+#include <addon/curl-7.51.0_for_blik/lib/llist.c>
+#include <addon/curl-7.51.0_for_blik/lib/md4.c>
+#include <addon/curl-7.51.0_for_blik/lib/md5.c>
+#include <addon/curl-7.51.0_for_blik/lib/memdebug.c>
+#include <addon/curl-7.51.0_for_blik/lib/mprintf.c>
+#include <addon/curl-7.51.0_for_blik/lib/multi.c>
+#include <addon/curl-7.51.0_for_blik/lib/netrc.c>
+#include <addon/curl-7.51.0_for_blik/lib/non-ascii.c>
+#include <addon/curl-7.51.0_for_blik/lib/nonblock.c>
+#include <addon/curl-7.51.0_for_blik/lib/nwlib.c>
+#include <addon/curl-7.51.0_for_blik/lib/nwos.c>
+#include <addon/curl-7.51.0_for_blik/lib/openldap.c>
+#include <addon/curl-7.51.0_for_blik/lib/parsedate.c>
+#include <addon/curl-7.51.0_for_blik/lib/pingpong.c>
+#include <addon/curl-7.51.0_for_blik/lib/pipeline.c>
+#include <addon/curl-7.51.0_for_blik/lib/pop3.c>
+#include <addon/curl-7.51.0_for_blik/lib/progress.c>
+#include <addon/curl-7.51.0_for_blik/lib/rtsp.c>
+#include <addon/curl-7.51.0_for_blik/lib/security.c>
+#include <addon/curl-7.51.0_for_blik/lib/select.c>
+#include <addon/curl-7.51.0_for_blik/lib/sendf.c>
+#include <addon/curl-7.51.0_for_blik/lib/share.c>
+#include <addon/curl-7.51.0_for_blik/lib/slist.c>
+#include <addon/curl-7.51.0_for_blik/lib/smb.c>
+#include <addon/curl-7.51.0_for_blik/lib/smtp.c>
+#include <addon/curl-7.51.0_for_blik/lib/socks.c>
+#include <addon/curl-7.51.0_for_blik/lib/socks_gssapi.c>
+#include <addon/curl-7.51.0_for_blik/lib/socks_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/speedcheck.c>
+#include <addon/curl-7.51.0_for_blik/lib/splay.c>
+#include <addon/curl-7.51.0_for_blik/lib/ssh.c>
+#include <addon/curl-7.51.0_for_blik/lib/strcase.c>
+#include <addon/curl-7.51.0_for_blik/lib/strdup.c>
+#include <addon/curl-7.51.0_for_blik/lib/strerror.c>
+#include <addon/curl-7.51.0_for_blik/lib/strtok.c>
+#include <addon/curl-7.51.0_for_blik/lib/strtoofft.c>
+#include <addon/curl-7.51.0_for_blik/lib/system_win32.c>
+#include <addon/curl-7.51.0_for_blik/lib/telnet.c>
+#include <addon/curl-7.51.0_for_blik/lib/tftp.c>
+#include <addon/curl-7.51.0_for_blik/lib/timeval.c>
+#include <addon/curl-7.51.0_for_blik/lib/transfer.c>
+#include <addon/curl-7.51.0_for_blik/lib/url.c>
+#define protocols protocols_version_BLIK
+#include <addon/curl-7.51.0_for_blik/lib/version.c>
+#undef protocols
+#undef read
+#undef write
+#include <addon/curl-7.51.0_for_blik/lib/warnless.c>
+#include <addon/curl-7.51.0_for_blik/lib/wildcard.c>
+#include <addon/curl-7.51.0_for_blik/lib/x509asn1.c>
+
+#include <addon/curl-7.51.0_for_blik/lib/vauth/cleartext.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/cram.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/digest.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/digest_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/krb5_gssapi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/krb5_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/ntlm.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/ntlm_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/oauth2.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/spnego_gssapi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/spnego_sspi.c>
+#include <addon/curl-7.51.0_for_blik/lib/vauth/vauth.c>
+
+#include <addon/curl-7.51.0_for_blik/lib/vtls/axtls.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/cyassl.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/darwinssl.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/gskit.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/gtls.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/mbedtls.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/nss.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/openssl.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/polarssl.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/polarssl_threadlock.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/schannel.c>
+#include <addon/curl-7.51.0_for_blik/lib/vtls/vtls.c>
+
+#endif
