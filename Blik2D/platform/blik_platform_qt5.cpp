@@ -224,6 +224,14 @@
             return true;
         }
 
+        id_image_read Platform::GetScreenshotImage(const rect128& rect)
+        {
+            static QPixmap ScreenshotPixmap;
+            ScreenshotPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(),
+                rect.l, rect.t, rect.r - rect.l, rect.b - rect.t);
+            return (id_image_read) &ScreenshotPixmap;
+        }
+
         h_view Platform::SetWindowView(chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);

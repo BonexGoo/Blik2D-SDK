@@ -78,6 +78,13 @@ namespace BLIK
         static bool GetScreenRect(rect128& rect);
 
         /*!
+        \brief 스크린샷 이미지 얻기
+		\param rect : 스크린영역(px)
+		\return 스크린샷 이미지(nullptr은 실패)
+		*/
+        static id_image_read GetScreenshotImage(const rect128& rect);
+
+        /*!
         \brief 윈도우뷰 설정
         \param viewclass : 로드할 뷰클래스(BLIK_DECLARE_VIEW로 선언, nullptr일 경우 _defaultview_)
 		\return 뷰핸들
