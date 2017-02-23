@@ -57,7 +57,7 @@ namespace BLIK
         return Point(*this).operator*=(rhs);
     }
 
-	Point& Point::operator*=(const Size& rhs)
+    Point& Point::operator*=(const Size& rhs)
     {
         x *= rhs.w;
         y *= rhs.h;
@@ -117,7 +117,7 @@ namespace BLIK
         return Point(*this).operator-=(rhs);
     }
 
-	Point& Point::operator-=(const Size& rhs)
+    Point& Point::operator-=(const Size& rhs)
     {
         x -= rhs.w;
         y -= rhs.h;

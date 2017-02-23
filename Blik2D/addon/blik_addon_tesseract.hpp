@@ -11,13 +11,13 @@ namespace BLIK
         ~TesseractClass();
         TesseractClass& operator=(const TesseractClass& rhs);
 
-	public:
+    public:
         void Init(chars tifpath, chars boxpath);
-		inline String GetTifPath() {return m_tifpath;}
-		inline String GetOtherPath() {return m_otherpath;}
+        inline String GetTifPath() {return m_tifpath;}
+        inline String GetOtherPath() {return m_otherpath;}
 
-	private:
-		String m_tifpath;
-		String m_otherpath;
+    private:
+        String m_tifpath;
+        String m_otherpath;
     };
 }

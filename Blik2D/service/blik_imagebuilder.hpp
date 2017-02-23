@@ -21,7 +21,7 @@ namespace BLIK
 
     public:
         static id_bitmap MakeBitmap(chars png_filename, id_assetpath_read assetpath = nullptr);
-		static id_bitmap MakeTagBitmap(chars key_filename, chars tagname);
+        static id_bitmap MakeTagBitmap(chars key_filename, chars tagname);
 
     private:
         Array<Image> m_subimages;

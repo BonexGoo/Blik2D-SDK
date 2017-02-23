@@ -117,14 +117,14 @@ namespace BLIK
             return &share->At<TYPE>(index);
         }
 
-		/*!
+        /*!
         \brief 네이티브용 추가형 쓰기접근
         \param length : 후미로부터 추가할 길이
         \return 해당 객체의 포인터
         */
         TYPE* AtDumpingAdded(sint32 length)
         {
-			const sint32 index = share->Count();
+            const sint32 index = share->Count();
             share = Share::CopyOnWrite(share, index + length);
             return &share->At<TYPE>(index);
         }
@@ -140,7 +140,7 @@ namespace BLIK
             return true;
         }
 
-		/*!
+        /*!
         \brief 전체삭제
         \return 삭제 수행여부(배열수량이 0일 경우 false)
         */
@@ -160,7 +160,7 @@ namespace BLIK
             return share->Type();
         }
 
-		/*!
+        /*!
         \brief 타입ID 구하기
         \return 타입ID
         */
@@ -222,9 +222,9 @@ namespace BLIK
         \brief 소멸자
         */
         ~Array()
-		{
-			Share::Remove(share);
-		}
+        {
+            Share::Remove(share);
+        }
 
     public:
         /*!
@@ -263,7 +263,7 @@ namespace BLIK
     typedef Array<buffer, datatype_pod_canmemcpy> buffers;
     typedef Array<bool, datatype_pod_canmemcpy> bools;
     typedef Array<float, datatype_pod_canmemcpy> floats;
-	typedef Array<double, datatype_pod_canmemcpy> doubles;
+    typedef Array<double, datatype_pod_canmemcpy> doubles;
     typedef Array<void*, datatype_pod_canmemcpy> pointers;
     typedef Array<char, datatype_pod_canmemcpy> chararray;
     typedef Array<wchar_t, datatype_pod_canmemcpy> wchararray;

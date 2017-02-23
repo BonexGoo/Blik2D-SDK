@@ -14,7 +14,7 @@ bool __LINK_ADDON_AAC__() {return true;} // 링크옵션 /OPT:NOREF가 안되서
 // 등록과정
 namespace BLIK
 {
-	BLIK_DECLARE_ADDON_FUNCTION(Aac, Create, id_acc, sint32, sint32, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(Aac, Create, id_acc, sint32, sint32, sint32)
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Release, void, id_acc)
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Encode, id_share, id_acc, bytes, sint32)
 
@@ -31,24 +31,24 @@ namespace BLIK
 // 구현부
 namespace BLIK
 {
-	id_acc Customized_AddOn_Aac_Create(sint32 bitrate, sint32 channel, sint32 samplerate)
-	{
+    id_acc Customized_AddOn_Aac_Create(sint32 bitrate, sint32 channel, sint32 samplerate)
+    {
         BaseEncoderAac* NewEncoder = new BaseEncoderAac(bitrate, channel, samplerate);
         if(NewEncoder->IsValid()) return (id_acc) NewEncoder;
         delete NewEncoder;
         return nullptr;
     }
 
-	void Customized_AddOn_Aac_Release(id_acc acc)
-	{
+    void Customized_AddOn_Aac_Release(id_acc acc)
+    {
         BaseEncoderAac* OldEncoder = (BaseEncoderAac*) acc;
         delete OldEncoder;
     }
 
-	id_share Customized_AddOn_Aac_Encode(id_acc acc, bytes pcm, sint32 length)
-	{
+    id_share Customized_AddOn_Aac_Encode(id_acc acc, bytes pcm, sint32 length)
+    {
         BaseEncoderAac* CurEncoder = (BaseEncoderAac*) acc;
-		if(!CurEncoder) return uint08s();
+        if(!CurEncoder) return uint08s();
         return CurEncoder->Encode(pcm, length);
     }
 }
@@ -62,33 +62,33 @@ BaseEncoderAac::BaseEncoderAac(sint32 bitrate, sint32 channel, sint32 samplerate
     CHANNEL_MODE mode;
     switch(channel)
     {
-	case 1: mode = MODE_1; break;
-	case 2: mode = MODE_2; break;
-	case 3: mode = MODE_1_2; break;
-	case 4: mode = MODE_1_2_1; break;
-	case 5: mode = MODE_1_2_2; break;
-	case 6: mode = MODE_1_2_2_1; break;
-	default: return;
-	}
+    case 1: mode = MODE_1; break;
+    case 2: mode = MODE_2; break;
+    case 3: mode = MODE_1_2; break;
+    case 4: mode = MODE_1_2_1; break;
+    case 5: mode = MODE_1_2_2; break;
+    case 6: mode = MODE_1_2_2_1; break;
+    default: return;
+    }
 
     const sint32 aot = 2;
     const sint32 afterburner = 1;
-	const sint32 eld_sbr = 0;
-	const sint32 vbr = 0;
+    const sint32 eld_sbr = 0;
+    const sint32 vbr = 0;
     mEncoder = new HANDLE_AACENCODER();
 
     if(aacEncOpen(mEncoder, 0, channel) != AACENC_OK) goto InitEncoderError_Step_Delete;
     if(aacEncoder_SetParam(*mEncoder, AACENC_AOT, aot) != AACENC_OK) goto InitEncoderError_Step_Close;
     if(aot == 39 && eld_sbr && aacEncoder_SetParam(*mEncoder, AACENC_SBR_MODE, 1) != AACENC_OK) goto InitEncoderError_Step_Close;
     if(aacEncoder_SetParam(*mEncoder, AACENC_SAMPLERATE, samplerate) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncoder_SetParam(*mEncoder, AACENC_CHANNELMODE, mode) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncoder_SetParam(*mEncoder, AACENC_CHANNELORDER, 1) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(vbr) {if(aacEncoder_SetParam(*mEncoder, AACENC_BITRATEMODE, vbr) != AACENC_OK) goto InitEncoderError_Step_Close;}
+    if(aacEncoder_SetParam(*mEncoder, AACENC_CHANNELMODE, mode) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(aacEncoder_SetParam(*mEncoder, AACENC_CHANNELORDER, 1) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(vbr) {if(aacEncoder_SetParam(*mEncoder, AACENC_BITRATEMODE, vbr) != AACENC_OK) goto InitEncoderError_Step_Close;}
     else if(aacEncoder_SetParam(*mEncoder, AACENC_BITRATE, bitrate) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncoder_SetParam(*mEncoder, AACENC_TRANSMUX, 2) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncoder_SetParam(*mEncoder, AACENC_AFTERBURNER, afterburner) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncEncode(*mEncoder, NULL, NULL, NULL, NULL) != AACENC_OK) goto InitEncoderError_Step_Close;
-	if(aacEncInfo(*mEncoder, &mInfo) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(aacEncoder_SetParam(*mEncoder, AACENC_TRANSMUX, 2) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(aacEncoder_SetParam(*mEncoder, AACENC_AFTERBURNER, afterburner) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(aacEncEncode(*mEncoder, NULL, NULL, NULL, NULL) != AACENC_OK) goto InitEncoderError_Step_Close;
+    if(aacEncInfo(*mEncoder, &mInfo) != AACENC_OK) goto InitEncoderError_Step_Close;
     mChunkSize = channel * 2 * mInfo.frameLength;
     return;
 
@@ -129,12 +129,12 @@ id_share BaseEncoderAac::Encode(bytes pcm, sint32 length)
             in_args.numInSamples = -1;
         else
         {
-		    in_args.numInSamples = in_size / 2;
-		    in_buf.numBufs = 1;
-		    in_buf.bufs = &in_ptr;
-		    in_buf.bufferIdentifiers = &in_identifier;
-		    in_buf.bufSizes = &in_size;
-		    in_buf.bufElSizes = &in_elem_size;
+            in_args.numInSamples = in_size / 2;
+            in_buf.numBufs = 1;
+            in_buf.bufs = &in_ptr;
+            in_buf.bufferIdentifiers = &in_identifier;
+            in_buf.bufSizes = &in_size;
+            in_buf.bufElSizes = &in_elem_size;
         }
         out_buf.numBufs = 1;
         out_buf.bufs = &out_ptr;

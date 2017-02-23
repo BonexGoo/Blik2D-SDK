@@ -4,11 +4,11 @@
 namespace BLIK
 {
     BLIK_DECLARE_ID(id_acc);
-	BLIK_DECLARE_ID(id_alpr);
-	BLIK_DECLARE_ID(id_curl);
-	BLIK_DECLARE_ID(id_h264);
+    BLIK_DECLARE_ID(id_alpr);
+    BLIK_DECLARE_ID(id_curl);
+    BLIK_DECLARE_ID(id_h264);
     BLIK_DECLARE_ID(id_git);
-	BLIK_DECLARE_ID(id_tesseract);
+    BLIK_DECLARE_ID(id_tesseract);
     BLIK_DECLARE_ID(id_jpg);
     enum ProgressType {PT_DownloadPack, PT_DownloadTip, PT_InflateFile};
     typedef size_t (*CurlReadCB)(void* ptr, size_t size, size_t nitems, payload data);
@@ -19,41 +19,41 @@ namespace BLIK
     public:
         //! \brief AAC연동
         class Aac
-		{
-		public:
+        {
+        public:
             static id_acc Create(sint32 bitrate, sint32 channel, sint32 samplerate);
-			static void Release(id_acc acc);
-			static id_share Encode(id_acc acc, bytes pcm, sint32 length);
-		};
+            static void Release(id_acc acc);
+            static id_share Encode(id_acc acc, bytes pcm, sint32 length);
+        };
 
-		//! \brief ALPR연동
+        //! \brief ALPR연동
         class Alpr
-		{
-		public:
-			static id_alpr Create(chars country = "", h_view listener = h_view::null());
-			static void Release(id_alpr alpr);
-			static chars Recognize(id_alpr alpr, id_bitmap_read bitmap);
-			static chars Summary(chars recognizedtext);
-		};
+        {
+        public:
+            static id_alpr Create(chars country = "", h_view listener = h_view::null());
+            static void Release(id_alpr alpr);
+            static chars Recognize(id_alpr alpr, id_bitmap_read bitmap);
+            static chars Summary(chars recognizedtext);
+        };
 
-		//! \brief CURL연동
-		class Curl
-		{
-		public:
-			static id_curl Create(void);
-			static void Release(id_curl curl);
-			static chars ServiceRequest(id_curl curl, chars service, chars arg);
+        //! \brief CURL연동
+        class Curl
+        {
+        public:
+            static id_curl Create(void);
+            static void Release(id_curl curl);
+            static chars ServiceRequest(id_curl curl, chars service, chars arg);
             static void SendStream(id_curl curl, chars service, chars key, CurlReadCB cb, payload data);
-		};
+        };
 
-		//! \brief H264연동
-		class H264
-		{
-		public:
-			static id_h264 Create(sint32 width, sint32 height);
-			static void Release(id_h264 h264);
-			static id_share Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac = nullptr);
-		};
+        //! \brief H264연동
+        class H264
+        {
+        public:
+            static id_h264 Create(sint32 width, sint32 height);
+            static void Release(id_h264 h264);
+            static id_share Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac = nullptr);
+        };
 
         //! \brief GIT연동
         class Git
@@ -67,24 +67,24 @@ namespace BLIK
             static void Update(id_git git, ProgressCB cb = nullptr, payload data = nullptr);
         };
 
-		//! \brief TESSERACT연동
+        //! \brief TESSERACT연동
         class Tesseract
-		{
-		public:
-			static id_tesseract Create(chars tifpath, chars otherpath);
-			static void Release(id_tesseract tesseract);
-			static void Training(id_tesseract tesseract, chars workname);
-		};
+        {
+        public:
+            static id_tesseract Create(chars tifpath, chars otherpath);
+            static void Release(id_tesseract tesseract);
+            static void Training(id_tesseract tesseract, chars workname);
+        };
 
-		//! \brief JPG연동
+        //! \brief JPG연동
         class Jpg
-		{
-		public:
+        {
+        public:
             static id_jpg Create(id_bitmap_read bmp, sint32 quality = 100);
-			static void Release(id_jpg jpg);
+            static void Release(id_jpg jpg);
             static sint32 GetLength(id_jpg jpg);
             static bytes GetBits(id_jpg jpg);
-			static id_bitmap ToBmp(bytes jpg, sint32 length);
-		};
+            static id_bitmap ToBmp(bytes jpg, sint32 length);
+        };
     };
 }

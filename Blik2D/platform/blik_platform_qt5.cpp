@@ -10,21 +10,21 @@
     QWidget* g_view = nullptr;
     QGLFunctions* g_func = nullptr;
 
-	#if BLIK_ANDROID
-		QAndroidJniObject g_activity;
-		QAndroidJniObject g_context;
-		jobject GetAndroidApplicationContext()
-		{
-			g_activity = QAndroidJniObject::callStaticObjectMethod(
-				"org/qtproject/qt5/android/QtNative", "activity", "()Landroid/app/Activity;");
-			g_context = g_activity.callObjectMethod("getApplicationContext",
-				"()Landroid/content/Context;");
-			return g_context.object<jobject>();
-		}
-		void SetAndroidApplicationContext(jobject context)
-		{
-		}
-	#endif
+    #if BLIK_ANDROID
+        QAndroidJniObject g_activity;
+        QAndroidJniObject g_context;
+        jobject GetAndroidApplicationContext()
+        {
+            g_activity = QAndroidJniObject::callStaticObjectMethod(
+                "org/qtproject/qt5/android/QtNative", "activity", "()Landroid/app/Activity;");
+            g_context = g_activity.callObjectMethod("getApplicationContext",
+                "()Landroid/content/Context;");
+            return g_context.object<jobject>();
+        }
+        void SetAndroidApplicationContext(jobject context)
+        {
+        }
+    #endif
 
     #if BLIK_NEED_MAIN
         extern void PlatformInit();
@@ -47,7 +47,7 @@
                 #endif
                 result = app.exec();
                 PlatformQuit();
-				Platform::Utility::SetOptionFlag("AssertPopup", false);
+                Platform::Utility::SetOptionFlag("AssertPopup", false);
 
                 g_window = nullptr;
             }
@@ -56,7 +56,7 @@
         }
     #endif
 
-	#if BLIK_WINDOWS
+    #if BLIK_WINDOWS
         #include <windows.h>
     #elif BLIK_ANDROID
         extern "C" int __android_log_print(int prio, const char *tag,  const char *fmt, ...);
@@ -90,40 +90,40 @@
         #endif
 
         if(Platform::Utility::GetOptionFlag("AssertPopup"))
-		{
-			#if BLIK_WINDOWS
-				WString AssertMessage = WString::Format(
-					L"%s\n\n%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
-					L"(YES is Break, NO is Ignore)\t\t",
-					(wchars) WString::FromChars(name),
-					(wchars) WString::FromChars(AssertInfo[0]),
-					(wchars) WString::FromChars(AssertInfo[1]),
-					(wchars) WString::FromChars(AssertInfo[2]),
-					(wchars) WString::FromChars(AssertInfo[3]));
-				switch(MessageBoxW((g_window)? (HWND) g_window->winId() : NULL,
-					AssertMessage, L"ASSERT BREAK", MB_ICONWARNING | MB_ABORTRETRYIGNORE))
-				{
-				case IDABORT: return 0;
-				case IDIGNORE: return 1;
-				}
-			#else
-				QString AssertMessage;
-				AssertMessage.sprintf(
-					"%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
-					"(YES is Break, NO is Ignore)\t\t",
-					(chars) AssertInfo[0], (chars) AssertInfo[1],
-					(chars) AssertInfo[2], (chars) AssertInfo[3]);
-				QMessageBox AssertBox(QMessageBox::Warning, "ASSERT BREAK", QString::fromUtf8(name),
-					QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
-				AssertBox.setInformativeText(AssertMessage);
-				AssertBox.setDefaultButton(QMessageBox::Yes);
-				switch(AssertBox.exec())
-				{
-				case QMessageBox::Yes: return 0;
-				case QMessageBox::NoToAll: return 1;
-				}
-			#endif
-		}
+        {
+            #if BLIK_WINDOWS
+                WString AssertMessage = WString::Format(
+                    L"%s\n\n%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
+                    L"(YES is Break, NO is Ignore)\t\t",
+                    (wchars) WString::FromChars(name),
+                    (wchars) WString::FromChars(AssertInfo[0]),
+                    (wchars) WString::FromChars(AssertInfo[1]),
+                    (wchars) WString::FromChars(AssertInfo[2]),
+                    (wchars) WString::FromChars(AssertInfo[3]));
+                switch(MessageBoxW((g_window)? (HWND) g_window->winId() : NULL,
+                    AssertMessage, L"ASSERT BREAK", MB_ICONWARNING | MB_ABORTRETRYIGNORE))
+                {
+                case IDABORT: return 0;
+                case IDIGNORE: return 1;
+                }
+            #else
+                QString AssertMessage;
+                AssertMessage.sprintf(
+                    "%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
+                    "(YES is Break, NO is Ignore)\t\t",
+                    (chars) AssertInfo[0], (chars) AssertInfo[1],
+                    (chars) AssertInfo[2], (chars) AssertInfo[3]);
+                QMessageBox AssertBox(QMessageBox::Warning, "ASSERT BREAK", QString::fromUtf8(name),
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
+                AssertBox.setInformativeText(AssertMessage);
+                AssertBox.setDefaultButton(QMessageBox::Yes);
+                switch(AssertBox.exec())
+                {
+                case QMessageBox::Yes: return 0;
+                case QMessageBox::NoToAll: return 1;
+                }
+            #endif
+        }
         return 2;
     }
 
@@ -165,26 +165,26 @@
             g_window->setWindowTitle(QString::fromUtf8(name));
         }
 
-		void Platform::SetWindowPos(sint32 x, sint32 y)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-			g_window->move(x, y);
-		}
+        void Platform::SetWindowPos(sint32 x, sint32 y)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+            g_window->move(x, y);
+        }
 
         void Platform::SetWindowSize(sint32 width, sint32 height)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-			g_window->resize(width, height);
+            g_window->resize(width, height);
         }
 
-		void Platform::GetWindowRect(rect128& rect)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-			rect.l = g_window->x();
-			rect.t = g_window->y();
-			rect.r = rect.l + g_window->width();
-			rect.b = rect.t + g_window->height();
-		}
+        void Platform::GetWindowRect(rect128& rect)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+            rect.l = g_window->x();
+            rect.t = g_window->y();
+            rect.r = rect.l + g_window->width();
+            rect.b = rect.t + g_window->height();
+        }
 
         bool Platform::GetScreenRect(rect128& rect)
         {
@@ -240,18 +240,18 @@
 
             h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_data->getMainAPI());
             g_data->getMainAPI()->setViewAndCreate(NewViewHandle);
-			return NewViewHandle;
+            return NewViewHandle;
         }
 
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-			if(stack == UIS_Push || stack == UIS_PushPop)
-				StackMessage::Me().Push();
-			g_window->statusBar()->showMessage(QString::fromUtf8(
+            if(stack == UIS_Push || stack == UIS_PushPop)
+                StackMessage::Me().Push();
+            g_window->statusBar()->showMessage(QString::fromUtf8(
                 (StackMessage::Me().Count() == 0)? text : (chars) StackMessage::Me().Get(text)));
             if(stack == UIS_Pop || stack == UIS_PushPop)
-				StackMessage::Me().Pop();
+                StackMessage::Me().Pop();
         }
 
         h_icon Platform::CreateIcon(chars filepath)
@@ -327,12 +327,12 @@
                 if(allows[i] & UIA_Bottom) Areas[i] = (Qt::DockWidgetArea) (Areas[i] | Qt::BottomDockWidgetArea);
             }
 
-			QDockWidget* NewDock = new QDockWidget(GenericView::cast(view)->getName(), g_window);
-			GenericView* RenewedView = new GenericView(view);
+            QDockWidget* NewDock = new QDockWidget(GenericView::cast(view)->getName(), g_window);
+            GenericView* RenewedView = new GenericView(view);
             ((QDockWidget*) NewDock)->setAllowedAreas(Areas[1]);
             ((QDockWidget*) NewDock)->setWidget(RenewedView->m_api->getWidget());
             g_window->addDockWidget(Areas[0], (QDockWidget*) NewDock);
-			return h_dock::create_by_ptr(BLIK_DBG NewDock);
+            return h_dock::create_by_ptr(BLIK_DBG NewDock);
         }
 
         void Platform::AddAction(chars group, h_action action, UIRole role)
@@ -386,15 +386,15 @@
             GenericView* RenewedView = new GenericView(view);
             QWidget* NewWidget = g_data->addWidget(RenewedView);
             NewWidget->resize(RenewedView->getFirstSize());
-			NewWidget->setWindowTitle(RenewedView->getName());
+            NewWidget->setWindowTitle(RenewedView->getName());
             if(icon.get()) NewWidget->setWindowIcon(*((QIcon*) icon.get()));
             NewWidget->show();
 
             buffer NewBox = Buffer::Alloc<WidgetBox>(BLIK_DBG 1);
             ((WidgetBox*) NewBox)->setWidget(RenewedView, NewWidget);
             h_window NewWindowHandle = h_window::create_by_buf(BLIK_DBG NewBox);
-			RenewedView->attachWindow(NewWindowHandle);
-			return NewWindowHandle;
+            RenewedView->attachWindow(NewWindowHandle);
+            return NewWindowHandle;
         }
 
         h_window Platform::OpenPopupWindow(h_view view, h_icon icon)
@@ -492,11 +492,11 @@
             return PlatformImpl::Wrap::Popup_FileDialog(path, shortpath, title, isdir);
         }
 
-		void Platform::Popup::WebBrowserDialog(String url)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        void Platform::Popup::WebBrowserDialog(String url)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             return PlatformImpl::Wrap::Popup_WebBrowserDialog(url);
-		}
+        }
 
         bool Platform::Popup::OpenEditTracker(String& text, UIEditType type, sint32 l, sint32 t, sint32 r, sint32 b)
         {
@@ -559,9 +559,9 @@
             return (qrand() & 0xFFFFFFFF);
         }
 
-		void Platform::Utility::Sleep(sint32 ms, bool caninput)
+        void Platform::Utility::Sleep(sint32 ms, bool caninput)
         {
-			QTime StartTime = QTime::currentTime();
+            QTime StartTime = QTime::currentTime();
             QEventLoop EventLoop(QThread::currentThread());
 
             sint32 Flag = QEventLoop::AllEvents;
@@ -582,12 +582,12 @@
             return PlatformImpl::Wrap::Utility_CurrentAvailableMemory(totalbytes);
         }
 
-		void Platform::Utility::Threading(ThreadCB cb, payload data)
-		{
-			ThreadClass::Begin(cb, data);
-		}
+        void Platform::Utility::Threading(ThreadCB cb, payload data)
+        {
+            ThreadClass::Begin(cb, data);
+        }
 
-		uint64 Platform::Utility::CurrentThreadID()
+        uint64 Platform::Utility::CurrentThreadID()
         {
             return (uint64) QThread::currentThreadId();
         }
@@ -649,35 +649,35 @@
             if(year) *year = CurDate.year();
         }
 
-		void Platform::Utility::SetOptionFlag(chars name, bool flag)
-		{
-			PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
-		}
+        void Platform::Utility::SetOptionFlag(chars name, bool flag)
+        {
+            PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
+        }
 
-		bool Platform::Utility::GetOptionFlag(chars name)
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
-		}
+        bool Platform::Utility::GetOptionFlag(chars name)
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
+        }
 
-		Strings Platform::Utility::GetOptionFlagNames()
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
-		}
+        Strings Platform::Utility::GetOptionFlagNames()
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
+        }
 
-		void Platform::Utility::SetOptionPayload(chars name, payload data)
-		{
-			PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
-		}
+        void Platform::Utility::SetOptionPayload(chars name, payload data)
+        {
+            PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
+        }
 
-		payload Platform::Utility::GetOptionPayload(chars name)
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
-		}
+        payload Platform::Utility::GetOptionPayload(chars name)
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
+        }
 
-		Strings Platform::Utility::GetOptionPayloadNames()
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
-		}
+        Strings Platform::Utility::GetOptionPayloadNames()
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // GRAPHICS
@@ -718,7 +718,7 @@
             ViewAPI::CurPainter()->fillRect(QRectF(x, y, w, h), ViewAPI::CurColor());
         }
 
-		void Platform::Graphics::FillPolygon(float x, float y, Points p)
+        void Platform::Graphics::FillPolygon(float x, float y, Points p)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
             const sint32 Count = p.Count();
@@ -823,17 +823,17 @@
 
             const sint32 SrcWidth = Bmp::GetWidth(bitmap);
             const sint32 SrcHeight = Bmp::GetHeight(bitmap);
-			const sint32 DstWidth = (resizing_width == -1)? SrcWidth : resizing_width;
+            const sint32 DstWidth = (resizing_width == -1)? SrcWidth : resizing_width;
             const sint32 DstHeight = (resizing_height == -1)? SrcHeight : resizing_height;
             QImage NewImage(DstWidth, DstHeight, QImage::Format_ARGB32);
 
-			const bool NeedColoring = (coloring.rgba != Color::ColoringDefault);
-			const bool NeedResizing = (DstWidth != SrcWidth || DstHeight != SrcHeight);
+            const bool NeedColoring = (coloring.rgba != Color::ColoringDefault);
+            const bool NeedResizing = (DstWidth != SrcWidth || DstHeight != SrcHeight);
             Bmp::bitmappixel* DstBits = (Bmp::bitmappixel*) NewImage.bits();
             const Bmp::bitmappixel* SrcBits = (const Bmp::bitmappixel*) Bmp::GetBits(bitmap);
             if(NeedColoring || NeedResizing)
             {
-				// 컬러링 테이블링
+                // 컬러링 테이블링
                 static uint08 AlphaTable[256 * 256];
                 static uint08 ColorTable[256 * 256];
                 static bool NeedTabling = true;
@@ -878,143 +878,143 @@
                     }
                 }
 
-				// 리사이징이 있는 경우
-				if(NeedResizing)
-				{
-					const uint32 level = 16; // 2의 승수
-					// 스트레칭 테이블링
-					static sint32s sxpool;
-					sint32* sxpool_ptr = sxpool.AtDumping(0, DstWidth * 4);
-					sint32* sxbegins = &sxpool_ptr[DstWidth * 0];
-					sint32* sxends = &sxpool_ptr[DstWidth * 1];
-					sint32* sxbegin_rates = &sxpool_ptr[DstWidth * 2];
-					sint32* sxend_rates = &sxpool_ptr[DstWidth * 3];
-					for(sint32 dx = 0; dx < DstWidth; ++dx)
-					{
-						sint32 SumA = 0, SumR = 0, SumG = 0, SumB = 0, SumAlphaRate = 0, SumColorRate = 0;
-						sxbegins[dx] = dx * SrcWidth / DstWidth;
-						sxends[dx] = ((dx + 1) * SrcWidth + DstWidth - 1) / DstWidth;
-						sxbegin_rates[dx] = (sxbegins[dx] + 1) * level - dx * level * SrcWidth / DstWidth;
-						sxend_rates[dx] = ((dx + 1) * level * SrcWidth + DstWidth - 1) / DstWidth - (sxends[dx] - 1) * level;
-					}
-					// 스트레칭
-					for(sint32 dy = 0; dy < DstHeight; ++dy)
-					{
-						Bmp::bitmappixel* CurDstBits = &DstBits[dy * DstWidth];
-						const sint32 sybegin = dy * SrcHeight / DstHeight;
-						const sint32 syend = ((dy + 1) * SrcHeight + DstHeight - 1) / DstHeight;
-						const sint32 sybegin_rate = (sybegin + 1) * level - dy * level * SrcHeight / DstHeight;
-						const sint32 syend_rate = ((dy + 1) * level * SrcHeight + DstHeight - 1) / DstHeight - (syend - 1) * level;
-						for(sint32 dx = 0; dx < DstWidth; ++dx)
-						{
-							// 과한 축소로 오버플로우가 발생하여 색상오류가 나면 아래 선언을 uint32에서 float로 바꾸면 됨
-							uint32 SumA = 0, SumR = 0, SumG = 0, SumB = 0, SumAlphaRate = 0, SumColorRate = 0;
-							const sint32 sxbegin = sxbegins[dx];
-							const sint32 sxend = sxends[dx];
-							const sint32 sxbegin_rate = sxbegin_rates[dx];
-							const sint32 sxend_rate = sxend_rates[dx];
-							for(sint32 sy = sybegin; sy < syend; ++sy)
-							{
-								const Bmp::bitmappixel* CurSrcBits = &SrcBits[(SrcHeight - 1 - sy) * SrcWidth];
-								const sint32 sy_rate = (sy == sybegin)? sybegin_rate : ((sy < syend - 1)? level : syend_rate);
-								for(sint32 sx = sxbegin; sx < sxend; ++sx)
-								{
-									const Bmp::bitmappixel& CurSrcBit = CurSrcBits[sx];
-									const sint32 sx_rate = (sx == sxbegin)? sxbegin_rate : ((sx < sxend - 1)? level : sxend_rate);
-									const uint32 alpha_rate = (uint32) (sx_rate * sy_rate);
-									if(CurSrcBit.a)
-									{
-										const uint32 color_rate = CurSrcBit.a * alpha_rate / (level * level); // 오버플로우 방지
-										SumA += CurSrcBit.a * alpha_rate;
-										SumR += CurSrcBit.r * color_rate;
-										SumG += CurSrcBit.g * color_rate;
-										SumB += CurSrcBit.b * color_rate;
-										SumAlphaRate += alpha_rate;
-										SumColorRate += color_rate;
-									}
-									else SumAlphaRate += alpha_rate;
-								}
-							}
-							if(0 < SumColorRate)
-							{
-								CurDstBits->a = (uint08) (SumA / SumAlphaRate);
-								CurDstBits->r = (uint08) (SumR / SumColorRate);
-								CurDstBits->g = (uint08) (SumG / SumColorRate);
-								CurDstBits->b = (uint08) (SumB / SumColorRate);
-							}
-							else CurDstBits->argb = 0x00000000;
-							CurDstBits++;
-						}
-					}
-					// 리사이징과 함께 컬러링도 있는 경우
-					if(NeedColoring)
-					{
-						// 컬러링
-						const uint08* CurTableA = &AlphaTable[coloring.a * 256];
-						const uint08* CurTableR = &ColorTable[coloring.r * 256];
-						const uint08* CurTableG = &ColorTable[coloring.g * 256];
-						const uint08* CurTableB = &ColorTable[coloring.b * 256];
-						for(sint32 y = 0; y < DstHeight; ++y)
-						{
-							Bmp::bitmappixel* CurDstBits = &DstBits[y * DstWidth];
-							for(sint32 x = 0; x < DstWidth; ++x)
-							{
-								CurDstBits->a = CurTableA[CurDstBits->a];
-								CurDstBits->r = CurTableR[CurDstBits->r];
-								CurDstBits->g = CurTableG[CurDstBits->g];
-								CurDstBits->b = CurTableB[CurDstBits->b];
-								CurDstBits++;
-							}
-						}
-					}
-				}
-				// 컬러링만 있는 경우
-				else
-				{
-					// 컬러링
-					const uint08* CurTableA = &AlphaTable[coloring.a * 256];
-					const uint08* CurTableR = &ColorTable[coloring.r * 256];
-					const uint08* CurTableG = &ColorTable[coloring.g * 256];
-					const uint08* CurTableB = &ColorTable[coloring.b * 256];
-					for(sint32 y = 0; y < DstHeight; ++y)
-					{
-						Bmp::bitmappixel* CurDstBits = &DstBits[y * DstWidth];
-						const Bmp::bitmappixel* CurSrcBits = &SrcBits[(SrcHeight - 1 - y) * SrcWidth];
-						for(sint32 x = 0; x < DstWidth; ++x)
-						{
-							CurDstBits->a = CurTableA[CurSrcBits->a];
-							CurDstBits->r = CurTableR[CurSrcBits->r];
-							CurDstBits->g = CurTableG[CurSrcBits->g];
-							CurDstBits->b = CurTableB[CurSrcBits->b];
-							CurDstBits++;
-							CurSrcBits++;
-						}
-					}
-				}
+                // 리사이징이 있는 경우
+                if(NeedResizing)
+                {
+                    const uint32 level = 16; // 2의 승수
+                    // 스트레칭 테이블링
+                    static sint32s sxpool;
+                    sint32* sxpool_ptr = sxpool.AtDumping(0, DstWidth * 4);
+                    sint32* sxbegins = &sxpool_ptr[DstWidth * 0];
+                    sint32* sxends = &sxpool_ptr[DstWidth * 1];
+                    sint32* sxbegin_rates = &sxpool_ptr[DstWidth * 2];
+                    sint32* sxend_rates = &sxpool_ptr[DstWidth * 3];
+                    for(sint32 dx = 0; dx < DstWidth; ++dx)
+                    {
+                        sint32 SumA = 0, SumR = 0, SumG = 0, SumB = 0, SumAlphaRate = 0, SumColorRate = 0;
+                        sxbegins[dx] = dx * SrcWidth / DstWidth;
+                        sxends[dx] = ((dx + 1) * SrcWidth + DstWidth - 1) / DstWidth;
+                        sxbegin_rates[dx] = (sxbegins[dx] + 1) * level - dx * level * SrcWidth / DstWidth;
+                        sxend_rates[dx] = ((dx + 1) * level * SrcWidth + DstWidth - 1) / DstWidth - (sxends[dx] - 1) * level;
+                    }
+                    // 스트레칭
+                    for(sint32 dy = 0; dy < DstHeight; ++dy)
+                    {
+                        Bmp::bitmappixel* CurDstBits = &DstBits[dy * DstWidth];
+                        const sint32 sybegin = dy * SrcHeight / DstHeight;
+                        const sint32 syend = ((dy + 1) * SrcHeight + DstHeight - 1) / DstHeight;
+                        const sint32 sybegin_rate = (sybegin + 1) * level - dy * level * SrcHeight / DstHeight;
+                        const sint32 syend_rate = ((dy + 1) * level * SrcHeight + DstHeight - 1) / DstHeight - (syend - 1) * level;
+                        for(sint32 dx = 0; dx < DstWidth; ++dx)
+                        {
+                            // 과한 축소로 오버플로우가 발생하여 색상오류가 나면 아래 선언을 uint32에서 float로 바꾸면 됨
+                            uint32 SumA = 0, SumR = 0, SumG = 0, SumB = 0, SumAlphaRate = 0, SumColorRate = 0;
+                            const sint32 sxbegin = sxbegins[dx];
+                            const sint32 sxend = sxends[dx];
+                            const sint32 sxbegin_rate = sxbegin_rates[dx];
+                            const sint32 sxend_rate = sxend_rates[dx];
+                            for(sint32 sy = sybegin; sy < syend; ++sy)
+                            {
+                                const Bmp::bitmappixel* CurSrcBits = &SrcBits[(SrcHeight - 1 - sy) * SrcWidth];
+                                const sint32 sy_rate = (sy == sybegin)? sybegin_rate : ((sy < syend - 1)? level : syend_rate);
+                                for(sint32 sx = sxbegin; sx < sxend; ++sx)
+                                {
+                                    const Bmp::bitmappixel& CurSrcBit = CurSrcBits[sx];
+                                    const sint32 sx_rate = (sx == sxbegin)? sxbegin_rate : ((sx < sxend - 1)? level : sxend_rate);
+                                    const uint32 alpha_rate = (uint32) (sx_rate * sy_rate);
+                                    if(CurSrcBit.a)
+                                    {
+                                        const uint32 color_rate = CurSrcBit.a * alpha_rate / (level * level); // 오버플로우 방지
+                                        SumA += CurSrcBit.a * alpha_rate;
+                                        SumR += CurSrcBit.r * color_rate;
+                                        SumG += CurSrcBit.g * color_rate;
+                                        SumB += CurSrcBit.b * color_rate;
+                                        SumAlphaRate += alpha_rate;
+                                        SumColorRate += color_rate;
+                                    }
+                                    else SumAlphaRate += alpha_rate;
+                                }
+                            }
+                            if(0 < SumColorRate)
+                            {
+                                CurDstBits->a = (uint08) (SumA / SumAlphaRate);
+                                CurDstBits->r = (uint08) (SumR / SumColorRate);
+                                CurDstBits->g = (uint08) (SumG / SumColorRate);
+                                CurDstBits->b = (uint08) (SumB / SumColorRate);
+                            }
+                            else CurDstBits->argb = 0x00000000;
+                            CurDstBits++;
+                        }
+                    }
+                    // 리사이징과 함께 컬러링도 있는 경우
+                    if(NeedColoring)
+                    {
+                        // 컬러링
+                        const uint08* CurTableA = &AlphaTable[coloring.a * 256];
+                        const uint08* CurTableR = &ColorTable[coloring.r * 256];
+                        const uint08* CurTableG = &ColorTable[coloring.g * 256];
+                        const uint08* CurTableB = &ColorTable[coloring.b * 256];
+                        for(sint32 y = 0; y < DstHeight; ++y)
+                        {
+                            Bmp::bitmappixel* CurDstBits = &DstBits[y * DstWidth];
+                            for(sint32 x = 0; x < DstWidth; ++x)
+                            {
+                                CurDstBits->a = CurTableA[CurDstBits->a];
+                                CurDstBits->r = CurTableR[CurDstBits->r];
+                                CurDstBits->g = CurTableG[CurDstBits->g];
+                                CurDstBits->b = CurTableB[CurDstBits->b];
+                                CurDstBits++;
+                            }
+                        }
+                    }
+                }
+                // 컬러링만 있는 경우
+                else
+                {
+                    // 컬러링
+                    const uint08* CurTableA = &AlphaTable[coloring.a * 256];
+                    const uint08* CurTableR = &ColorTable[coloring.r * 256];
+                    const uint08* CurTableG = &ColorTable[coloring.g * 256];
+                    const uint08* CurTableB = &ColorTable[coloring.b * 256];
+                    for(sint32 y = 0; y < DstHeight; ++y)
+                    {
+                        Bmp::bitmappixel* CurDstBits = &DstBits[y * DstWidth];
+                        const Bmp::bitmappixel* CurSrcBits = &SrcBits[(SrcHeight - 1 - y) * SrcWidth];
+                        for(sint32 x = 0; x < DstWidth; ++x)
+                        {
+                            CurDstBits->a = CurTableA[CurSrcBits->a];
+                            CurDstBits->r = CurTableR[CurSrcBits->r];
+                            CurDstBits->g = CurTableG[CurSrcBits->g];
+                            CurDstBits->b = CurTableB[CurSrcBits->b];
+                            CurDstBits++;
+                            CurSrcBits++;
+                        }
+                    }
+                }
             }
-			// 컬러링도 없고 리사이징도 없는 경우
-			else for(sint32 y = 0; y < DstHeight; ++y)
-				Memory::Copy(&DstBits[y * DstWidth], &SrcBits[(SrcHeight - 1 - y) * SrcWidth],
-					sizeof(Bmp::bitmappixel) * SrcWidth);
+            // 컬러링도 없고 리사이징도 없는 경우
+            else for(sint32 y = 0; y < DstHeight; ++y)
+                Memory::Copy(&DstBits[y * DstWidth], &SrcBits[(SrcHeight - 1 - y) * SrcWidth],
+                    sizeof(Bmp::bitmappixel) * SrcWidth);
 
             buffer NewPixmap = Buffer::Alloc<QPixmap>(BLIK_DBG 1);
             ((QPixmap*) NewPixmap)->convertFromImage(NewImage);
             return (id_image) NewPixmap;
         }
 
-		sint32 Platform::Graphics::GetImageWidth(id_image_read image)
-		{
-			if(const QPixmap* CurPixmap = (const QPixmap*) image)
-				return CurPixmap->width();
-			return 0;
-		}
+        sint32 Platform::Graphics::GetImageWidth(id_image_read image)
+        {
+            if(const QPixmap* CurPixmap = (const QPixmap*) image)
+                return CurPixmap->width();
+            return 0;
+        }
 
-		sint32 Platform::Graphics::GetImageHeight(id_image_read image)
-		{
-			if(const QPixmap* CurPixmap = (const QPixmap*) image)
-				return CurPixmap->height();
-			return 0;
-		}
+        sint32 Platform::Graphics::GetImageHeight(id_image_read image)
+        {
+            if(const QPixmap* CurPixmap = (const QPixmap*) image)
+                return CurPixmap->height();
+            return 0;
+        }
 
         void Platform::Graphics::RemoveImage(id_image image)
         {
@@ -1031,7 +1031,7 @@
                 QRect((sint32) ix, (sint32) iy, (sint32) iw, (sint32) ih));
             // 아래 코드의 랜더링결과는 품질이 좋지 않음
             //if(w == iw && h == ih)
-			//	ViewAPI::CurPainter()->drawPixmap(QPointF(x, y), *((const QPixmap*) image), QRectF(ix, iy, iw, ih));
+            //    ViewAPI::CurPainter()->drawPixmap(QPointF(x, y), *((const QPixmap*) image), QRectF(ix, iy, iw, ih));
             //else ViewAPI::CurPainter()->drawPixmap(QRectF(x, y, w, h + 0.5f), *((const QPixmap*) image), QRectF(ix, iy, iw, ih));
         }
 
@@ -1226,11 +1226,11 @@
             return ((QFile*) file)->read((char*) data, size);
         }
 
-		const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
-		{
-			BLIK_ASSERT("해당 파일이 없습니다", file);
+        const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
+        {
+            BLIK_ASSERT("해당 파일이 없습니다", file);
             return ((QFile*) file)->readLine(text, size);
-		}
+        }
 
         const sint32 Platform::File::Write(id_file file, bytes data, const sint32 size)
         {
@@ -1238,17 +1238,17 @@
             return ((QFile*) file)->write((chars) data, size);
         }
 
-		void Platform::File::Seek(id_file_read file, const sint32 focus)
+        void Platform::File::Seek(id_file_read file, const sint32 focus)
         {
             BLIK_ASSERT("해당 파일이 없습니다", file);
             ((QFile*) file)->seek(focus);
         }
 
-		const sint32 Platform::File::Focus(id_file_read file)
-		{
-			BLIK_ASSERT("해당 파일이 없습니다", file);
+        const sint32 Platform::File::Focus(id_file_read file)
+        {
+            BLIK_ASSERT("해당 파일이 없습니다", file);
             return (sint32) ((QFile*) file)->pos();
-		}
+        }
 
         sint32 Platform::File::Search(chars dirname, SearchCB cb, payload data, bool needfullpath)
         {
@@ -1260,11 +1260,11 @@
             if(0 <= FindPos) PathQ = PathQ.mid(FindPos);
 
             QDir TargetDir =
-				#if BLIK_WINDOWS
-					QDir((0 <= FindPos)? "../assets" + PathQ.mid(7) : PathQ);
-				#else
-					QDir(PathQ);
-				#endif
+                #if BLIK_WINDOWS
+                    QDir((0 <= FindPos)? "../assets" + PathQ.mid(7) : PathQ);
+                #else
+                    QDir(PathQ);
+                #endif
             if(!TargetDir.exists())
             {
                 BLIK_TRACE("Search(%s) - The TargetDir is nonexistent", (chars) PathUTF8);
@@ -1909,170 +1909,170 @@
             return &CurServent;
         }
 
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         // SERVER
         ////////////////////////////////////////////////////////////////////////////////
-		id_server Platform::Server::Create(bool sizefield)
-		{
-			TCPAgent* NewAgent = (TCPAgent*) Buffer::AllocNoConstructorOnce<TCPAgent>(BLIK_DBG 1);
-			BLIK_CONSTRUCTOR(NewAgent, 0, TCPAgent, sizefield);
-			return (id_server) NewAgent;
-		}
+        id_server Platform::Server::Create(bool sizefield)
+        {
+            TCPAgent* NewAgent = (TCPAgent*) Buffer::AllocNoConstructorOnce<TCPAgent>(BLIK_DBG 1);
+            BLIK_CONSTRUCTOR(NewAgent, 0, TCPAgent, sizefield);
+            return (id_server) NewAgent;
+        }
 
-		void Platform::Server::Release(id_server server)
-		{
-			Buffer::Free((buffer) server);
-		}
+        void Platform::Server::Release(id_server server)
+        {
+            Buffer::Free((buffer) server);
+        }
 
-		bool Platform::Server::Listen(id_server server, uint16 port)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-			{
-				if(CurAgent->isListening()) return true;
-				return CurAgent->listen(QHostAddress::Any, port);
-			}
-			return false;
-		}
+        bool Platform::Server::Listen(id_server server, uint16 port)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+            {
+                if(CurAgent->isListening()) return true;
+                return CurAgent->listen(QHostAddress::Any, port);
+            }
+            return false;
+        }
 
-		bool Platform::Server::TryNextPacket(id_server server)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-				return CurAgent->TryPacket();
-			return false;
-		}
+        bool Platform::Server::TryNextPacket(id_server server)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+                return CurAgent->TryPacket();
+            return false;
+        }
 
-		packettype Platform::Server::GetPacketType(id_server server)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-			{
-				TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
-				return FocusedPacket->Type;
-			}
-			return packettype_null;
-		}
+        packettype Platform::Server::GetPacketType(id_server server)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+            {
+                TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
+                return FocusedPacket->Type;
+            }
+            return packettype_null;
+        }
 
-		sint32 Platform::Server::GetPacketPeerID(id_server server)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-			{
-				TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
-				return FocusedPacket->PeerID;
-			}
-			return -1;
-		}
+        sint32 Platform::Server::GetPacketPeerID(id_server server)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+            {
+                TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
+                return FocusedPacket->PeerID;
+            }
+            return -1;
+        }
 
-		bytes Platform::Server::GetPacketBuffer(id_server server, sint32* getsize)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-			{
-				TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
-				if(getsize) *getsize = Buffer::CountOf(FocusedPacket->Buffer);
-				return (bytes) FocusedPacket->Buffer;
-			}
-			return nullptr;
-		}
+        bytes Platform::Server::GetPacketBuffer(id_server server, sint32* getsize)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+            {
+                TCPPacket* FocusedPacket = CurAgent->GetFocusedPacket();
+                if(getsize) *getsize = Buffer::CountOf(FocusedPacket->Buffer);
+                return (bytes) FocusedPacket->Buffer;
+            }
+            return nullptr;
+        }
 
-		bool Platform::Server::SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize)
-		{
-			if(TCPAgent* CurAgent = (TCPAgent*) server)
-				return CurAgent->SendPacket(peerid, buffer, buffersize);
-			return false;
-		}
+        bool Platform::Server::SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize)
+        {
+            if(TCPAgent* CurAgent = (TCPAgent*) server)
+                return CurAgent->SendPacket(peerid, buffer, buffersize);
+            return false;
+        }
 
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         // SERIAL
         ////////////////////////////////////////////////////////////////////////////////
-		Strings Platform::Serial::GetAllNames(String* spec)
-		{
-			return SerialClass::GetList(spec);
-		}
+        Strings Platform::Serial::GetAllNames(String* spec)
+        {
+            return SerialClass::GetList(spec);
+        }
 
-		id_serial Platform::Serial::Open(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
-		{
-			SerialClass* NewSerial = new SerialClass(name, dec, enc);
-			if(NewSerial->IsValid())
-				return (id_serial) NewSerial;
-			delete NewSerial;
-			return nullptr;
-		}
+        id_serial Platform::Serial::Open(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
+        {
+            SerialClass* NewSerial = new SerialClass(name, dec, enc);
+            if(NewSerial->IsValid())
+                return (id_serial) NewSerial;
+            delete NewSerial;
+            return nullptr;
+        }
 
-		void Platform::Serial::Close(id_serial serial)
-		{
-			delete (SerialClass*) serial;
-		}
+        void Platform::Serial::Close(id_serial serial)
+        {
+            delete (SerialClass*) serial;
+        }
 
-		bool Platform::Serial::Connected(id_serial serial)
-		{
-			if(!serial) return false;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			return CurSerial->Connected();
-		}
+        bool Platform::Serial::Connected(id_serial serial)
+        {
+            if(!serial) return false;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            return CurSerial->Connected();
+        }
 
-		bool Platform::Serial::ReadReady(id_serial serial, sint32* gettype)
-		{
-			if(!serial) return false;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			return CurSerial->ReadReady(gettype);
-		}
+        bool Platform::Serial::ReadReady(id_serial serial, sint32* gettype)
+        {
+            if(!serial) return false;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            return CurSerial->ReadReady(gettype);
+        }
 
-		sint32 Platform::Serial::ReadAvailable(id_serial serial)
-		{
-			if(!serial) return 0;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			return CurSerial->ReadAvailable();
-		}
+        sint32 Platform::Serial::ReadAvailable(id_serial serial)
+        {
+            if(!serial) return 0;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            return CurSerial->ReadAvailable();
+        }
 
-		sint32 Platform::Serial::Read(id_serial serial, chars format, ...)
-		{
-			if(!serial) return 0;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			va_list Args;
-			va_start(Args, format);
-			const sint32 Result = CurSerial->Read(format, Args);
-			va_end(Args);
-			return Result;
-		}
+        sint32 Platform::Serial::Read(id_serial serial, chars format, ...)
+        {
+            if(!serial) return 0;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            va_list Args;
+            va_start(Args, format);
+            const sint32 Result = CurSerial->Read(format, Args);
+            va_end(Args);
+            return Result;
+        }
 
-		sint32 Platform::Serial::Write(id_serial serial, chars format, ...)
-		{
-			if(!serial) return 0;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			va_list Args;
-			va_start(Args, format);
-			const sint32 Result = CurSerial->Write(format, Args);
-			va_end(Args);
-			return Result;
-		}
+        sint32 Platform::Serial::Write(id_serial serial, chars format, ...)
+        {
+            if(!serial) return 0;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            va_list Args;
+            va_start(Args, format);
+            const sint32 Result = CurSerial->Write(format, Args);
+            va_end(Args);
+            return Result;
+        }
 
-		void Platform::Serial::WriteFlush(id_serial serial, sint32 type)
-		{
-			if(!serial) return;
-			SerialClass* CurSerial = (SerialClass*) serial;
-			CurSerial->WriteFlush(type);
-		}
+        void Platform::Serial::WriteFlush(id_serial serial, sint32 type)
+        {
+            if(!serial) return;
+            SerialClass* CurSerial = (SerialClass*) serial;
+            CurSerial->WriteFlush(type);
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // CAMERA
         ////////////////////////////////////////////////////////////////////////////////
-		Strings Platform::Camera::GetAllNames(String* spec)
-		{
-			return CameraClass::GetList(spec);
-		}
+        Strings Platform::Camera::GetAllNames(String* spec)
+        {
+            return CameraClass::GetList(spec);
+        }
 
         id_camera Platform::Camera::Open(chars name, sint32 width, sint32 height)
-		{
+        {
             CameraClass* NewCamera = new CameraClass(name, width, height);
-			if(NewCamera->IsValid())
-				return (id_camera) NewCamera;
-			delete NewCamera;
-			return nullptr;
-		}
+            if(NewCamera->IsValid())
+                return (id_camera) NewCamera;
+            delete NewCamera;
+            return nullptr;
+        }
 
-		void Platform::Camera::Close(id_camera camera)
-		{
+        void Platform::Camera::Close(id_camera camera)
+        {
             if(camera && ((CameraClass*) camera)->SubRef())
-			    delete (CameraClass*) camera;
-		}
+                delete (CameraClass*) camera;
+        }
 
         id_camera Platform::Camera::Clone(id_camera camera)
         {
@@ -2081,25 +2081,25 @@
         }
 
         void Platform::Camera::Capture(id_camera camera, bool preview, bool needstop)
-		{
-			if(!camera) return;
-			CameraClass* CurCamera = (CameraClass*) camera;
+        {
+            if(!camera) return;
+            CameraClass* CurCamera = (CameraClass*) camera;
             CurCamera->Capture(preview, needstop);
-		}
+        }
 
         id_image_read Platform::Camera::LastCapturedImage(id_camera camera, sint32 maxwidth, sint32 maxheight)
-		{
-			if(!camera) return nullptr;
-			CameraClass* CurCamera = (CameraClass*) camera;
+        {
+            if(!camera) return nullptr;
+            CameraClass* CurCamera = (CameraClass*) camera;
             return CurCamera->LastCapturedImage(maxwidth, maxheight);
-		}
+        }
 
-		id_bitmap_read Platform::Camera::LastCapturedBitmap(id_camera camera, bool vflip)
-		{
-			if(!camera) return nullptr;
-			CameraClass* CurCamera = (CameraClass*) camera;
-			return CurCamera->LastCapturedBitmap(vflip);
-		}
+        id_bitmap_read Platform::Camera::LastCapturedBitmap(id_camera camera, bool vflip)
+        {
+            if(!camera) return nullptr;
+            CameraClass* CurCamera = (CameraClass*) camera;
+            return CurCamera->LastCapturedBitmap(vflip);
+        }
 
         size64 Platform::Camera::LastCapturedSize(id_camera camera)
         {
@@ -2138,18 +2138,18 @@
         }
 
         id_microphone Platform::Microphone::Open(chars name, sint32 maxcount)
-		{
+        {
             MicrophoneClass* NewMicrophone = new MicrophoneClass(name, maxcount);
-			if(NewMicrophone->IsValid())
-				return (id_microphone) NewMicrophone;
-			delete NewMicrophone;
-			return nullptr;
-		}
+            if(NewMicrophone->IsValid())
+                return (id_microphone) NewMicrophone;
+            delete NewMicrophone;
+            return nullptr;
+        }
 
-		void Platform::Microphone::Close(id_microphone microphone)
-		{
-			delete (MicrophoneClass*) microphone;
-		}
+        void Platform::Microphone::Close(id_microphone microphone)
+        {
+            delete (MicrophoneClass*) microphone;
+        }
 
         sint32 Platform::Microphone::GetBitRate(id_microphone microphone)
         {
@@ -2175,14 +2175,14 @@
         bool Platform::Microphone::TryNextSound(id_microphone microphone)
         {
             if(!microphone) return false;
-			MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
+            MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
             return CurMicrophone->TryLastData();
         }
 
         bytes Platform::Microphone::GetSoundData(id_microphone microphone)
         {
             if(!microphone) return nullptr;
-			MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
+            MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
             const auto& LastData = CurMicrophone->GetLastData();
             return (0 < LastData.Count())? &LastData[0] : nullptr;
         }
@@ -2190,7 +2190,7 @@
         sint32 Platform::Microphone::GetSoundDataLength(id_microphone microphone)
         {
             if(!microphone) return 0;
-			MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
+            MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
             const auto& LastData = CurMicrophone->GetLastData();
             return LastData.Count();
         }

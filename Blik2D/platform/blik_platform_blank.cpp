@@ -12,7 +12,7 @@
     #endif
     #include <stdio.h>
     #include <stdarg.h>
-	#if BLIK_ANDROID
+    #if BLIK_ANDROID
         #include <android/asset_manager_jni.h>
     #endif
 
@@ -21,7 +21,7 @@
     dependency* g_view = nullptr;
     dependency* g_func = nullptr;
 
-	#if BLIK_ANDROID
+    #if BLIK_ANDROID
         extern JavaVM* g_JVM;
         jobject g_context = nullptr;
         jobject GetAndroidApplicationContext()
@@ -36,7 +36,7 @@
             g_JVM->AttachCurrentThread(&env, 0);
             g_context = env->NewGlobalRef(context);
         }
-	#endif
+    #endif
 
     #if BLIK_NEED_MAIN
         extern void PlatformInit();
@@ -80,24 +80,24 @@
             OutputDebugStringW(L"************************************************************\n");
         #endif
 
-		if(Platform::Utility::GetOptionFlag("AssertPopup"))
-		{
-			#if BLIK_WINDOWS
-				WString AssertMessage = WString::Format(
-					L"%s\n\n%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
-					L"(YES is Break, NO is Ignore)\t\t",
-					(wchars) WString::FromChars(name),
-					(wchars) WString::FromChars(AssertInfo[0]),
-					(wchars) WString::FromChars(AssertInfo[1]),
-					(wchars) WString::FromChars(AssertInfo[2]),
-					(wchars) WString::FromChars(AssertInfo[3]));
-				switch(MessageBoxW(NULL, AssertMessage, L"ASSERT BREAK", MB_ICONWARNING | MB_ABORTRETRYIGNORE))
-				{
-				case IDABORT: return 0;
-				case IDIGNORE: return 1;
-				}
-			#endif
-		}
+        if(Platform::Utility::GetOptionFlag("AssertPopup"))
+        {
+            #if BLIK_WINDOWS
+                WString AssertMessage = WString::Format(
+                    L"%s\n\n%s\t\t\n%s\t\t\n%s\t\t\n%s\t\t\n\n"
+                    L"(YES is Break, NO is Ignore)\t\t",
+                    (wchars) WString::FromChars(name),
+                    (wchars) WString::FromChars(AssertInfo[0]),
+                    (wchars) WString::FromChars(AssertInfo[1]),
+                    (wchars) WString::FromChars(AssertInfo[2]),
+                    (wchars) WString::FromChars(AssertInfo[3]));
+                switch(MessageBoxW(NULL, AssertMessage, L"ASSERT BREAK", MB_ICONWARNING | MB_ABORTRETRYIGNORE))
+                {
+                case IDABORT: return 0;
+                case IDIGNORE: return 1;
+                }
+            #endif
+        }
         return 2;
     }
 
@@ -143,12 +143,12 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-		void Platform::SetWindowPos(sint32 x, sint32 y)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        void Platform::SetWindowPos(sint32 x, sint32 y)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         void Platform::SetWindowSize(sint32 width, sint32 height)
         {
@@ -157,12 +157,12 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-		void Platform::GetWindowRect(rect128& rect)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        void Platform::GetWindowRect(rect128& rect)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         bool Platform::GetScreenRect(rect128& rect)
         {
@@ -185,7 +185,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return h_view::null();
+            return h_view::null();
         }
 
         void Platform::SetStatusText(chars text, UIStack stack)
@@ -342,11 +342,11 @@
             return PlatformImpl::Wrap::Popup_FileDialog(path, shortpath, title, isdir);
         }
 
-		void Platform::Popup::WebBrowserDialog(String url)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        void Platform::Popup::WebBrowserDialog(String url)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             return PlatformImpl::Wrap::Popup_WebBrowserDialog(url);
-		}
+        }
 
         bool Platform::Popup::OpenEditTracker(String& text, UIEditType type, sint32 l, sint32 t, sint32 r, sint32 b)
         {
@@ -426,12 +426,12 @@
             return PlatformImpl::Wrap::Utility_CurrentAvailableMemory(totalbytes);
         }
 
-		void Platform::Utility::Threading(ThreadCB cb, payload data)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Utility::Threading(ThreadCB cb, payload data)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
-		uint64 Platform::Utility::CurrentThreadID()
+        uint64 Platform::Utility::CurrentThreadID()
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
             return 0;
@@ -488,35 +488,35 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-		void Platform::Utility::SetOptionFlag(chars name, bool flag)
-		{
-			PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
-		}
+        void Platform::Utility::SetOptionFlag(chars name, bool flag)
+        {
+            PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
+        }
 
-		bool Platform::Utility::GetOptionFlag(chars name)
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
-		}
+        bool Platform::Utility::GetOptionFlag(chars name)
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
+        }
 
-		Strings Platform::Utility::GetOptionFlagNames()
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
-		}
+        Strings Platform::Utility::GetOptionFlagNames()
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
+        }
 
-		void Platform::Utility::SetOptionPayload(chars name, payload data)
-		{
-			PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
-		}
+        void Platform::Utility::SetOptionPayload(chars name, payload data)
+        {
+            PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
+        }
 
-		payload Platform::Utility::GetOptionPayload(chars name)
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
-		}
+        payload Platform::Utility::GetOptionPayload(chars name)
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
+        }
 
-		Strings Platform::Utility::GetOptionPayloadNames()
-		{
-			return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
-		}
+        Strings Platform::Utility::GetOptionPayloadNames()
+        {
+            return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // GRAPHICS
@@ -556,8 +556,8 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-		void Platform::Graphics::FillPolygon(float x, float y, Points p)
-		{
+        void Platform::Graphics::FillPolygon(float x, float y, Points p)
+        {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
@@ -610,21 +610,21 @@
             return nullptr;
         }
 
-		sint32 Platform::Graphics::GetImageWidth(id_image_read image)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        sint32 Platform::Graphics::GetImageWidth(id_image_read image)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
 
-		sint32 Platform::Graphics::GetImageHeight(id_image_read image)
-		{
-			BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+        sint32 Platform::Graphics::GetImageHeight(id_image_read image)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
 
         void Platform::Graphics::RemoveImage(id_image image)
         {
@@ -745,23 +745,23 @@
             BLIK_ASSERT("해당 파일이 없습니다", file);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
+            return 0;
         }
 
-		const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
-		{
-			BLIK_ASSERT("해당 파일이 없습니다", file);
+        const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
+        {
+            BLIK_ASSERT("해당 파일이 없습니다", file);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+            return 0;
+        }
 
         const sint32 Platform::File::Write(id_file file, bytes data, const sint32 size)
         {
             BLIK_ASSERT("해당 파일이 없습니다", file);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
+            return 0;
         }
 
         void Platform::File::Seek(id_file_read file, const sint32 focus)
@@ -771,13 +771,13 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-		const sint32 Platform::File::Focus(id_file_read file)
-		{
-			BLIK_ASSERT("해당 파일이 없습니다", file);
+        const sint32 Platform::File::Focus(id_file_read file)
+        {
+            BLIK_ASSERT("해당 파일이 없습니다", file);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+            return 0;
+        }
 
         sint32 Platform::File::Search(chars dirname, SearchCB cb, payload data, bool needfullpath)
         {
@@ -1118,153 +1118,153 @@
             return &CurServent;
         }
 
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         // SERVER
         ////////////////////////////////////////////////////////////////////////////////
-		id_server Platform::Server::Create(bool sizefield)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+        id_server Platform::Server::Create(bool sizefield)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
 
-		void Platform::Server::Release(id_server server)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Server::Release(id_server server)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
-		bool Platform::Server::Listen(id_server server, uint16 port)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return false;
-		}
+        bool Platform::Server::Listen(id_server server, uint16 port)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
 
-		bool Platform::Server::TryNextPacket(id_server server)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return false;
-		}
+        bool Platform::Server::TryNextPacket(id_server server)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
 
-		packettype Platform::Server::GetPacketType(id_server server)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return packettype_null;
-		}
+        packettype Platform::Server::GetPacketType(id_server server)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return packettype_null;
+        }
 
-		sint32 Platform::Server::GetPacketPeerID(id_server server)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return -1;
-		}
+        sint32 Platform::Server::GetPacketPeerID(id_server server)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return -1;
+        }
 
-		bytes Platform::Server::GetPacketBuffer(id_server server, sint32* getsize)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+        bytes Platform::Server::GetPacketBuffer(id_server server, sint32* getsize)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
 
-		bool Platform::Server::SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return false;
-		}
+        bool Platform::Server::SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
 
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         // SERIAL
         ////////////////////////////////////////////////////////////////////////////////
-		Strings Platform::Serial::GetAllNames(String* spec)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return Strings();
-		}
+        Strings Platform::Serial::GetAllNames(String* spec)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return Strings();
+        }
 
-		id_serial Platform::Serial::Open(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+        id_serial Platform::Serial::Open(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
 
-		void Platform::Serial::Close(id_serial serial)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Serial::Close(id_serial serial)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
-		bool Platform::Serial::Connected(id_serial serial)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return false;
-		}
+        bool Platform::Serial::Connected(id_serial serial)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
 
-		bool Platform::Serial::ReadReady(id_serial serial, sint32* gettype)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return false;
-		}
+        bool Platform::Serial::ReadReady(id_serial serial, sint32* gettype)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
 
-		sint32 Platform::Serial::ReadAvailable(id_serial serial)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+        sint32 Platform::Serial::ReadAvailable(id_serial serial)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
 
-		sint32 Platform::Serial::Read(id_serial serial, chars format, ...)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+        sint32 Platform::Serial::Read(id_serial serial, chars format, ...)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
 
-		sint32 Platform::Serial::Write(id_serial serial, chars format, ...)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return 0;
-		}
+        sint32 Platform::Serial::Write(id_serial serial, chars format, ...)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
 
-		void Platform::Serial::WriteFlush(id_serial serial, sint32 type)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Serial::WriteFlush(id_serial serial, sint32 type)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // CAMERA
         ////////////////////////////////////////////////////////////////////////////////
-		Strings Platform::Camera::GetAllNames(String* spec)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return Strings();
-		}
+        Strings Platform::Camera::GetAllNames(String* spec)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return Strings();
+        }
 
         id_camera Platform::Camera::Open(chars name, sint32 width, sint32 height)
-		{
+        {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+            return nullptr;
+        }
 
-		void Platform::Camera::Close(id_camera camera)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Camera::Close(id_camera camera)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         id_camera Platform::Camera::Clone(id_camera camera)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
+            return nullptr;
         }
 
         void Platform::Camera::Capture(id_camera camera, bool preview, bool needstop)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         id_image_read Platform::Camera::LastCapturedImage(id_camera camera, sint32 maxwidth, sint32 maxheight)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
 
-		id_bitmap_read Platform::Camera::LastCapturedBitmap(id_camera camera, bool vflip)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+        id_bitmap_read Platform::Camera::LastCapturedBitmap(id_camera camera, bool vflip)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
 
         size64 Platform::Camera::LastCapturedSize(id_camera camera)
         {
@@ -1294,21 +1294,21 @@
         // MICROPHONE
         ////////////////////////////////////////////////////////////////////////////////
         Strings Platform::Microphone::GetAllNames(String* spec)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return Strings();
-		}
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return Strings();
+        }
 
         id_microphone Platform::Microphone::Open(chars name, sint32 maxcount)
-		{
+        {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-			return nullptr;
-		}
+            return nullptr;
+        }
 
-		void Platform::Microphone::Close(id_microphone microphone)
-		{
-			BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-		}
+        void Platform::Microphone::Close(id_microphone microphone)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
 
         sint32 Platform::Microphone::GetBitRate(id_microphone microphone)
         {

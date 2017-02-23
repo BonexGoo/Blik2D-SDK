@@ -30,14 +30,14 @@ namespace BLIK
         namespace Wrap
         {
             sint64 Utility_CurrentAvailableMemory(sint64* totalbytes);
-			void Utility_SetOptionFlag(chars name, bool flag);
-			bool Utility_GetOptionFlag(chars name);
-			Strings Utility_GetOptionFlagNames();
-			void Utility_SetOptionPayload(chars name, payload data);
-			payload Utility_GetOptionPayload(chars name);
-			Strings Utility_GetOptionPayloadNames();
+            void Utility_SetOptionFlag(chars name, bool flag);
+            bool Utility_GetOptionFlag(chars name);
+            Strings Utility_GetOptionFlagNames();
+            void Utility_SetOptionPayload(chars name, payload data);
+            payload Utility_GetOptionPayload(chars name);
+            Strings Utility_GetOptionPayloadNames();
             bool Popup_FileDialog(String& path, String* shortpath, chars title, bool isdir);
-			void Popup_WebBrowserDialog(String url);
+            void Popup_WebBrowserDialog(String url);
             WString File_GetDirName(wchars itemname, wchar_t badslash, wchar_t goodslash);
             WString File_GetShortName(wchars itemname);
             sint32 File_GetDriveCode();

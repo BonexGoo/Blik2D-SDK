@@ -62,26 +62,26 @@ namespace BLIK
         */
         static float MaxF(const float a, const float b);
 
-		/*!
+        /*!
         \brief 올림값 구하기
         \param v : 인수
         \return 올림값
         */
-		static float Ceil(const float v);
+        static float Ceil(const float v);
 
-		/*!
+        /*!
         \brief 내림값 구하기
         \param v : 인수
         \return 내림값
         */
-		static float Floor(const float v);
+        static float Floor(const float v);
 
-		/*!
+        /*!
         \brief 반올림값 구하기
         \param v : 인수
         \return 반올림값
         */
-		static float Round(const float v);
+        static float Round(const float v);
 
         /*!
         \brief 나머지 구하기

@@ -14,9 +14,9 @@
 #define _WINDOWS
 #define NDEBUG
 #if !BLIK_WINDOWS
-	#define _MSC_VER 1900
-	#undef __linux__
-	#undef __APPLE__
+    #define _MSC_VER 1900
+    #undef __linux__
+    #undef __APPLE__
     #undef ANDROID
     #undef __ANDROID__
 #endif
@@ -60,7 +60,7 @@
 
     typedef struct fd_set blik_fakewin_fd_set;
     #define GetCurrentDirectoryW blik_fakewin_GetCurrentDirectoryW
-	typedef unsigned short mode_t;
+    typedef unsigned short mode_t;
 #else
     #define BLIK_COMMAND_OBJECTS_IS_ENABLED
     #define BLIK_FAKEWIN_V_windows_h                       <addon/blik_fakewin.h>
@@ -86,15 +86,15 @@
     #define BLIK_FAKEWIN_V_process_h                       <addon/blik_fakewin.h>
     #define BLIK_FAKEWIN_V_mbstring_h                      <addon/blik_fakewin.h>
     #define BLIK_FAKEWIN_V_search_h                        <addon/blik_fakewin.h>
-	#define BLIK_FAKEWIN_V_intrin_h                        <addon/blik_fakewin.h>
+    #define BLIK_FAKEWIN_V_intrin_h                        <addon/blik_fakewin.h>
 
     #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
     DECLARE_HANDLE(HWINSTA);
     DECLARE_HANDLE(HINSTANCE);
     DECLARE_HANDLE(HKEY);
-	DECLARE_HANDLE(HDC);
-	DECLARE_HANDLE(HGDIOBJ);
-	#define HBITMAP HGDIOBJ
+    DECLARE_HANDLE(HDC);
+    DECLARE_HANDLE(HGDIOBJ);
+    #define HBITMAP HGDIOBJ
 
     typedef char CHAR;
     typedef char TCHAR, *PTCHAR;
@@ -110,29 +110,29 @@
     typedef LPSTR LPTSTR;
     typedef unsigned short WORD;
     typedef long LONG, *PLONG, *LPLONG;
-	typedef long long LONGLONG;
-	typedef unsigned long long ULONGLONG;
+    typedef long long LONGLONG;
+    typedef unsigned long long ULONGLONG;
     typedef unsigned long ULONG;
     typedef int BOOL, *LPBOOL;
     typedef int INT, *LPINT;
     typedef unsigned int UINT;
-	typedef long long INT64;
-	typedef unsigned long long UINT64;
-	#if BLIK_X64
-		typedef long long INT_PTR;
-		typedef unsigned long long UINT_PTR;
-		typedef long long LONG_PTR;
-		typedef unsigned long long ULONG_PTR;
-	#else
-		typedef int INT_PTR;
-		typedef unsigned int UINT_PTR;
-		typedef long LONG_PTR;
-		typedef unsigned long ULONG_PTR;
-	#endif
+    typedef long long INT64;
+    typedef unsigned long long UINT64;
+    #if BLIK_X64
+        typedef long long INT_PTR;
+        typedef unsigned long long UINT_PTR;
+        typedef long long LONG_PTR;
+        typedef unsigned long long ULONG_PTR;
+    #else
+        typedef int INT_PTR;
+        typedef unsigned int UINT_PTR;
+        typedef long LONG_PTR;
+        typedef unsigned long ULONG_PTR;
+    #endif
     typedef unsigned long DWORD, *LPDWORD;
     typedef unsigned long DWORD_PTR, *PDWORD_PTR;
     typedef unsigned long long DWORDLONG;
-	typedef void VOID;
+    typedef void VOID;
     typedef void* PVOID;
     typedef void* LPVOID;
     typedef const void* LPCVOID;
@@ -152,7 +152,7 @@
     typedef int UNKNOWN;
     typedef int (*FARPROC)();
 
-	#define LPOVERLAPPED void*
+    #define LPOVERLAPPED void*
     #define LPSECURITY_ATTRIBUTES void*
     #define LPTHREAD_START_ROUTINE void*
 
@@ -189,14 +189,14 @@
         #include <io.h>
         #include <conio.h>
     #endif
-	#include <stdint.h>
+    #include <stdint.h>
     #include <fcntl.h>
 
-	#ifdef __cplusplus
-		#include <iostream>
-		#include <fstream>
-		#include <sstream>
-	#endif
+    #ifdef __cplusplus
+        #include <iostream>
+        #include <fstream>
+        #include <sstream>
+    #endif
 
     #define socket blik_fakewin_socket
     #define connect blik_fakewin_connect
@@ -206,20 +206,20 @@
     #define send blik_fakewin_send
     #define closesocket blik_fakewin_closesocket
     #define ioctlsocket blik_fakewin_ioctlsocket
-	#define gethostbyname blik_fakewin_gethostbyname
+    #define gethostbyname blik_fakewin_gethostbyname
     #define htons blik_fakewin_htons
     #define getaddrinfo blik_fakewin_getaddrinfo
     #define freeaddrinfo blik_fakewin_freeaddrinfo
     #define gai_strerror blik_fakewin_gai_strerror
-	#define getpid blik_fakewin_getpid
-	#define mbstowcs_s blik_fakewin_mbstowcs_s
-	#define wcstombs_s blik_fakewin_wcstombs_s
+    #define getpid blik_fakewin_getpid
+    #define mbstowcs_s blik_fakewin_mbstowcs_s
+    #define wcstombs_s blik_fakewin_wcstombs_s
 
     #define GetCurrentDirectoryW blik_fakewin_GetCurrentDirectoryW
     #define CreateFileW blik_fakewin_CreateFileW
     #define CreateFileMapping blik_fakewin_CreateFileMapping
-	#define CreateDirectory blik_fakewin_CreateDirectory
-	#define RemoveDirectory blik_fakewin_RemoveDirectory
+    #define CreateDirectory blik_fakewin_CreateDirectory
+    #define RemoveDirectory blik_fakewin_RemoveDirectory
     #define CloseHandle blik_fakewin_CloseHandle
     #define MapViewOfFile blik_fakewin_MapViewOfFile
     #define UnmapViewOfFile blik_fakewin_UnmapViewOfFile
@@ -230,7 +230,7 @@
     #define FindClose blik_fakewin_FindClose
     #define FindFirstFileA blik_fakewin_FindFirstFileA
     #define FindFirstFileW blik_fakewin_FindFirstFileW
-	#define FindFirstFileExA blik_fakewin_FindFirstFileExA
+    #define FindFirstFileExA blik_fakewin_FindFirstFileExA
     #define FindNextFileA blik_fakewin_FindNextFileA
     #define FindNextFileW blik_fakewin_FindNextFileW
     #define FindWindow blik_fakewin_FindWindow
@@ -240,37 +240,37 @@
     #define GetCurrentProcess blik_fakewin_GetCurrentProcess
     #define GetCurrentThreadId blik_fakewin_GetCurrentThreadId
     #define GetExitCodeThread blik_fakewin_GetExitCodeThread
-	#define GetFileAttributes blik_fakewin_GetFileAttributes
+    #define GetFileAttributes blik_fakewin_GetFileAttributes
     #define GetFileAttributesW blik_fakewin_GetFileAttributesW
-	#define GetFileAttributesExA blik_fakewin_GetFileAttributesExA
-	#define GetFileAttributesExW blik_fakewin_GetFileAttributesExW
-	#define GetFullPathNameA blik_fakewin_GetFullPathNameA
+    #define GetFileAttributesExA blik_fakewin_GetFileAttributesExA
+    #define GetFileAttributesExW blik_fakewin_GetFileAttributesExW
+    #define GetFullPathNameA blik_fakewin_GetFullPathNameA
     #define GetFullPathNameW blik_fakewin_GetFullPathNameW
     #define GetLastError blik_fakewin_GetLastError
     #define SetLastError blik_fakewin_SetLastError
-	#define LoadLibraryA blik_fakewin_LoadLibraryA
+    #define LoadLibraryA blik_fakewin_LoadLibraryA
     #define GetModuleHandleA blik_fakewin_GetModuleHandleA
     #define GetModuleHandleW blik_fakewin_GetModuleHandleW
-	#define GetModuleFileName blik_fakewin_GetModuleFileName
+    #define GetModuleFileName blik_fakewin_GetModuleFileName
     #define GetProcAddress blik_fakewin_GetProcAddress
     #define GetProcessAffinityMask blik_fakewin_GetProcessAffinityMask
     #define GetProcessWindowStation blik_fakewin_GetProcessWindowStation
-	#define GetProcessTimes blik_fakewin_GetProcessTimes
+    #define GetProcessTimes blik_fakewin_GetProcessTimes
     #define GetShortPathNameW blik_fakewin_GetShortPathNameW
     #define GetStdHandle blik_fakewin_GetStdHandle
     #define GetSystemInfo blik_fakewin_GetSystemInfo
-	#define GetNativeSystemInfo blik_fakewin_GetNativeSystemInfo
+    #define GetNativeSystemInfo blik_fakewin_GetNativeSystemInfo
     #define GetSystemTimeAsFileTime blik_fakewin_GetSystemTimeAsFileTime
-	#define SystemTimeToFileTime blik_fakewin_SystemTimeToFileTime
+    #define SystemTimeToFileTime blik_fakewin_SystemTimeToFileTime
     #define GetTickCount blik_fakewin_GetTickCount
     #define GetUserObjectInformationW blik_fakewin_GetUserObjectInformationW
     #define LocalFree blik_fakewin_LocalFree
     #define MessageBox blik_fakewin_MessageBox
-	#define CopyFile blik_fakewin_CopyFile
+    #define CopyFile blik_fakewin_CopyFile
     #define DeleteFileA blik_fakewin_DeleteFileA
-	#define MoveFileEx blik_fakewin_MoveFileEx
+    #define MoveFileEx blik_fakewin_MoveFileEx
     #define MoveFileExW blik_fakewin_MoveFileExW
-	#define GetTempPathA blik_fakewin_GetTempPathA
+    #define GetTempPathA blik_fakewin_GetTempPathA
     #define GetTempFileNameA blik_fakewin_GetTempFileNameA
     #define MultiByteToWideChar blik_fakewin_MultiByteToWideChar
     #define WideCharToMultiByte blik_fakewin_WideCharToMultiByte
@@ -284,14 +284,14 @@
     #define SetFileAttributesW blik_fakewin_SetFileAttributesW
     #define Sleep blik_fakewin_Sleep
     #define VerifyVersionInfo blik_fakewin_VerifyVersionInfo
-	#define SetEvent blik_fakewin_SetEvent
-	#define ResetEvent blik_fakewin_ResetEvent
-	#define CreateEvent blik_fakewin_CreateEvent
+    #define SetEvent blik_fakewin_SetEvent
+    #define ResetEvent blik_fakewin_ResetEvent
+    #define CreateEvent blik_fakewin_CreateEvent
     #define CreateEventW blik_fakewin_CreateEventW
     #define WaitForSingleObject blik_fakewin_WaitForSingleObject
     #define WaitForMultipleObjects blik_fakewin_WaitForMultipleObjects
     #define DeleteCriticalSection blik_fakewin_DeleteCriticalSection
-	#define TryEnterCriticalSection blik_fakewin_TryEnterCriticalSection
+    #define TryEnterCriticalSection blik_fakewin_TryEnterCriticalSection
     #define EnterCriticalSection blik_fakewin_EnterCriticalSection
     #define InitializeCriticalSection blik_fakewin_InitializeCriticalSection
     #define LeaveCriticalSection blik_fakewin_LeaveCriticalSection
@@ -300,8 +300,8 @@
     #define WSACleanup blik_fakewin_WSACleanup
     #define WSAStartup blik_fakewin_WSAStartup
     #define WSAStringToAddressA blik_fakewin_WSAStringToAddressA
-	#define QueryPerformanceFrequency blik_fakewin_QueryPerformanceFrequency
-	#define QueryPerformanceCounter blik_fakewin_QueryPerformanceCounter
+    #define QueryPerformanceFrequency blik_fakewin_QueryPerformanceFrequency
+    #define QueryPerformanceCounter blik_fakewin_QueryPerformanceCounter
     #define ZeroMemory blik_fakewin_ZeroMemory
     #define GetObject blik_fakewin_GetObject
     #define DeleteObject blik_fakewin_DeleteObject
@@ -312,13 +312,13 @@
     #define TlsFree blik_fakewin_TlsFree
     #define TlsGetValue blik_fakewin_TlsGetValue
     #define TlsSetValue blik_fakewin_TlsSetValue
-	#define CreateMutexA blik_fakewin_CreateMutexA
+    #define CreateMutexA blik_fakewin_CreateMutexA
     #define ReleaseMutex blik_fakewin_ReleaseMutex
     #define CreateSemaphoreA blik_fakewin_CreateSemaphoreA
     #define ReleaseSemaphore blik_fakewin_ReleaseSemaphore
     #define GetStartupInfo blik_fakewin_GetStartupInfo
     #define CreateProcessA blik_fakewin_CreateProcessA
-	// 유니코드여부관련
+    // 유니코드여부관련
     #define DeleteFile DeleteFileA
     #define GetTempPath GetTempPathA
     #define FindFirstFile FindFirstFileA
@@ -331,19 +331,19 @@
     #define _waccess blik_fakewin_waccess
     #define _wchmod blik_fakewin_wchmod
     #define _wfopen blik_fakewin_wfopen
-	#define _wfopen_s blik_fakewin_wfopen_s
-	#define _fopen blik_fakewin_fopen
-	#define _fopen_s blik_fakewin_fopen_s
-	#define _fseek blik_fakewin_fseek
-	#define _ftell blik_fakewin_ftell
-	#define _rewind blik_fakewin_rewind
-	#define _fread blik_fakewin_fread
-	#define _fwrite blik_fakewin_fwrite
-	#define _fgetc blik_fakewin_fgetc
-	#define _fgets blik_fakewin_fgets
-	#define _ungetc blik_fakewin_ungetc
-	#define _fclose blik_fakewin_fclose
-	#define _wopen blik_fakewin_wopen
+    #define _wfopen_s blik_fakewin_wfopen_s
+    #define _fopen blik_fakewin_fopen
+    #define _fopen_s blik_fakewin_fopen_s
+    #define _fseek blik_fakewin_fseek
+    #define _ftell blik_fakewin_ftell
+    #define _rewind blik_fakewin_rewind
+    #define _fread blik_fakewin_fread
+    #define _fwrite blik_fakewin_fwrite
+    #define _fgetc blik_fakewin_fgetc
+    #define _fgets blik_fakewin_fgets
+    #define _ungetc blik_fakewin_ungetc
+    #define _fclose blik_fakewin_fclose
+    #define _wopen blik_fakewin_wopen
     #define _close blik_fakewin_close
     #define _read blik_fakewin_read
     #define _write blik_fakewin_write
@@ -371,38 +371,38 @@
     #define _setmode blik_fakewin_setmode
     #define _stricmp blik_fakewin_stricmp
     #define _strnicmp blik_fakewin_strnicmp
-	#define _mbsicmp blik_fakewin_mbsicmp
-	#define _wcsicmp blik_fakewin_wcsicmp
+    #define _mbsicmp blik_fakewin_mbsicmp
+    #define _wcsicmp blik_fakewin_wcsicmp
     #define _vscprintf blik_fakewin_vscprintf
     #define _vsnprintf_s blik_fakewin_vsnprintf_s
     #define _vsnprintf blik_fakewin_vsnprintf
     #define _vsnwprintf blik_fakewin_vsnwprintf
-	#define _beginthreadex blik_fakewin_beginthreadex
-	#define _fullpath blik_fakewin_fullpath
-	#define _ltoa blik_fakewin_ltoa
-	#define _ultoa blik_fakewin_ultoa
-	#define _isnan blik_fakewin_isnan
-	#define _finite blik_fakewin_finite
-	#define _splitpath blik_fakewin_splitpath
-	#define _strtoi64 blik_fakewin_strtoi64
-	#define _strtoui64 blik_fakewin_strtoui64
-	#define _set_errno blik_fakewin_set_errno
+    #define _beginthreadex blik_fakewin_beginthreadex
+    #define _fullpath blik_fakewin_fullpath
+    #define _ltoa blik_fakewin_ltoa
+    #define _ultoa blik_fakewin_ultoa
+    #define _isnan blik_fakewin_isnan
+    #define _finite blik_fakewin_finite
+    #define _splitpath blik_fakewin_splitpath
+    #define _strtoi64 blik_fakewin_strtoi64
+    #define _strtoui64 blik_fakewin_strtoui64
+    #define _set_errno blik_fakewin_set_errno
     // 명칭재정의관련
-	#define wfopen _wfopen
-	#define wfopen_s _wfopen_s
-	#define fopen _fopen
-	#define fopen_s _fopen_s
-	#define fseek _fseek
-	#define ftell _ftell
-	#define rewind _rewind
-	#define fread _fread
-	#define fwrite _fwrite
-	#define fgetc _fgetc
-	#define fgets _fgets
-	#define ungetc _ungetc
-	#define fclose _fclose
+    #define wfopen _wfopen
+    #define wfopen_s _wfopen_s
+    #define fopen _fopen
+    #define fopen_s _fopen_s
+    #define fseek _fseek
+    #define ftell _ftell
+    #define rewind _rewind
+    #define fread _fread
+    #define fwrite _fwrite
+    #define fgetc _fgetc
+    #define fgets _fgets
+    #define ungetc _ungetc
+    #define fclose _fclose
     #define ltoa _ltoa
-	#define _snprintf blik_snprintf
+    #define _snprintf blik_snprintf
     #ifdef UNICODE
         #define _vsntprintf _vsnwprintf
     #else
@@ -414,110 +414,110 @@
         u_int fd_count;               /* how many are SET? */
         SOCKET fd_array[FD_SETSIZE];   /* an array of SOCKETs */
     } blik_fakewin_fd_set;
-	#define fd_set blik_fakewin_fd_set
+    #define fd_set blik_fakewin_fd_set
 
     #undef st_atime
     #undef st_mtime
     #undef st_ctime
-	#if BLIK_WINDOWS
-		struct blik_fakewin_stat64 {
-			_dev_t     st_dev;
-			_ino_t     st_ino;
-			unsigned short st_mode;
-			short      st_nlink;
-			short      st_uid;
-			short      st_gid;
-			_dev_t     st_rdev;
-			__int64    st_size;
-			__time64_t st_atime;
-			__time64_t st_mtime;
-			__time64_t st_ctime;
-		};
-	#else
-		#define blik_fakewin_stat64 stat
-	#endif
+    #if BLIK_WINDOWS
+        struct blik_fakewin_stat64 {
+            _dev_t     st_dev;
+            _ino_t     st_ino;
+            unsigned short st_mode;
+            short      st_nlink;
+            short      st_uid;
+            short      st_gid;
+            _dev_t     st_rdev;
+            __int64    st_size;
+            __time64_t st_atime;
+            __time64_t st_mtime;
+            __time64_t st_ctime;
+        };
+    #else
+        #define blik_fakewin_stat64 stat
+    #endif
 
-	#ifdef __cplusplus
-		extern "C" {
-	#endif
-		int blik_fakewin_waccess(const wchar_t*,int);
-		int blik_fakewin_wchmod(const wchar_t*,int);
-		FILE* blik_fakewin_wfopen(const wchar_t*,const wchar_t*);
-		errno_t blik_fakewin_wfopen_s(FILE**, const wchar_t*, const wchar_t*);
-		FILE* blik_fakewin_fopen(char const*, char const*);
-		errno_t blik_fakewin_fopen_s(FILE**, char const*, char const*);
-		int blik_fakewin_fseek(FILE*,long int,int);
-		long int blik_fakewin_ftell(FILE*);
-		void blik_fakewin_rewind(FILE*);
-		size_t blik_fakewin_fread(void*,size_t,size_t,FILE*);
-		size_t blik_fakewin_fwrite(const void*,size_t,size_t,FILE*);
-		int blik_fakewin_fgetc(FILE* stream);
-		char* blik_fakewin_fgets(char*,int,FILE*);
-		int blik_fakewin_ungetc(int,FILE*);
-		int blik_fakewin_fclose(FILE*);
-		int blik_fakewin_wopen(const wchar_t*,int,int);
-		int blik_fakewin_close(int);
-		long blik_fakewin_read(int, void*, unsigned int);
-		long blik_fakewin_write(int, const void*, unsigned int);
-		intptr_t blik_fakewin_get_osfhandle(int);
-		long blik_fakewin_lseek(int, long, int);
-		__int64 blik_fakewin_lseeki64(int,__int64,int);
-		void* blik_fakewin_lfind(const void*,const void*,unsigned int*,unsigned int,int (*)(const void*, const void*));
-		errno_t blik_fakewin_chsize_s(int, __int64);
-		int blik_fakewin_fstat64(int,struct blik_fakewin_stat64*);
-		int blik_fakewin_wchdir(const wchar_t*);
-		int blik_fakewin_wmkdir(const wchar_t*);
-		int blik_fakewin_wrmdir(const wchar_t*);
-		int blik_fakewin_wunlink(const wchar_t*);
-		errno_t blik_fakewin_mktemp_s(char*,size_t);
-		wchar_t* blik_fakewin_wgetenv(const wchar_t*);
-		wchar_t* blik_fakewin_wgetcwd(wchar_t*,int);
-		void blik_fakewin_FD_SET(int fd, blik_fakewin_fd_set* fdset);
-		void blik_fakewin_FD_ZERO(blik_fakewin_fd_set* fdset);
-		void* blik_fakewin_alloca(size_t);
-		int blik_fakewin_fileno(FILE*);
-		int blik_fakewin_getch();
-		int blik_fakewin_getdrive();
-		unsigned long blik_fakewin_lrotl(unsigned long,int);
-		unsigned int blik_fakewin_rotl(unsigned int,int);
-		int blik_fakewin_setmode(int,int);
-		int blik_fakewin_stricmp(const char*,const char*);
-		int blik_fakewin_strnicmp(const char*,const char*,size_t);
-		int blik_fakewin_mbsicmp(const unsigned char*, const unsigned char*);
-		int blik_fakewin_wcsicmp(wchar_t const*,wchar_t const*);
-		int blik_fakewin_vscprintf(const char*,va_list);
-		int blik_fakewin_vsnprintf_s(char*,size_t,size_t,const char*,va_list);
-		int blik_fakewin_vsnprintf(char*,size_t,const char*,va_list);
-		int blik_fakewin_vsnwprintf(wchar_t*,size_t,const wchar_t*,va_list);
-		uintptr_t blik_fakewin_beginthreadex(void*, unsigned, unsigned (*)(void*), void*, unsigned, unsigned*);
-		char* blik_fakewin_fullpath(char*,const char*,size_t);
-		char* blik_fakewin_ltoa(long,char*,int);
-		char* blik_fakewin_ultoa(unsigned long,char*,int);
-		int blik_fakewin_isnan(double);
-		int blik_fakewin_finite(double);
-		void blik_fakewin_splitpath(const char*,char*,char*,char*,char*);
-		__int64 blik_fakewin_strtoi64(const char*,char**,int);
-		unsigned __int64 blik_fakewin_strtoui64(const char*,char**,int);
-		errno_t blik_fakewin_set_errno(int);
-	#ifdef __cplusplus
-		}
-	#endif
+    #ifdef __cplusplus
+        extern "C" {
+    #endif
+        int blik_fakewin_waccess(const wchar_t*,int);
+        int blik_fakewin_wchmod(const wchar_t*,int);
+        FILE* blik_fakewin_wfopen(const wchar_t*,const wchar_t*);
+        errno_t blik_fakewin_wfopen_s(FILE**, const wchar_t*, const wchar_t*);
+        FILE* blik_fakewin_fopen(char const*, char const*);
+        errno_t blik_fakewin_fopen_s(FILE**, char const*, char const*);
+        int blik_fakewin_fseek(FILE*,long int,int);
+        long int blik_fakewin_ftell(FILE*);
+        void blik_fakewin_rewind(FILE*);
+        size_t blik_fakewin_fread(void*,size_t,size_t,FILE*);
+        size_t blik_fakewin_fwrite(const void*,size_t,size_t,FILE*);
+        int blik_fakewin_fgetc(FILE* stream);
+        char* blik_fakewin_fgets(char*,int,FILE*);
+        int blik_fakewin_ungetc(int,FILE*);
+        int blik_fakewin_fclose(FILE*);
+        int blik_fakewin_wopen(const wchar_t*,int,int);
+        int blik_fakewin_close(int);
+        long blik_fakewin_read(int, void*, unsigned int);
+        long blik_fakewin_write(int, const void*, unsigned int);
+        intptr_t blik_fakewin_get_osfhandle(int);
+        long blik_fakewin_lseek(int, long, int);
+        __int64 blik_fakewin_lseeki64(int,__int64,int);
+        void* blik_fakewin_lfind(const void*,const void*,unsigned int*,unsigned int,int (*)(const void*, const void*));
+        errno_t blik_fakewin_chsize_s(int, __int64);
+        int blik_fakewin_fstat64(int,struct blik_fakewin_stat64*);
+        int blik_fakewin_wchdir(const wchar_t*);
+        int blik_fakewin_wmkdir(const wchar_t*);
+        int blik_fakewin_wrmdir(const wchar_t*);
+        int blik_fakewin_wunlink(const wchar_t*);
+        errno_t blik_fakewin_mktemp_s(char*,size_t);
+        wchar_t* blik_fakewin_wgetenv(const wchar_t*);
+        wchar_t* blik_fakewin_wgetcwd(wchar_t*,int);
+        void blik_fakewin_FD_SET(int fd, blik_fakewin_fd_set* fdset);
+        void blik_fakewin_FD_ZERO(blik_fakewin_fd_set* fdset);
+        void* blik_fakewin_alloca(size_t);
+        int blik_fakewin_fileno(FILE*);
+        int blik_fakewin_getch();
+        int blik_fakewin_getdrive();
+        unsigned long blik_fakewin_lrotl(unsigned long,int);
+        unsigned int blik_fakewin_rotl(unsigned int,int);
+        int blik_fakewin_setmode(int,int);
+        int blik_fakewin_stricmp(const char*,const char*);
+        int blik_fakewin_strnicmp(const char*,const char*,size_t);
+        int blik_fakewin_mbsicmp(const unsigned char*, const unsigned char*);
+        int blik_fakewin_wcsicmp(wchar_t const*,wchar_t const*);
+        int blik_fakewin_vscprintf(const char*,va_list);
+        int blik_fakewin_vsnprintf_s(char*,size_t,size_t,const char*,va_list);
+        int blik_fakewin_vsnprintf(char*,size_t,const char*,va_list);
+        int blik_fakewin_vsnwprintf(wchar_t*,size_t,const wchar_t*,va_list);
+        uintptr_t blik_fakewin_beginthreadex(void*, unsigned, unsigned (*)(void*), void*, unsigned, unsigned*);
+        char* blik_fakewin_fullpath(char*,const char*,size_t);
+        char* blik_fakewin_ltoa(long,char*,int);
+        char* blik_fakewin_ultoa(unsigned long,char*,int);
+        int blik_fakewin_isnan(double);
+        int blik_fakewin_finite(double);
+        void blik_fakewin_splitpath(const char*,char*,char*,char*,char*);
+        __int64 blik_fakewin_strtoi64(const char*,char**,int);
+        unsigned __int64 blik_fakewin_strtoui64(const char*,char**,int);
+        errno_t blik_fakewin_set_errno(int);
+    #ifdef __cplusplus
+        }
+    #endif
 
-	#ifdef __cplusplus
-		namespace std
-		{
-			#define ifstream blik_fakewin_ifstream
-			class blik_fakewin_ifstream : public stringstream
-			{
-				FILE* f;
-			public:
-				blik_fakewin_ifstream(const char* filename, ios_base::openmode mode = ios_base::in);
-				~blik_fakewin_ifstream();
-				bool is_open() const;
-				void close();
-			};
-		}
-	#endif
+    #ifdef __cplusplus
+        namespace std
+        {
+            #define ifstream blik_fakewin_ifstream
+            class blik_fakewin_ifstream : public stringstream
+            {
+                FILE* f;
+            public:
+                blik_fakewin_ifstream(const char* filename, ios_base::openmode mode = ios_base::in);
+                ~blik_fakewin_ifstream();
+                bool is_open() const;
+                void close();
+            };
+        }
+    #endif
 
     #if BLIK_WINDOWS
         typedef unsigned long u_long;
@@ -560,7 +560,7 @@
     #define WINAPI
     #define _inline
     #define __cdecl
-	#define _MAX_PATH                       260
+    #define _MAX_PATH                       260
     #define _MAX_FNAME                      256
     #define VER_MINORVERSION                0x0000001
     #define VER_MAJORVERSION                0x0000002
@@ -687,8 +687,8 @@
     #define O_APPEND       0x0008  /* writes done at eof */
     #define O_CREAT        0x0100  /* create and open file */
     #define O_TRUNC        0x0200  /* open and truncate */
-    #define	O_EXCL         0x0400	/* Open only if the file does not exist. */
-    #define	O_UNKNOWN      0x0800
+    #define    O_EXCL         0x0400    /* Open only if the file does not exist. */
+    #define    O_UNKNOWN      0x0800
     #define O_TEXT         0x4000
     #define O_CLOEXEC      0x80000
     #define _O_BINARY      O_BINARY
@@ -700,8 +700,8 @@
     #define _O_APPEND      O_APPEND
     #define _O_CREAT       O_CREAT
     #define _O_TRUNC       O_TRUNC
-    #define	_O_EXCL        O_EXCL
-    #define	_O_UNKNOWN     O_UNKNOWN
+    #define    _O_EXCL        O_EXCL
+    #define    _O_UNKNOWN     O_UNKNOWN
     #define _O_TEXT        O_TEXT
     #define _O_CLOEXEC     O_CLOEXEC
     #define _SS_MAXSIZE 128                 // Maximum size
@@ -721,22 +721,22 @@
     #define ANYSIZE_ARRAY 1
     #define MAX_PROTOCOL_CHAIN 7
     #define WSAPROTOCOL_LEN  255
-	#define BI_RGB        0L
-	#define BI_RLE8       1L
-	#define BI_RLE4       2L
-	#define BI_BITFIELDS  3L
-	#define BI_JPEG       4L
-	#define BI_PNG        5L
-	#define DIB_RGB_COLORS      0 /* color table in RGBs */
-	#define DIB_PAL_COLORS      1 /* color table in palette indices */
-	#define CREATE_BREAKAWAY_FROM_JOB         0x01000000
-	#define CREATE_PRESERVE_CODE_AUTHZ_LEVEL  0x02000000
-	#define CREATE_DEFAULT_ERROR_MODE         0x04000000
-	#define CREATE_NO_WINDOW                  0x08000000
-	#define DEBUG_PROCESS                     0x00000001
-	#define DEBUG_ONLY_THIS_PROCESS           0x00000002
-	#define CREATE_SUSPENDED                  0x00000004
-	#define DETACHED_PROCESS                  0x00000008
+    #define BI_RGB        0L
+    #define BI_RLE8       1L
+    #define BI_RLE4       2L
+    #define BI_BITFIELDS  3L
+    #define BI_JPEG       4L
+    #define BI_PNG        5L
+    #define DIB_RGB_COLORS      0 /* color table in RGBs */
+    #define DIB_PAL_COLORS      1 /* color table in palette indices */
+    #define CREATE_BREAKAWAY_FROM_JOB         0x01000000
+    #define CREATE_PRESERVE_CODE_AUTHZ_LEVEL  0x02000000
+    #define CREATE_DEFAULT_ERROR_MODE         0x04000000
+    #define CREATE_NO_WINDOW                  0x08000000
+    #define DEBUG_PROCESS                     0x00000001
+    #define DEBUG_ONLY_THIS_PROCESS           0x00000002
+    #define CREATE_SUSPENDED                  0x00000004
+    #define DETACHED_PROCESS                  0x00000008
 
     typedef struct tagCOPYDATASTRUCT {
         ULONG_PTR dwData;
@@ -749,17 +749,17 @@
         GetFileExMaxInfoLevel
     } GET_FILEEX_INFO_LEVELS;
 
-	typedef enum _FINDEX_INFO_LEVELS { 
-	  FindExInfoStandard,
-	  FindExInfoBasic,
-	  FindExInfoMaxInfoLevel
-	} FINDEX_INFO_LEVELS;
+    typedef enum _FINDEX_INFO_LEVELS { 
+      FindExInfoStandard,
+      FindExInfoBasic,
+      FindExInfoMaxInfoLevel
+    } FINDEX_INFO_LEVELS;
 
-	typedef enum _FINDEX_SEARCH_OPS { 
-	  FindExSearchNameMatch,
-	  FindExSearchLimitToDirectories,
-	  FindExSearchLimitToDevices
-	} FINDEX_SEARCH_OPS;
+    typedef enum _FINDEX_SEARCH_OPS { 
+      FindExSearchNameMatch,
+      FindExSearchLimitToDirectories,
+      FindExSearchLimitToDevices
+    } FINDEX_SEARCH_OPS;
 
     typedef struct _OSVERSIONINFOEX {
         DWORD dwOSVersionInfoSize;
@@ -858,84 +858,84 @@
         DWORD dwHighDateTime;
     } FILETIME, *LPFILETIME;
 
-	typedef struct _SYSTEMTIME {
-	  WORD wYear;
-	  WORD wMonth;
-	  WORD wDayOfWeek;
-	  WORD wDay;
-	  WORD wHour;
-	  WORD wMinute;
-	  WORD wSecond;
-	  WORD wMilliseconds;
-	} SYSTEMTIME, *PSYSTEMTIME;
+    typedef struct _SYSTEMTIME {
+      WORD wYear;
+      WORD wMonth;
+      WORD wDayOfWeek;
+      WORD wDay;
+      WORD wHour;
+      WORD wMinute;
+      WORD wSecond;
+      WORD wMilliseconds;
+    } SYSTEMTIME, *PSYSTEMTIME;
 
-	typedef union _LARGE_INTEGER {
-	  struct {
-		DWORD LowPart;
-		LONG  HighPart;
-	  };
-	  struct {
-		DWORD LowPart;
-		LONG  HighPart;
-	  } u;
-	  LONGLONG QuadPart;
-	} LARGE_INTEGER, *PLARGE_INTEGER;
+    typedef union _LARGE_INTEGER {
+      struct {
+        DWORD LowPart;
+        LONG  HighPart;
+      };
+      struct {
+        DWORD LowPart;
+        LONG  HighPart;
+      } u;
+      LONGLONG QuadPart;
+    } LARGE_INTEGER, *PLARGE_INTEGER;
 
-	typedef union _ULARGE_INTEGER {
-	  struct {
-		DWORD LowPart;
-		DWORD HighPart;
-	  };
-	  struct {
-		DWORD LowPart;
-		DWORD HighPart;
-	  } u;
-	  ULONGLONG QuadPart;
-	} ULARGE_INTEGER, *PULARGE_INTEGER;
+    typedef union _ULARGE_INTEGER {
+      struct {
+        DWORD LowPart;
+        DWORD HighPart;
+      };
+      struct {
+        DWORD LowPart;
+        DWORD HighPart;
+      } u;
+      ULONGLONG QuadPart;
+    } ULARGE_INTEGER, *PULARGE_INTEGER;
 
-	typedef struct tagBITMAP {
-	  LONG   bmType;
-	  LONG   bmWidth;
-	  LONG   bmHeight;
-	  LONG   bmWidthBytes;
-	  WORD   bmPlanes;
-	  WORD   bmBitsPixel;
-	  LPVOID bmBits;
-	} BITMAP, *PBITMAP;
+    typedef struct tagBITMAP {
+      LONG   bmType;
+      LONG   bmWidth;
+      LONG   bmHeight;
+      LONG   bmWidthBytes;
+      WORD   bmPlanes;
+      WORD   bmBitsPixel;
+      LPVOID bmBits;
+    } BITMAP, *PBITMAP;
 
-	typedef struct tagBITMAPINFOHEADER {
-	  DWORD biSize;
-	  LONG  biWidth;
-	  LONG  biHeight;
-	  WORD  biPlanes;
-	  WORD  biBitCount;
-	  DWORD biCompression;
-	  DWORD biSizeImage;
-	  LONG  biXPelsPerMeter;
-	  LONG  biYPelsPerMeter;
-	  DWORD biClrUsed;
-	  DWORD biClrImportant;
-	} BITMAPINFOHEADER, *PBITMAPINFOHEADER;
+    typedef struct tagBITMAPINFOHEADER {
+      DWORD biSize;
+      LONG  biWidth;
+      LONG  biHeight;
+      WORD  biPlanes;
+      WORD  biBitCount;
+      DWORD biCompression;
+      DWORD biSizeImage;
+      LONG  biXPelsPerMeter;
+      LONG  biYPelsPerMeter;
+      DWORD biClrUsed;
+      DWORD biClrImportant;
+    } BITMAPINFOHEADER, *PBITMAPINFOHEADER;
 
-	typedef struct tagRGBQUAD {
-	  BYTE rgbBlue;
-	  BYTE rgbGreen;
-	  BYTE rgbRed;
-	  BYTE rgbReserved;
-	} RGBQUAD;
+    typedef struct tagRGBQUAD {
+      BYTE rgbBlue;
+      BYTE rgbGreen;
+      BYTE rgbRed;
+      BYTE rgbReserved;
+    } RGBQUAD;
 
-	typedef struct tagBITMAPINFO {
-	  BITMAPINFOHEADER bmiHeader;
-	  RGBQUAD          bmiColors[1];
-	} BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
+    typedef struct tagBITMAPINFO {
+      BITMAPINFOHEADER bmiHeader;
+      RGBQUAD          bmiColors[1];
+    } BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
 
-	typedef struct tagDIBSECTION {
-	  BITMAP           dsBm;
-	  BITMAPINFOHEADER dsBmih;
-	  DWORD            dsBitfields[3];
-	  HANDLE           dshSection;
-	  DWORD            dsOffset;
-	} DIBSECTION, *PDIBSECTION;
+    typedef struct tagDIBSECTION {
+      BITMAP           dsBm;
+      BITMAPINFOHEADER dsBmih;
+      DWORD            dsBitfields[3];
+      HANDLE           dshSection;
+      DWORD            dsOffset;
+    } DIBSECTION, *PDIBSECTION;
 
     typedef struct _GUID {
         DWORD Data1;
@@ -944,33 +944,33 @@
         BYTE  Data4[8];
     } GUID;
 
-	typedef struct _STARTUPINFO {
-	  DWORD  cb;
-	  LPTSTR lpReserved;
-	  LPTSTR lpDesktop;
-	  LPTSTR lpTitle;
-	  DWORD  dwX;
-	  DWORD  dwY;
-	  DWORD  dwXSize;
-	  DWORD  dwYSize;
-	  DWORD  dwXCountChars;
-	  DWORD  dwYCountChars;
-	  DWORD  dwFillAttribute;
-	  DWORD  dwFlags;
-	  WORD   wShowWindow;
-	  WORD   cbReserved2;
-	  LPBYTE lpReserved2;
-	  HANDLE hStdInput;
-	  HANDLE hStdOutput;
-	  HANDLE hStdError;
-	} STARTUPINFO, *LPSTARTUPINFO;
+    typedef struct _STARTUPINFO {
+      DWORD  cb;
+      LPTSTR lpReserved;
+      LPTSTR lpDesktop;
+      LPTSTR lpTitle;
+      DWORD  dwX;
+      DWORD  dwY;
+      DWORD  dwXSize;
+      DWORD  dwYSize;
+      DWORD  dwXCountChars;
+      DWORD  dwYCountChars;
+      DWORD  dwFillAttribute;
+      DWORD  dwFlags;
+      WORD   wShowWindow;
+      WORD   cbReserved2;
+      LPBYTE lpReserved2;
+      HANDLE hStdInput;
+      HANDLE hStdOutput;
+      HANDLE hStdError;
+    } STARTUPINFO, *LPSTARTUPINFO;
 
-	typedef struct _PROCESS_INFORMATION {
-	  HANDLE hProcess;
-	  HANDLE hThread;
-	  DWORD  dwProcessId;
-	  DWORD  dwThreadId;
-	} PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
+    typedef struct _PROCESS_INFORMATION {
+      HANDLE hProcess;
+      HANDLE hThread;
+      DWORD  dwProcessId;
+      DWORD  dwThreadId;
+    } PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
 
     typedef struct _RTL_CRITICAL_SECTION {
         UNKNOWN DebugInfo;
@@ -1021,7 +1021,7 @@
         DWORD nFileSizeLow;
     } WIN32_FILE_ATTRIBUTE_DATA, *LPWIN32_FILE_ATTRIBUTE_DATA;
 
-	typedef struct _WIN32_FIND_DATAA {
+    typedef struct _WIN32_FIND_DATAA {
         DWORD dwFileAttributes;
         FILETIME ftCreationTime;
         FILETIME ftLastAccessTime;
@@ -1038,7 +1038,7 @@
             WORD  wFinderFlags;
         #endif
     } WIN32_FIND_DATAA, *LPWIN32_FIND_DATAA;
-	#define WIN32_FIND_DATA WIN32_FIND_DATAA
+    #define WIN32_FIND_DATA WIN32_FIND_DATAA
 
     typedef struct _WIN32_FIND_DATAW {
         DWORD dwFileAttributes;
@@ -1130,138 +1130,138 @@
         TCHAR            szProtocol[WSAPROTOCOL_LEN+1];
     } WSAPROTOCOL_INFO, *LPWSAPROTOCOL_INFO;
 
-	#ifdef __cplusplus
-		extern "C" {
-	#endif
-		SOCKET blik_fakewin_socket(int, int, int);
-		int blik_fakewin_connect(SOCKET, const struct sockaddr*, int);
-		int blik_fakewin_getsockopt(SOCKET, int, int, char*, int*);
-		int blik_fakewin_select(int, blik_fakewin_fd_set*, blik_fakewin_fd_set*, blik_fakewin_fd_set*, const struct timeval*);
-		int blik_fakewin_recv(SOCKET, char*, int, int);
-		int blik_fakewin_send(SOCKET, const char*, int, int);
-		int blik_fakewin_closesocket(SOCKET);
-		int blik_fakewin_ioctlsocket(SOCKET,long,u_long*);
-		struct hostent* blik_fakewin_gethostbyname(const char*);
-		unsigned short blik_fakewin_htons(unsigned short);
-		int blik_fakewin_getaddrinfo(PCSTR,PCSTR,const ADDRINFOA*,PADDRINFOA*);
-		void blik_fakewin_freeaddrinfo(struct addrinfo*);
-		const char* blik_fakewin_gai_strerror(int);
-		int blik_fakewin_getpid();
-		errno_t blik_fakewin_mbstowcs_s(size_t*,wchar_t*,size_t,const char*,size_t);
-		errno_t blik_fakewin_wcstombs_s(size_t*,char*,size_t,const wchar_t*,size_t);
+    #ifdef __cplusplus
+        extern "C" {
+    #endif
+        SOCKET blik_fakewin_socket(int, int, int);
+        int blik_fakewin_connect(SOCKET, const struct sockaddr*, int);
+        int blik_fakewin_getsockopt(SOCKET, int, int, char*, int*);
+        int blik_fakewin_select(int, blik_fakewin_fd_set*, blik_fakewin_fd_set*, blik_fakewin_fd_set*, const struct timeval*);
+        int blik_fakewin_recv(SOCKET, char*, int, int);
+        int blik_fakewin_send(SOCKET, const char*, int, int);
+        int blik_fakewin_closesocket(SOCKET);
+        int blik_fakewin_ioctlsocket(SOCKET,long,u_long*);
+        struct hostent* blik_fakewin_gethostbyname(const char*);
+        unsigned short blik_fakewin_htons(unsigned short);
+        int blik_fakewin_getaddrinfo(PCSTR,PCSTR,const ADDRINFOA*,PADDRINFOA*);
+        void blik_fakewin_freeaddrinfo(struct addrinfo*);
+        const char* blik_fakewin_gai_strerror(int);
+        int blik_fakewin_getpid();
+        errno_t blik_fakewin_mbstowcs_s(size_t*,wchar_t*,size_t,const char*,size_t);
+        errno_t blik_fakewin_wcstombs_s(size_t*,char*,size_t,const wchar_t*,size_t);
 
-		HANDLE blik_fakewin_CreateFileW(LPCWSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES,DWORD,DWORD,HANDLE);
-		HANDLE blik_fakewin_CreateFileMapping(HANDLE,LPSECURITY_ATTRIBUTES,DWORD,DWORD,DWORD,LPCTSTR);
-		BOOL blik_fakewin_CreateDirectory(LPCSTR,LPSECURITY_ATTRIBUTES);
-		BOOL blik_fakewin_RemoveDirectory(LPCSTR);
-		BOOL blik_fakewin_CloseHandle(HANDLE);
-		LPVOID blik_fakewin_MapViewOfFile(HANDLE,DWORD,DWORD,DWORD,size_t);
-		BOOL blik_fakewin_UnmapViewOfFile(LPCVOID);
-		HANDLE blik_fakewin_CreateThread(LPSECURITY_ATTRIBUTES,size_t,LPTHREAD_START_ROUTINE,LPVOID,DWORD,LPDWORD);
-		BOOL blik_fakewin_DeregisterEventSource(HANDLE);
-		BOOL blik_fakewin_DeviceIoControl(HANDLE,DWORD,LPVOID,DWORD,LPVOID,DWORD,LPDWORD,LPOVERLAPPED);
-		DWORD blik_fakewin_ExpandEnvironmentStringsW(LPCWSTR,LPWSTR,DWORD);
-		BOOL blik_fakewin_FindClose(HANDLE);
-		HANDLE blik_fakewin_FindFirstFileA(LPCSTR,LPWIN32_FIND_DATAA);
-		HANDLE blik_fakewin_FindFirstFileW(LPCWSTR,LPWIN32_FIND_DATAW);
-		HANDLE blik_fakewin_FindFirstFileExA(LPCSTR,FINDEX_INFO_LEVELS,LPVOID,FINDEX_SEARCH_OPS,LPVOID,DWORD);
-		BOOL blik_fakewin_FindNextFileA(HANDLE,LPWIN32_FIND_DATAA);
-		BOOL blik_fakewin_FindNextFileW(HANDLE,LPWIN32_FIND_DATAW);
-		HWND blik_fakewin_FindWindow(LPCTSTR,LPCTSTR);
-		BOOL blik_fakewin_FlushConsoleInputBuffer(HANDLE);
-		BOOL blik_fakewin_FlushFileBuffers(HANDLE);
-		DWORD blik_fakewin_FormatMessageW(DWORD,LPCVOID,DWORD,DWORD,LPWSTR,DWORD,va_list*);
-		HANDLE blik_fakewin_GetCurrentProcess();
-		DWORD blik_fakewin_GetCurrentThreadId();
-		BOOL blik_fakewin_GetExitCodeThread(HANDLE,LPDWORD);
-		DWORD blik_fakewin_GetFileAttributes(LPCSTR);
-		DWORD blik_fakewin_GetFileAttributesW(LPCWSTR);
-		BOOL blik_fakewin_GetFileAttributesExA(LPCSTR,GET_FILEEX_INFO_LEVELS,LPVOID);
-		BOOL blik_fakewin_GetFileAttributesExW(LPCWSTR,GET_FILEEX_INFO_LEVELS,LPVOID);
-		DWORD blik_fakewin_GetFullPathNameA(LPCSTR,DWORD,LPSTR,LPSTR*);
-		DWORD blik_fakewin_GetFullPathNameW(LPCWSTR,DWORD,LPWSTR,LPWSTR*);
-		DWORD blik_fakewin_GetLastError();
-		void blik_fakewin_SetLastError(DWORD);
-		HMODULE blik_fakewin_LoadLibraryA(LPCSTR);
-		HMODULE blik_fakewin_GetModuleHandleA(LPCSTR);
-		HMODULE blik_fakewin_GetModuleHandleW(LPCWSTR);
-		DWORD blik_fakewin_GetModuleFileName(HMODULE,LPSTR,DWORD);
-		FARPROC blik_fakewin_GetProcAddress(HMODULE,LPCSTR);
-		BOOL blik_fakewin_GetProcessAffinityMask(HANDLE,PDWORD_PTR,PDWORD_PTR);
-		HWINSTA blik_fakewin_GetProcessWindowStation();
-		BOOL blik_fakewin_GetProcessTimes(HANDLE,LPFILETIME,LPFILETIME,LPFILETIME,LPFILETIME);
-		DWORD blik_fakewin_GetShortPathNameW(LPCWSTR,LPWSTR,DWORD);
-		HANDLE blik_fakewin_GetStdHandle(DWORD);
-		void blik_fakewin_GetSystemInfo(LPSYSTEM_INFO);
-		void blik_fakewin_GetNativeSystemInfo(LPSYSTEM_INFO);
-		void blik_fakewin_GetSystemTimeAsFileTime(LPFILETIME);
-		BOOL blik_fakewin_SystemTimeToFileTime(const SYSTEMTIME*,LPFILETIME);
-		DWORD blik_fakewin_GetTickCount();
-		BOOL blik_fakewin_GetUserObjectInformationW(HANDLE,int,PVOID,DWORD,LPDWORD);
-		HLOCAL blik_fakewin_LocalFree(HLOCAL);
-		int blik_fakewin_MessageBox(HWND,LPCTSTR,LPCTSTR,UINT);
-		BOOL blik_fakewin_CopyFile(LPCSTR,LPCSTR,BOOL);
-		BOOL blik_fakewin_DeleteFileA(LPCSTR);
-		BOOL blik_fakewin_MoveFileEx(LPCSTR,LPCSTR,DWORD);
-		BOOL blik_fakewin_MoveFileExW(LPCWSTR,LPCWSTR,DWORD);
-		DWORD blik_fakewin_GetTempPathA(DWORD,LPSTR);
-		UINT blik_fakewin_GetTempFileNameA(LPCSTR,LPCSTR,UINT,LPSTR);
-		int blik_fakewin_MultiByteToWideChar(UINT,DWORD,LPCSTR,int,LPWSTR,int);
-		int blik_fakewin_WideCharToMultiByte(UINT,DWORD,LPCWSTR,int,LPSTR,int,LPCSTR,LPBOOL);
-		LONG blik_fakewin_RegCloseKey(HKEY);
-		HANDLE blik_fakewin_RegisterEventSource(LPCTSTR,LPCTSTR);
-		LONG blik_fakewin_RegOpenKeyExW(HKEY,LPCWSTR,DWORD,REGSAM,PHKEY);
-		LONG blik_fakewin_RegQueryValueExW(HKEY,LPCWSTR,LPDWORD,LPDWORD,LPBYTE,LPDWORD);
-		BOOL blik_fakewin_ReportEvent(HANDLE,WORD,WORD,DWORD,PSID,WORD,DWORD,LPCTSTR*,LPVOID);
-		PVOID blik_fakewin_SecureZeroMemory(PVOID,size_t);
-		LRESULT blik_fakewin_SendMessage(HWND,UINT,WPARAM,LPARAM);
-		BOOL blik_fakewin_SetFileAttributesW(LPCWSTR,DWORD);
-		void blik_fakewin_Sleep(DWORD);
-		BOOL blik_fakewin_VerifyVersionInfo(LPOSVERSIONINFOEX,DWORD,DWORDLONG);
-		BOOL blik_fakewin_SetEvent(HANDLE);
-		BOOL blik_fakewin_ResetEvent(HANDLE);
-		HANDLE blik_fakewin_CreateEvent(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCTSTR);
-		HANDLE blik_fakewin_CreateEventW(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCWSTR);
-		DWORD blik_fakewin_WaitForSingleObject(HANDLE,DWORD);
-		DWORD blik_fakewin_WaitForMultipleObjects(DWORD, const HANDLE*, BOOL, DWORD);
-		void blik_fakewin_DeleteCriticalSection(LPCRITICAL_SECTION);
-		BOOL blik_fakewin_TryEnterCriticalSection(LPCRITICAL_SECTION);
-		void blik_fakewin_EnterCriticalSection(LPCRITICAL_SECTION);
-		void blik_fakewin_InitializeCriticalSection(LPCRITICAL_SECTION);
-		void blik_fakewin_LeaveCriticalSection(LPCRITICAL_SECTION);
-		int blik_fakewin_WSAGetLastError();
-		void blik_fakewin_WSASetLastError(int);
-		int blik_fakewin_WSACleanup();
-		int blik_fakewin_WSAStartup(WORD,LPWSADATA);
-		INT blik_fakewin_WSAStringToAddressA(LPSTR,INT,LPWSAPROTOCOL_INFO,LPSOCKADDR,LPINT);
-		BOOL blik_fakewin_QueryPerformanceFrequency(LARGE_INTEGER*);
-		BOOL blik_fakewin_QueryPerformanceCounter(LARGE_INTEGER*);
-		void blik_fakewin_ZeroMemory(PVOID,ULONG_PTR);
-		int blik_fakewin_GetObject(HGDIOBJ,int,LPVOID);
-		BOOL blik_fakewin_DeleteObject(HGDIOBJ);
-		HDC blik_fakewin_GetDC(HWND);
-		int blik_fakewin_ReleaseDC(HWND,HDC);
-		HBITMAP blik_fakewin_CreateDIBSection(HDC,const BITMAPINFO*,UINT,VOID**,HANDLE,DWORD);
-		DWORD blik_fakewin_TlsAlloc(void);
-		BOOL blik_fakewin_TlsFree(DWORD dwTlsIndex);
-		LPVOID blik_fakewin_TlsGetValue(DWORD dwTlsIndex);
-		BOOL blik_fakewin_TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue);
-		HANDLE blik_fakewin_CreateMutexA(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR);
-		BOOL blik_fakewin_ReleaseMutex(HANDLE);
-		HANDLE blik_fakewin_CreateSemaphoreA(LPSECURITY_ATTRIBUTES,LONG,LONG,LPCSTR);
-		BOOL blik_fakewin_ReleaseSemaphore(HANDLE,LONG,LPLONG);
-		void blik_fakewin_GetStartupInfo(LPSTARTUPINFO);
-		BOOL blik_fakewin_CreateProcessA(LPCSTR,LPSTR,LPSECURITY_ATTRIBUTES,LPSECURITY_ATTRIBUTES,
-			BOOL,DWORD,LPVOID,LPCSTR,LPSTARTUPINFO,LPPROCESS_INFORMATION);
-	#ifdef __cplusplus
-		}
-	#endif
+        HANDLE blik_fakewin_CreateFileW(LPCWSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES,DWORD,DWORD,HANDLE);
+        HANDLE blik_fakewin_CreateFileMapping(HANDLE,LPSECURITY_ATTRIBUTES,DWORD,DWORD,DWORD,LPCTSTR);
+        BOOL blik_fakewin_CreateDirectory(LPCSTR,LPSECURITY_ATTRIBUTES);
+        BOOL blik_fakewin_RemoveDirectory(LPCSTR);
+        BOOL blik_fakewin_CloseHandle(HANDLE);
+        LPVOID blik_fakewin_MapViewOfFile(HANDLE,DWORD,DWORD,DWORD,size_t);
+        BOOL blik_fakewin_UnmapViewOfFile(LPCVOID);
+        HANDLE blik_fakewin_CreateThread(LPSECURITY_ATTRIBUTES,size_t,LPTHREAD_START_ROUTINE,LPVOID,DWORD,LPDWORD);
+        BOOL blik_fakewin_DeregisterEventSource(HANDLE);
+        BOOL blik_fakewin_DeviceIoControl(HANDLE,DWORD,LPVOID,DWORD,LPVOID,DWORD,LPDWORD,LPOVERLAPPED);
+        DWORD blik_fakewin_ExpandEnvironmentStringsW(LPCWSTR,LPWSTR,DWORD);
+        BOOL blik_fakewin_FindClose(HANDLE);
+        HANDLE blik_fakewin_FindFirstFileA(LPCSTR,LPWIN32_FIND_DATAA);
+        HANDLE blik_fakewin_FindFirstFileW(LPCWSTR,LPWIN32_FIND_DATAW);
+        HANDLE blik_fakewin_FindFirstFileExA(LPCSTR,FINDEX_INFO_LEVELS,LPVOID,FINDEX_SEARCH_OPS,LPVOID,DWORD);
+        BOOL blik_fakewin_FindNextFileA(HANDLE,LPWIN32_FIND_DATAA);
+        BOOL blik_fakewin_FindNextFileW(HANDLE,LPWIN32_FIND_DATAW);
+        HWND blik_fakewin_FindWindow(LPCTSTR,LPCTSTR);
+        BOOL blik_fakewin_FlushConsoleInputBuffer(HANDLE);
+        BOOL blik_fakewin_FlushFileBuffers(HANDLE);
+        DWORD blik_fakewin_FormatMessageW(DWORD,LPCVOID,DWORD,DWORD,LPWSTR,DWORD,va_list*);
+        HANDLE blik_fakewin_GetCurrentProcess();
+        DWORD blik_fakewin_GetCurrentThreadId();
+        BOOL blik_fakewin_GetExitCodeThread(HANDLE,LPDWORD);
+        DWORD blik_fakewin_GetFileAttributes(LPCSTR);
+        DWORD blik_fakewin_GetFileAttributesW(LPCWSTR);
+        BOOL blik_fakewin_GetFileAttributesExA(LPCSTR,GET_FILEEX_INFO_LEVELS,LPVOID);
+        BOOL blik_fakewin_GetFileAttributesExW(LPCWSTR,GET_FILEEX_INFO_LEVELS,LPVOID);
+        DWORD blik_fakewin_GetFullPathNameA(LPCSTR,DWORD,LPSTR,LPSTR*);
+        DWORD blik_fakewin_GetFullPathNameW(LPCWSTR,DWORD,LPWSTR,LPWSTR*);
+        DWORD blik_fakewin_GetLastError();
+        void blik_fakewin_SetLastError(DWORD);
+        HMODULE blik_fakewin_LoadLibraryA(LPCSTR);
+        HMODULE blik_fakewin_GetModuleHandleA(LPCSTR);
+        HMODULE blik_fakewin_GetModuleHandleW(LPCWSTR);
+        DWORD blik_fakewin_GetModuleFileName(HMODULE,LPSTR,DWORD);
+        FARPROC blik_fakewin_GetProcAddress(HMODULE,LPCSTR);
+        BOOL blik_fakewin_GetProcessAffinityMask(HANDLE,PDWORD_PTR,PDWORD_PTR);
+        HWINSTA blik_fakewin_GetProcessWindowStation();
+        BOOL blik_fakewin_GetProcessTimes(HANDLE,LPFILETIME,LPFILETIME,LPFILETIME,LPFILETIME);
+        DWORD blik_fakewin_GetShortPathNameW(LPCWSTR,LPWSTR,DWORD);
+        HANDLE blik_fakewin_GetStdHandle(DWORD);
+        void blik_fakewin_GetSystemInfo(LPSYSTEM_INFO);
+        void blik_fakewin_GetNativeSystemInfo(LPSYSTEM_INFO);
+        void blik_fakewin_GetSystemTimeAsFileTime(LPFILETIME);
+        BOOL blik_fakewin_SystemTimeToFileTime(const SYSTEMTIME*,LPFILETIME);
+        DWORD blik_fakewin_GetTickCount();
+        BOOL blik_fakewin_GetUserObjectInformationW(HANDLE,int,PVOID,DWORD,LPDWORD);
+        HLOCAL blik_fakewin_LocalFree(HLOCAL);
+        int blik_fakewin_MessageBox(HWND,LPCTSTR,LPCTSTR,UINT);
+        BOOL blik_fakewin_CopyFile(LPCSTR,LPCSTR,BOOL);
+        BOOL blik_fakewin_DeleteFileA(LPCSTR);
+        BOOL blik_fakewin_MoveFileEx(LPCSTR,LPCSTR,DWORD);
+        BOOL blik_fakewin_MoveFileExW(LPCWSTR,LPCWSTR,DWORD);
+        DWORD blik_fakewin_GetTempPathA(DWORD,LPSTR);
+        UINT blik_fakewin_GetTempFileNameA(LPCSTR,LPCSTR,UINT,LPSTR);
+        int blik_fakewin_MultiByteToWideChar(UINT,DWORD,LPCSTR,int,LPWSTR,int);
+        int blik_fakewin_WideCharToMultiByte(UINT,DWORD,LPCWSTR,int,LPSTR,int,LPCSTR,LPBOOL);
+        LONG blik_fakewin_RegCloseKey(HKEY);
+        HANDLE blik_fakewin_RegisterEventSource(LPCTSTR,LPCTSTR);
+        LONG blik_fakewin_RegOpenKeyExW(HKEY,LPCWSTR,DWORD,REGSAM,PHKEY);
+        LONG blik_fakewin_RegQueryValueExW(HKEY,LPCWSTR,LPDWORD,LPDWORD,LPBYTE,LPDWORD);
+        BOOL blik_fakewin_ReportEvent(HANDLE,WORD,WORD,DWORD,PSID,WORD,DWORD,LPCTSTR*,LPVOID);
+        PVOID blik_fakewin_SecureZeroMemory(PVOID,size_t);
+        LRESULT blik_fakewin_SendMessage(HWND,UINT,WPARAM,LPARAM);
+        BOOL blik_fakewin_SetFileAttributesW(LPCWSTR,DWORD);
+        void blik_fakewin_Sleep(DWORD);
+        BOOL blik_fakewin_VerifyVersionInfo(LPOSVERSIONINFOEX,DWORD,DWORDLONG);
+        BOOL blik_fakewin_SetEvent(HANDLE);
+        BOOL blik_fakewin_ResetEvent(HANDLE);
+        HANDLE blik_fakewin_CreateEvent(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCTSTR);
+        HANDLE blik_fakewin_CreateEventW(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCWSTR);
+        DWORD blik_fakewin_WaitForSingleObject(HANDLE,DWORD);
+        DWORD blik_fakewin_WaitForMultipleObjects(DWORD, const HANDLE*, BOOL, DWORD);
+        void blik_fakewin_DeleteCriticalSection(LPCRITICAL_SECTION);
+        BOOL blik_fakewin_TryEnterCriticalSection(LPCRITICAL_SECTION);
+        void blik_fakewin_EnterCriticalSection(LPCRITICAL_SECTION);
+        void blik_fakewin_InitializeCriticalSection(LPCRITICAL_SECTION);
+        void blik_fakewin_LeaveCriticalSection(LPCRITICAL_SECTION);
+        int blik_fakewin_WSAGetLastError();
+        void blik_fakewin_WSASetLastError(int);
+        int blik_fakewin_WSACleanup();
+        int blik_fakewin_WSAStartup(WORD,LPWSADATA);
+        INT blik_fakewin_WSAStringToAddressA(LPSTR,INT,LPWSAPROTOCOL_INFO,LPSOCKADDR,LPINT);
+        BOOL blik_fakewin_QueryPerformanceFrequency(LARGE_INTEGER*);
+        BOOL blik_fakewin_QueryPerformanceCounter(LARGE_INTEGER*);
+        void blik_fakewin_ZeroMemory(PVOID,ULONG_PTR);
+        int blik_fakewin_GetObject(HGDIOBJ,int,LPVOID);
+        BOOL blik_fakewin_DeleteObject(HGDIOBJ);
+        HDC blik_fakewin_GetDC(HWND);
+        int blik_fakewin_ReleaseDC(HWND,HDC);
+        HBITMAP blik_fakewin_CreateDIBSection(HDC,const BITMAPINFO*,UINT,VOID**,HANDLE,DWORD);
+        DWORD blik_fakewin_TlsAlloc(void);
+        BOOL blik_fakewin_TlsFree(DWORD dwTlsIndex);
+        LPVOID blik_fakewin_TlsGetValue(DWORD dwTlsIndex);
+        BOOL blik_fakewin_TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue);
+        HANDLE blik_fakewin_CreateMutexA(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR);
+        BOOL blik_fakewin_ReleaseMutex(HANDLE);
+        HANDLE blik_fakewin_CreateSemaphoreA(LPSECURITY_ATTRIBUTES,LONG,LONG,LPCSTR);
+        BOOL blik_fakewin_ReleaseSemaphore(HANDLE,LONG,LPLONG);
+        void blik_fakewin_GetStartupInfo(LPSTARTUPINFO);
+        BOOL blik_fakewin_CreateProcessA(LPCSTR,LPSTR,LPSECURITY_ATTRIBUTES,LPSECURITY_ATTRIBUTES,
+            BOOL,DWORD,LPVOID,LPCSTR,LPSTARTUPINFO,LPPROCESS_INFORMATION);
+    #ifdef __cplusplus
+        }
+    #endif
 #endif
 
 #ifdef __cplusplus
-	extern "C" {
+    extern "C" {
 #endif
-	DWORD blik_fakewin_GetCurrentDirectoryW(DWORD,LPWSTR);
+    DWORD blik_fakewin_GetCurrentDirectoryW(DWORD,LPWSTR);
 #ifdef __cplusplus
-	}
+    }
 #endif

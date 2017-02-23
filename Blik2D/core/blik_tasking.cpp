@@ -167,7 +167,7 @@ namespace BLIK
         TaskingClass* NewTasking = (TaskingClass*) Buffer::Alloc<TaskingClass>(BLIK_DBG 1);
         NewTasking->m_cb = cb;
         NewTasking->m_self = self;
-		Platform::Utility::Threading(_TaskCore, NewTasking);
+        Platform::Utility::Threading(_TaskCore, NewTasking);
         return (id_tasking) NewTasking;
     }
 
@@ -226,7 +226,7 @@ namespace BLIK
         return ((TaskingClass*) tasking)->m_answer.Count();
     }
 
-	void Tasking::KeepAnswer(id_tasking tasking, buffer answer)
+    void Tasking::KeepAnswer(id_tasking tasking, buffer answer)
     {
         BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
         ((TaskingClass*) tasking)->m_answer.Enqueue(answer);

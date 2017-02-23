@@ -4,9 +4,9 @@
 class HWData : public ViewClass
 {
 public:
-	HWData();
-	~HWData();
+    HWData();
+    ~HWData();
 
 public:
-	String mMessage;
+    String mMessage;
 };

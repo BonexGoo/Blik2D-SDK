@@ -332,101 +332,101 @@ namespace BLIK
                 return -1;
             }
 
-			class StaticalMutexClass
-			{
-			public:
-				StaticalMutexClass()
-				{
-					// static 인스턴스끼리의 호출순서로 생성자보다 Lock()이 먼저 호출될 수 있기에
-					// 본 생성자에선 mMutex를 초기화하지 않는다. (static 인스턴스는 자동으로 nullptr초기화됨)
-				}
-				~StaticalMutexClass()
-				{
-					if(mMutex)
-					{
-						Mutex::Close(mMutex);
-						mMutex = nullptr;
-					}
-				}
-			public:
-				inline void Lock()
-				{
-					if(!mMutex) // static 인스턴스끼리의 호출로 Lock()이 생성자보다 먼저 호출될 수 있음.
-						mMutex = Mutex::Open();
-					Mutex::Lock(mMutex);
-				}
-				inline void Unlock()
-				{
-					if(mMutex)
-						Mutex::Unlock(mMutex);
-				}
-			private:
-				id_mutex mMutex;
-			};
+            class StaticalMutexClass
+            {
+            public:
+                StaticalMutexClass()
+                {
+                    // static 인스턴스끼리의 호출순서로 생성자보다 Lock()이 먼저 호출될 수 있기에
+                    // 본 생성자에선 mMutex를 초기화하지 않는다. (static 인스턴스는 자동으로 nullptr초기화됨)
+                }
+                ~StaticalMutexClass()
+                {
+                    if(mMutex)
+                    {
+                        Mutex::Close(mMutex);
+                        mMutex = nullptr;
+                    }
+                }
+            public:
+                inline void Lock()
+                {
+                    if(!mMutex) // static 인스턴스끼리의 호출로 Lock()이 생성자보다 먼저 호출될 수 있음.
+                        mMutex = Mutex::Open();
+                    Mutex::Lock(mMutex);
+                }
+                inline void Unlock()
+                {
+                    if(mMutex)
+                        Mutex::Unlock(mMutex);
+                }
+            private:
+                id_mutex mMutex;
+            };
 
-			static Map<bool> g_OptionFlagMap;
-			static StaticalMutexClass g_OptionFlagMutex;
-			void Utility_SetOptionFlag(chars name, bool flag)
-			{
-				g_OptionFlagMutex.Lock();
-				g_OptionFlagMap(name) = flag;
-				g_OptionFlagMutex.Unlock();
-			}
+            static Map<bool> g_OptionFlagMap;
+            static StaticalMutexClass g_OptionFlagMutex;
+            void Utility_SetOptionFlag(chars name, bool flag)
+            {
+                g_OptionFlagMutex.Lock();
+                g_OptionFlagMap(name) = flag;
+                g_OptionFlagMutex.Unlock();
+            }
 
-			bool Utility_GetOptionFlag(chars name)
-			{
-				g_OptionFlagMutex.Lock();
-				bool* Result = g_OptionFlagMap.Access(name);
-				g_OptionFlagMutex.Unlock();
-				return (Result)? *Result : false;
-			}
+            bool Utility_GetOptionFlag(chars name)
+            {
+                g_OptionFlagMutex.Lock();
+                bool* Result = g_OptionFlagMap.Access(name);
+                g_OptionFlagMutex.Unlock();
+                return (Result)? *Result : false;
+            }
 
-			Strings Utility_GetOptionFlagNames()
-			{
-				Strings Result;
-				payload Param = (payload) &Result;
-				g_OptionFlagMutex.Lock();
-				g_OptionFlagMap.AccessByCallback(
-					[](const MapPath* path, const bool* data, payload param)->void
-					{
-						Strings& Result = *((Strings*) param);
-						Result.AtAdding() = &path->GetPath()[0];
-					}, Param);
-				g_OptionFlagMutex.Unlock();
-				return Result;
-			}
+            Strings Utility_GetOptionFlagNames()
+            {
+                Strings Result;
+                payload Param = (payload) &Result;
+                g_OptionFlagMutex.Lock();
+                g_OptionFlagMap.AccessByCallback(
+                    [](const MapPath* path, const bool* data, payload param)->void
+                    {
+                        Strings& Result = *((Strings*) param);
+                        Result.AtAdding() = &path->GetPath()[0];
+                    }, Param);
+                g_OptionFlagMutex.Unlock();
+                return Result;
+            }
 
-			static Map<payload> g_OptionPayloadMap;
-			static StaticalMutexClass g_OptionPayloadMutex;
-			void Utility_SetOptionPayload(chars name, payload data)
-			{
-				g_OptionPayloadMutex.Lock();
-				g_OptionPayloadMap(name) = data;
-				g_OptionPayloadMutex.Unlock();
-			}
+            static Map<payload> g_OptionPayloadMap;
+            static StaticalMutexClass g_OptionPayloadMutex;
+            void Utility_SetOptionPayload(chars name, payload data)
+            {
+                g_OptionPayloadMutex.Lock();
+                g_OptionPayloadMap(name) = data;
+                g_OptionPayloadMutex.Unlock();
+            }
 
-			payload Utility_GetOptionPayload(chars name)
-			{
-				g_OptionPayloadMutex.Lock();
-				payload* Result = g_OptionPayloadMap.Access(name);
-				g_OptionPayloadMutex.Unlock();
-				return (Result)? *Result : nullptr;
-			}
+            payload Utility_GetOptionPayload(chars name)
+            {
+                g_OptionPayloadMutex.Lock();
+                payload* Result = g_OptionPayloadMap.Access(name);
+                g_OptionPayloadMutex.Unlock();
+                return (Result)? *Result : nullptr;
+            }
 
-			Strings Utility_GetOptionPayloadNames()
-			{
-				Strings Result;
-				payload Param = (payload) &Result;
-				g_OptionPayloadMutex.Lock();
-				g_OptionPayloadMap.AccessByCallback(
-					[](const MapPath* path, const payload* data, payload param)->void
-					{
-						Strings& Result = *((Strings*) param);
-						Result.AtAdding() = &path->GetPath()[0];
-					}, Param);
-				g_OptionPayloadMutex.Unlock();
-				return Result;
-			}
+            Strings Utility_GetOptionPayloadNames()
+            {
+                Strings Result;
+                payload Param = (payload) &Result;
+                g_OptionPayloadMutex.Lock();
+                g_OptionPayloadMap.AccessByCallback(
+                    [](const MapPath* path, const payload* data, payload param)->void
+                    {
+                        Strings& Result = *((Strings*) param);
+                        Result.AtAdding() = &path->GetPath()[0];
+                    }, Param);
+                g_OptionPayloadMutex.Unlock();
+                return Result;
+            }
 
             bool Popup_FileDialog(String& path, String* shortpath, chars title, bool isdir)
             {
@@ -489,17 +489,17 @@ namespace BLIK
                 return Result;
             }
 
-			void Popup_WebBrowserDialog(String url)
-			{
-				#if BLIK_WINDOWS
-					#ifdef UNICODE
-						ShellExecute(NULL, L"open", (wchars) WString::FromChars(url),
-							NULL, NULL, SW_SHOWNORMAL);
-					#else
-						ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
-					#endif
-				#endif
-			}
+            void Popup_WebBrowserDialog(String url)
+            {
+                #if BLIK_WINDOWS
+                    #ifdef UNICODE
+                        ShellExecute(NULL, L"open", (wchars) WString::FromChars(url),
+                            NULL, NULL, SW_SHOWNORMAL);
+                    #else
+                        ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+                    #endif
+                #endif
+            }
 
             WString File_GetDirName(wchars itemname, wchar_t badslash, wchar_t goodslash)
             {

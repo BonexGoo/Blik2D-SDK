@@ -16,15 +16,15 @@ bool __LINK_ADDON_H264__() {return true;} // 링크옵션 /OPT:NOREF가 안되�
 // 등록과정
 namespace BLIK
 {
-	BLIK_DECLARE_ADDON_FUNCTION(H264, Create, id_h264, sint32, sint32)
-	BLIK_DECLARE_ADDON_FUNCTION(H264, Release, void, id_h264)
-	BLIK_DECLARE_ADDON_FUNCTION(H264, Encode, id_share, id_h264, const uint32*, bool, uint64, id_share)
+    BLIK_DECLARE_ADDON_FUNCTION(H264, Create, id_h264, sint32, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(H264, Release, void, id_h264)
+    BLIK_DECLARE_ADDON_FUNCTION(H264, Encode, id_share, id_h264, const uint32*, bool, uint64, id_share)
 
     static autorun Bind_AddOn_H264()
     {
         Core_AddOn_H264_Create() = Customized_AddOn_H264_Create;
-		Core_AddOn_H264_Release() = Customized_AddOn_H264_Release;
-		Core_AddOn_H264_Encode() = Customized_AddOn_H264_Encode;
+        Core_AddOn_H264_Release() = Customized_AddOn_H264_Release;
+        Core_AddOn_H264_Encode() = Customized_AddOn_H264_Encode;
         return true;
     }
     static autorun _ = Bind_AddOn_H264();
@@ -33,24 +33,24 @@ namespace BLIK
 // 구현부
 namespace BLIK
 {
-	id_h264 Customized_AddOn_H264_Create(sint32 width, sint32 height)
-	{
-		BaseEncoderH264* NewEncoder = new BaseEncoderH264(width, height);
-		return (id_h264) NewEncoder;
-	}
+    id_h264 Customized_AddOn_H264_Create(sint32 width, sint32 height)
+    {
+        BaseEncoderH264* NewEncoder = new BaseEncoderH264(width, height);
+        return (id_h264) NewEncoder;
+    }
 
-	void Customized_AddOn_H264_Release(id_h264 h264)
-	{
-		BaseEncoderH264* OldEncoder = (BaseEncoderH264*) h264;
+    void Customized_AddOn_H264_Release(id_h264 h264)
+    {
+        BaseEncoderH264* OldEncoder = (BaseEncoderH264*) h264;
         delete OldEncoder;
-	}
+    }
 
-	id_share Customized_AddOn_H264_Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac)
-	{
-		BaseEncoderH264* CurEncoder = (BaseEncoderH264*) h264;
-		if(!CurEncoder) return uint08s();
+    id_share Customized_AddOn_H264_Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac)
+    {
+        BaseEncoderH264* CurEncoder = (BaseEncoderH264*) h264;
+        if(!CurEncoder) return uint08s();
         return CurEncoder->Encode(rgba, chunking, ms, aac);
-	}
+    }
 }
 
 BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height)

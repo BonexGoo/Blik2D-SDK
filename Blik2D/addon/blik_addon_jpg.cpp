@@ -16,10 +16,10 @@ bool __LINK_ADDON_JPG__() {return true;} // 링크옵션 /OPT:NOREF가 안되서
 namespace BLIK
 {
     BLIK_DECLARE_ADDON_FUNCTION(Jpg, Create, id_jpg, id_bitmap_read, sint32)
-	BLIK_DECLARE_ADDON_FUNCTION(Jpg, Release, void, id_jpg)
+    BLIK_DECLARE_ADDON_FUNCTION(Jpg, Release, void, id_jpg)
     BLIK_DECLARE_ADDON_FUNCTION(Jpg, GetLength, sint32, id_jpg)
     BLIK_DECLARE_ADDON_FUNCTION(Jpg, GetBits, bytes, id_jpg)
-	BLIK_DECLARE_ADDON_FUNCTION(Jpg, ToBmp, id_bitmap, bytes, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(Jpg, ToBmp, id_bitmap, bytes, sint32)
 
     static autorun Bind_AddOn_Jpg()
     {
@@ -42,7 +42,7 @@ namespace BLIK
         JpgBuffer.SubtractionAll();
 
         const sint32 BmpWidth = Bmp::GetWidth(bmp);
-		const sint32 BmpHeight = Bmp::GetHeight(bmp);
+        const sint32 BmpHeight = Bmp::GetHeight(bmp);
         const sint32 BmpBitCount = Bmp::GetBitCount(bmp);
 
         JPEGEncoder Encoder;
@@ -104,44 +104,44 @@ namespace BLIK
         return (bytes)(buffer) jpg;
     }
 
-	id_bitmap Customized_AddOn_Jpg_ToBmp(bytes jpg, sint32 length)
-	{
-		JPEGDecoder Decoder;
-		Decoder.decode(jpg, length);
+    id_bitmap Customized_AddOn_Jpg_ToBmp(bytes jpg, sint32 length)
+    {
+        JPEGDecoder Decoder;
+        Decoder.decode(jpg, length);
 
-		if(!Decoder.readHeader())
-		{
-			BLIK_ASSERT("jpeg디코딩에(readHeader) 실패하였습니다", false);
-			return nullptr;
-		}
+        if(!Decoder.readHeader())
+        {
+            BLIK_ASSERT("jpeg디코딩에(readHeader) 실패하였습니다", false);
+            return nullptr;
+        }
 
-		if(!Decoder.startDecompress())
-		{
-			BLIK_ASSERT("jpeg디코딩에(startDecompress) 실패하였습니다", false);
-			return nullptr;
-		}
+        if(!Decoder.startDecompress())
+        {
+            BLIK_ASSERT("jpeg디코딩에(startDecompress) 실패하였습니다", false);
+            return nullptr;
+        }
 
-		const int Width = Decoder.getWidth();
-		const int Height = Decoder.getHeight();
-		id_bitmap NewBitmap = Bmp::Create(4, Width, Height);
-		auto BitmapFocus = (Bmp::bitmappixel*) (Bmp::GetBits(NewBitmap) + sizeof(Bmp::bitmappixel) * Width * (Height - 1));
+        const int Width = Decoder.getWidth();
+        const int Height = Decoder.getHeight();
+        id_bitmap NewBitmap = Bmp::Create(4, Width, Height);
+        auto BitmapFocus = (Bmp::bitmappixel*) (Bmp::GetBits(NewBitmap) + sizeof(Bmp::bitmappixel) * Width * (Height - 1));
 
-		if(!Decoder.decompress((unsigned int*) BitmapFocus))
-		{
-			BLIK_ASSERT("jpeg디코딩에(decompress) 실패하였습니다", false);
-			Memory::Set(Bmp::GetBits(NewBitmap), 0xFF, sizeof(Bmp::bitmappixel) * Width * Height);
-			return NewBitmap;
-		}
+        if(!Decoder.decompress((unsigned int*) BitmapFocus))
+        {
+            BLIK_ASSERT("jpeg디코딩에(decompress) 실패하였습니다", false);
+            Memory::Set(Bmp::GetBits(NewBitmap), 0xFF, sizeof(Bmp::bitmappixel) * Width * Height);
+            return NewBitmap;
+        }
 
-		if(!Decoder.endDecompress())
-		{
-			BLIK_ASSERT("jpeg디코딩에(endDecompress) 실패하였습니다", false);
-			Memory::Set(Bmp::GetBits(NewBitmap), 0xFF, sizeof(Bmp::bitmappixel) * Width * Height);
-			return NewBitmap;
-		}
+        if(!Decoder.endDecompress())
+        {
+            BLIK_ASSERT("jpeg디코딩에(endDecompress) 실패하였습니다", false);
+            Memory::Set(Bmp::GetBits(NewBitmap), 0xFF, sizeof(Bmp::bitmappixel) * Width * Height);
+            return NewBitmap;
+        }
 
-		return NewBitmap;
-	}
+        return NewBitmap;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -589,7 +589,7 @@ bool TesseractProgram(int argc, const char **argv) {
           &list_langs, &print_parameters,
           &vars_vec, &vars_values, &arg_i, &pagesegmode);
   if(Code1 != ExitCode::Continue)
-	  return (Code1 == ExitCode::ReturnForSuccess);
+      return (Code1 == ExitCode::ReturnForSuccess);
 
   PERF_COUNT_START("Tesseract:main")
   tesseract::TessBaseAPI api;
@@ -605,7 +605,7 @@ bool TesseractProgram(int argc, const char **argv) {
 
   ExitCode Code2 = SetVariablesFromCLArgs(&api, argc, argv);
   if(Code2 != ExitCode::Continue)
-	  return (Code2 == ExitCode::ReturnForSuccess);
+      return (Code2 == ExitCode::ReturnForSuccess);
 
   if (list_langs) {
      PrintLangsList(&api);
@@ -651,7 +651,7 @@ bool TesseractProgram(int argc, const char **argv) {
     delete it;
 
     pixDestroy(&pixs);
-	return (ret_val == 0);
+    return (ret_val == 0);
   }
 
   // set in_training_mode to true when using one of these configs:
@@ -1159,7 +1159,7 @@ bool CnTrainingProgram(int argc, const char **argv) {
     return false;
   }
   if(!WriteNormProtos(FLAGS_D.c_str(), NormProtoList, Clusterer))
-	  return false;
+      return false;
   FreeNormProtoList(NormProtoList);
   FreeProtoList(&ProtoList);
   FreeClusterer(Clusterer);

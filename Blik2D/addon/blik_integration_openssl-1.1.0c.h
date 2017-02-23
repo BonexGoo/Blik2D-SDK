@@ -74,11 +74,11 @@
 #define BLIK_OPENSSL_V_openssl__rc4_h                 <addon/openssl-1.1.0c_for_blik/include/openssl/rc4.h>
 #define BLIK_OPENSSL_V_openssl__cms_h                 <addon/openssl-1.1.0c_for_blik/include/openssl/cms.h>
 #define BLIK_OPENSSL_V_openssl__ssl2_h                <addon/openssl-1.1.0c_for_blik/include/openssl/ssl2.h>
-#define BLIK_OPENSSL_V_openssl__ssl3_h				  <addon/openssl-1.1.0c_for_blik/include/openssl/ssl3.h>
-#define BLIK_OPENSSL_V_openssl__dh_h	              <addon/openssl-1.1.0c_for_blik/include/openssl/dh.h>
-#define BLIK_OPENSSL_V_openssl__tls1_h				  <addon/openssl-1.1.0c_for_blik/include/openssl/tls1.h> 
-#define BLIK_OPENSSL_V_openssl__dtls1_h				  <addon/openssl-1.1.0c_for_blik/include/openssl/dtls1.h>
-#define BLIK_OPENSSL_V_openssl__srtp_h				  <addon/openssl-1.1.0c_for_blik/include/openssl/srtp.h> 
+#define BLIK_OPENSSL_V_openssl__ssl3_h                  <addon/openssl-1.1.0c_for_blik/include/openssl/ssl3.h>
+#define BLIK_OPENSSL_V_openssl__dh_h                  <addon/openssl-1.1.0c_for_blik/include/openssl/dh.h>
+#define BLIK_OPENSSL_V_openssl__tls1_h                  <addon/openssl-1.1.0c_for_blik/include/openssl/tls1.h> 
+#define BLIK_OPENSSL_V_openssl__dtls1_h                  <addon/openssl-1.1.0c_for_blik/include/openssl/dtls1.h>
+#define BLIK_OPENSSL_V_openssl__srtp_h                  <addon/openssl-1.1.0c_for_blik/include/openssl/srtp.h> 
 #define BLIK_OPENSSL_V_openssl__comp_h                <addon/openssl-1.1.0c_for_blik/include/openssl/comp.h>
 #define BLIK_OPENSSL_V_openssl__crypto_h              <addon/openssl-1.1.0c_for_blik/include/openssl/crypto.h>
 #define BLIK_OPENSSL_V_openssl__e_os2_h               <addon/openssl-1.1.0c_for_blik/include/openssl/e_os2.h>

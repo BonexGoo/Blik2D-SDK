@@ -7,7 +7,7 @@
 #ifdef BLIK_PLATFORM_QT5
 
     #include <service/blik_viewmanager.hpp>
-	#include <element/blik_image.hpp>
+    #include <element/blik_image.hpp>
     #include <format/blik_bmp.hpp>
 
     #include <QtWidgets>
@@ -15,19 +15,19 @@
     #include <QHostInfo>
     #include <QTcpSocket>
     #include <QUdpSocket>
-	#include <QTcpServer>
+    #include <QTcpServer>
 
     #include <QGLWidget>
     #include <QGLFunctions>
     #include <QGLShaderProgram>
 
     #include <QtSerialPort>
-	#include <QSerialPortInfo>
+    #include <QSerialPortInfo>
 
-	#include <QCamera>
+    #include <QCamera>
     #include <QCameraInfo>
     #include <QCameraImageCapture>
-	#include <QAbstractVideoSurface>
+    #include <QAbstractVideoSurface>
 
     #include <QAudioRecorder>
     #include <QAudioProbe>
@@ -92,7 +92,7 @@
             m_next_manager = nullptr;
             m_view_cb = cb;
             m_view_data = data;
-			m_paint_device = device;
+            m_paint_device = device;
             if(manager)
                 manager->_setcallback((void*) m_view_cb, m_view_data);
 
@@ -106,11 +106,11 @@
             m_longpress_x = 0;
             m_longpress_y = 0;
 
-			connect(&m_tick_timer, &QTimer::timeout, this, &ViewAPI::tick_timeout);
+            connect(&m_tick_timer, &QTimer::timeout, this, &ViewAPI::tick_timeout);
             connect(&m_update_timer, &QTimer::timeout, this, &ViewAPI::update_timeout);
             connect(&m_tooltip_timer, &QTimer::timeout, this, &ViewAPI::tooltip_timeout);
             connect(&m_longpress_timer, &QTimer::timeout, this, &ViewAPI::longpress_timeout);
-			m_tick_timer.start(17);
+            m_tick_timer.start(17);
         }
 
         ViewAPI(const ViewAPI& rhs) = delete;
@@ -214,12 +214,12 @@
             return (QWidget*) getParent();
         }
 
-		inline QWidget* getWidgetForPaint() const
-		{
-			if(m_paint_device)
-				return m_paint_device;
-			return getWidget();
-		}
+        inline QWidget* getWidgetForPaint() const
+        {
+            if(m_paint_device)
+                return m_paint_device;
+            return getWidget();
+        }
 
         inline void render(sint32 width, sint32 height)
         {
@@ -270,7 +270,7 @@
             }
         }
 
-		inline void sendTick() const
+        inline void sendTick() const
         {
             if(m_view_manager != nullptr)
             {
@@ -301,7 +301,7 @@
         {
             m_width = width;
             m_height = height;
-			m_view_manager->_size(width, height);
+            m_view_manager->_size(width, height);
         }
 
         void paint()
@@ -326,22 +326,22 @@
             if(count == -1)
                 m_exiting = true;
             else if(m_paintcount < count)
-			{
-				if(m_paintcount == 0)
-					m_update_timer.start(17);
+            {
+                if(m_paintcount == 0)
+                    m_update_timer.start(17);
                 m_paintcount = count;
-			}
+            }
         }
 
         bool closeEvent(QCloseEvent* event)
         {
             if(canQuit())
-			{
+            {
                 event->accept();
-				return true;
-			}
+                return true;
+            }
             event->ignore();
-			return false;
+            return false;
         }
 
         void mousePressEvent(QMouseEvent* event)
@@ -437,7 +437,7 @@
         }
 
     private:
-		void tick_timeout()
+        void tick_timeout()
         {
             if(m_exiting)
                 getWidget()->close();
@@ -448,7 +448,7 @@
         {
             if(m_paintcount == 0)
                 m_update_timer.stop();
-			getWidgetForPaint()->update();
+            getWidgetForPaint()->update();
         }
 
         void tooltip_timeout()
@@ -477,7 +477,7 @@
         ViewManager* m_next_manager;
         ViewClass::UpdaterCB m_view_cb;
         QWidget* m_view_data;
-		QWidget* m_paint_device;
+        QWidget* m_paint_device;
 
     private:
         bool m_input_enabled;
@@ -489,7 +489,7 @@
         sint32 m_tooltip_y;
         sint32 m_longpress_x;
         sint32 m_longpress_y;
-		QTimer m_tick_timer;
+        QTimer m_tick_timer;
         QTimer m_update_timer;
         QTimer m_tooltip_timer;
         QTimer m_longpress_timer;
@@ -535,7 +535,7 @@
         {
             if(m_api && m_api->parentIsPtr())
                 Buffer::Free((buffer) m_api);
-			m_window.set_buf(nullptr);
+            m_window.set_buf(nullptr);
         }
 
         GenericView(const GenericView* rhs) {BLIK_ASSERT("사용금지", false);}
@@ -557,12 +557,12 @@
 
     protected:
         void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE
-		{
+        {
             if(m_api->closeEvent(event))
                 m_window.set_buf(nullptr);
-		}
+        }
         void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
-		void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
+        void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
@@ -574,7 +574,7 @@
         {
             GenericView* OldGenericView = cast(view);
             m_api = OldGenericView->m_api;
-			OldGenericView->m_api = nullptr;
+            OldGenericView->m_api = nullptr;
             m_name = OldGenericView->m_name;
             m_firstwidth = OldGenericView->m_firstwidth;
             m_firstheight = OldGenericView->m_firstheight;
@@ -584,8 +584,8 @@
 
             m_api->renewParent(this);
             m_api->changeViewData(this);
-			view.clear_buf();
-			view.set_ptr(m_api); // 삭제책임은 GenericView에 이관하였기에
+            view.clear_buf();
+            view.set_ptr(m_api); // 삭제책임은 GenericView에 이관하였기에
         }
 
     public:
@@ -599,10 +599,10 @@
             return QSize(m_firstwidth, m_firstheight);
         }
 
-		inline void attachWindow(h_window window)
-		{
-			m_window = window;
-		}
+        inline void attachWindow(h_window window)
+        {
+            m_window = window;
+        }
 
     public:
         static GenericView* cast(h_view view)
@@ -619,7 +619,7 @@
         QString m_name;
         sint32 m_firstwidth;
         sint32 m_firstheight;
-		h_window m_window;
+        h_window m_window;
     };
 
     class MainViewGL : public QGLWidget
@@ -669,7 +669,7 @@
         void onCloseEvent(QCloseEvent* event)
         {
             closeEvent(event);
-			QApplication::closeAllWindows();
+            QApplication::closeAllWindows();
         }
 
     protected:
@@ -718,13 +718,13 @@
         }
 
     protected:
-		void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE {m_api->closeEvent(event);}
+        void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE {m_api->closeEvent(event);}
         void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
-		void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
+        void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
-		static void updater(void* data, sint32 count)
+        static void updater(void* data, sint32 count)
         {((MainViewGL*) data)->m_api->update(count);}
 
     public:
@@ -753,7 +753,7 @@
             m_width = 0;
             m_height = 0;
 
-			setAttribute(Qt::WA_PaintOnScreen);
+            setAttribute(Qt::WA_PaintOnScreen);
             setAttribute(Qt::WA_NoSystemBackground);
             setAttribute(Qt::WA_AcceptTouchEvents);
             setMouseTracking(true);
@@ -773,33 +773,33 @@
         void onCloseEvent(QCloseEvent* event)
         {
             closeEvent(event);
-			QApplication::closeAllWindows();
+            QApplication::closeAllWindows();
         }
 
-	protected:
+    protected:
         void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE
         {
             m_width = event->size().width();
             m_height = event->size().height();
-			m_api->resize(m_width, m_height);
+            m_api->resize(m_width, m_height);
         }
 
         void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE
         {
-			if(m_api->hasViewManager())
+            if(m_api->hasViewManager())
                 m_api->paint();
             else QMdiArea::paintEvent(event);
-			m_api->nextPaint();
+            m_api->nextPaint();
         }
 
-	protected:
-		void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE {m_api->closeEvent(event);}
+    protected:
+        void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE {m_api->closeEvent(event);}
         void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
-		void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
+        void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mousePressEvent(event);}
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
-		static void updater(void* data, sint32 count)
+        static void updater(void* data, sint32 count)
         {((MainViewMDI*) data)->m_api->update(count);}
 
     public:
@@ -814,10 +814,10 @@
     {
     public:
         WidgetBox()
-		{
-			m_view = nullptr;
-			m_widget = nullptr;
-		}
+        {
+            m_view = nullptr;
+            m_widget = nullptr;
+        }
         ~WidgetBox()
         {
             delete m_view;
@@ -825,12 +825,12 @@
 
         void setWidget(GenericView* view, QWidget* widget)
         {
-			m_view = view;
+            m_view = view;
             m_widget = widget;
         }
 
     private:
-		GenericView* m_view;
+        GenericView* m_view;
         QWidget* m_widget;
     };
 
@@ -884,8 +884,8 @@
         QWidget* addWidget(GenericView* view)
         {
             BLIK_ASSERT("GL/MDI의 초기화가 되어있지 않습니다", m_viewGL || m_viewMDI);
-			if(m_viewGL) return view->m_api->getWidget();
-			return m_viewMDI->addSubWindow(view->m_api->getWidget());
+            if(m_viewGL) return view->m_api->getWidget();
+            return m_viewMDI->addSubWindow(view->m_api->getWidget());
         }
 
     public:
@@ -1042,8 +1042,8 @@
             }
         }
 
-		static bool HasAnyone(QWidget* parent)
-		{
+        static bool HasAnyone(QWidget* parent)
+        {
             Tracker* CurNode = Top().m_next;
             while(CurNode)
             {
@@ -1052,7 +1052,7 @@
                     return true;
                 CurNode = NextNode;
             }
-			return false;
+            return false;
         }
 
     private:
@@ -1095,18 +1095,18 @@
         EditTracker(UIEditType type, const QString& contents, QWidget* parent)
             : QLineEdit(contents, nullptr), m_tracker(parent, OnExit, this)
         {
-			if(parent)
-				m_parentpos = parent->mapToGlobal(QPoint(0, 0));
-			else m_parentpos = QPoint(0, 0);
+            if(parent)
+                m_parentpos = parent->mapToGlobal(QPoint(0, 0));
+            else m_parentpos = QPoint(0, 0);
 
             m_canceled = false;
-			setWindowFlags(Qt::SplashScreen);
+            setWindowFlags(Qt::SplashScreen);
             setWindowModality(Qt::WindowModal);
-			setFocus();
+            setFocus();
             setFrame(false);
             selectAll();
 
-			switch(type)
+            switch(type)
             {
             case UIET_Int: setValidator(new QIntValidator(this)); break;
             case UIET_Float: setValidator(new QDoubleValidator(this)); break;
@@ -1140,7 +1140,7 @@
         }
 
     private:
-		void focusOutEvent(QFocusEvent* event) Q_DECL_OVERRIDE
+        void focusOutEvent(QFocusEvent* event) Q_DECL_OVERRIDE
         {
             close();
             m_tracker.Unlock();
@@ -1165,7 +1165,7 @@
     private:
         Tracker m_tracker;
         bool m_canceled;
-		QPoint m_parentpos;
+        QPoint m_parentpos;
     };
 
     class ListTracker : public QListWidget
@@ -1183,12 +1183,12 @@
                 addItem(NewItem);
             }
 
-			if(parent)
-				m_parentpos = parent->mapToGlobal(QPoint(0, 0));
-			else m_parentpos = QPoint(0, 0);
+            if(parent)
+                m_parentpos = parent->mapToGlobal(QPoint(0, 0));
+            else m_parentpos = QPoint(0, 0);
 
             m_select = -1;
-			setWindowFlags(Qt::SplashScreen);
+            setWindowFlags(Qt::SplashScreen);
             setWindowModality(Qt::WindowModal);
             setFocus();
 
@@ -1235,40 +1235,40 @@
     private:
         Tracker m_tracker;
         sint32 m_select;
-		QPoint m_parentpos;
+        QPoint m_parentpos;
     };
 
-	class ThreadClass : public QThread
-	{
-		Q_OBJECT
+    class ThreadClass : public QThread
+    {
+        Q_OBJECT
 
-	public:
-		static void Begin(ThreadCB cb, payload data)
-		{
-			new ThreadClass(cb, data);
-		}
+    public:
+        static void Begin(ThreadCB cb, payload data)
+        {
+            new ThreadClass(cb, data);
+        }
 
-	private:
-		ThreadClass(ThreadCB cb, payload data)
-		{
-			BLIK_ASSERT("cb이 nullptr이 될 수 없습니다", cb);
-			m_cb = cb;
-			m_data = data;
-			start();
-		}
-		virtual ~ThreadClass() {}
+    private:
+        ThreadClass(ThreadCB cb, payload data)
+        {
+            BLIK_ASSERT("cb이 nullptr이 될 수 없습니다", cb);
+            m_cb = cb;
+            m_data = data;
+            start();
+        }
+        virtual ~ThreadClass() {}
 
-	private:
-		void run()
-		{
-			m_cb(m_data);
-			exec();
-		}
+    private:
+        void run()
+        {
+            m_cb(m_data);
+            exec();
+        }
 
-	private:
-		ThreadCB m_cb;
-		payload m_data;
-	};
+    private:
+        ThreadCB m_cb;
+        payload m_data;
+    };
 
     class Clock
     {
@@ -1342,173 +1342,173 @@
         sint64 m_laptime;
     };
 
-	class TCPPeerData : public QObjectUserData
-	{
-	public:
-		const sint32 ID;
-		sint32 PacketNeeds;
+    class TCPPeerData : public QObjectUserData
+    {
+    public:
+        const sint32 ID;
+        sint32 PacketNeeds;
 
-	public:
-		TCPPeerData() : ID(MakeID()) {PacketNeeds = 0;}
-		virtual ~TCPPeerData() {}
+    public:
+        TCPPeerData() : ID(MakeID()) {PacketNeeds = 0;}
+        virtual ~TCPPeerData() {}
 
-	public:
-		static uint ClassID()
-		{static uint _ = QObject::registerUserData(); return _;}
-		static int MakeID() {static int _ = -1; return ++_;}
-	};
+    public:
+        static uint ClassID()
+        {static uint _ = QObject::registerUserData(); return _;}
+        static int MakeID() {static int _ = -1; return ++_;}
+    };
 
-	class TCPPacket
-	{
-	public:
-		const packettype Type;
-		const sint32 PeerID;
-		buffer Buffer;
+    class TCPPacket
+    {
+    public:
+        const packettype Type;
+        const sint32 PeerID;
+        buffer Buffer;
 
-	public:
-		TCPPacket(packettype type, sint32 peerid, sint32 buffersize)
-			: Type(type), PeerID(peerid) {Buffer = Buffer::Alloc(BLIK_DBG buffersize);}
-		~TCPPacket() {Buffer::Free(Buffer);}
-	public:
-		void DestroyMe() {delete this;}
-	};
+    public:
+        TCPPacket(packettype type, sint32 peerid, sint32 buffersize)
+            : Type(type), PeerID(peerid) {Buffer = Buffer::Alloc(BLIK_DBG buffersize);}
+        ~TCPPacket() {Buffer::Free(Buffer);}
+    public:
+        void DestroyMe() {delete this;}
+    };
 
-	class TCPAgent : public QTcpServer
-	{
-		Q_OBJECT
+    class TCPAgent : public QTcpServer
+    {
+        Q_OBJECT
 
-	private:
-		bool UsingSizeField;
-		Map<QTcpSocket*> Peers;
-		Queue<TCPPacket*> PacketQueue;
-		TCPPacket* FocusedPacket;
+    private:
+        bool UsingSizeField;
+        Map<QTcpSocket*> Peers;
+        Queue<TCPPacket*> PacketQueue;
+        TCPPacket* FocusedPacket;
 
-	private slots:
-		void acceptPeer()
-		{
-			QTcpSocket* Peer = nextPendingConnection();
-			TCPPeerData* NewData = new TCPPeerData();
-			Peers[NewData->ID] = Peer;
-			Peer->setUserData(TCPPeerData::ClassID(), NewData);
-			PacketQueue.Enqueue(new TCPPacket(packettype_entrance, NewData->ID, 0));
+    private slots:
+        void acceptPeer()
+        {
+            QTcpSocket* Peer = nextPendingConnection();
+            TCPPeerData* NewData = new TCPPeerData();
+            Peers[NewData->ID] = Peer;
+            Peer->setUserData(TCPPeerData::ClassID(), NewData);
+            PacketQueue.Enqueue(new TCPPacket(packettype_entrance, NewData->ID, 0));
 
-			if(!UsingSizeField) connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeer()));
-			else connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
-			connect(Peer, SIGNAL(error(QAbstractSocket::SocketError)),
-				this, SLOT(errorPeer(QAbstractSocket::SocketError)));
-		}
+            if(!UsingSizeField) connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeer()));
+            else connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
+            connect(Peer, SIGNAL(error(QAbstractSocket::SocketError)),
+                this, SLOT(errorPeer(QAbstractSocket::SocketError)));
+        }
 
-		void readyPeer()
-		{
-			QTcpSocket* Peer = (QTcpSocket*) sender();
-			TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
-			sint64 PacketSize = Peer->bytesAvailable();
+        void readyPeer()
+        {
+            QTcpSocket* Peer = (QTcpSocket*) sender();
+            TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
+            sint64 PacketSize = Peer->bytesAvailable();
 
-			TCPPacket* NewPacket = new TCPPacket(packettype_message, Data->ID, PacketSize);
-			Peer->read((char*) NewPacket->Buffer, PacketSize);
-			PacketQueue.Enqueue(NewPacket);
+            TCPPacket* NewPacket = new TCPPacket(packettype_message, Data->ID, PacketSize);
+            Peer->read((char*) NewPacket->Buffer, PacketSize);
+            PacketQueue.Enqueue(NewPacket);
 
-			connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeer()));
-		}
+            connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeer()));
+        }
 
-		void readyPeerWithSizeField()
-		{
-			QTcpSocket* Peer = (QTcpSocket*) sender();
-			TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
-			sint64 PacketSize = Peer->bytesAvailable();
+        void readyPeerWithSizeField()
+        {
+            QTcpSocket* Peer = (QTcpSocket*) sender();
+            TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
+            sint64 PacketSize = Peer->bytesAvailable();
 
-			while(0 < PacketSize)
-			{
-				if(Data->PacketNeeds == 0)
-				{
-					if(4 <= PacketSize)
-					{
-						PacketSize -= 4;
-						int GetPacketSize = 0;
-						Peer->read((char*) &GetPacketSize, 4);
-						Data->PacketNeeds = GetPacketSize;
-					}
-					else
-					{
-						connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
-						break;
-					}
-				}
-				if(0 < Data->PacketNeeds)
-				{
-					if(Data->PacketNeeds <= PacketSize)
-					{
-						PacketSize -= Data->PacketNeeds;
-						TCPPacket* NewPacket = new TCPPacket(packettype_message, Data->ID, Data->PacketNeeds);
-						Peer->read((char*) NewPacket->Buffer, Data->PacketNeeds);
-						PacketQueue.Enqueue(NewPacket);
-						Data->PacketNeeds = 0;
-					}
-					else
-					{
-						connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
-						break;
-					}
-				}
-			}
-		}
+            while(0 < PacketSize)
+            {
+                if(Data->PacketNeeds == 0)
+                {
+                    if(4 <= PacketSize)
+                    {
+                        PacketSize -= 4;
+                        int GetPacketSize = 0;
+                        Peer->read((char*) &GetPacketSize, 4);
+                        Data->PacketNeeds = GetPacketSize;
+                    }
+                    else
+                    {
+                        connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
+                        break;
+                    }
+                }
+                if(0 < Data->PacketNeeds)
+                {
+                    if(Data->PacketNeeds <= PacketSize)
+                    {
+                        PacketSize -= Data->PacketNeeds;
+                        TCPPacket* NewPacket = new TCPPacket(packettype_message, Data->ID, Data->PacketNeeds);
+                        Peer->read((char*) NewPacket->Buffer, Data->PacketNeeds);
+                        PacketQueue.Enqueue(NewPacket);
+                        Data->PacketNeeds = 0;
+                    }
+                    else
+                    {
+                        connect(Peer, SIGNAL(readyRead()), this, SLOT(readyPeerWithSizeField()));
+                        break;
+                    }
+                }
+            }
+        }
 
-		void errorPeer(QAbstractSocket::SocketError error)
-		{
-			QTcpSocket* Peer = (QTcpSocket*) sender();
-			TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
-			Peers.Remove(Data->ID);
-			PacketQueue.Enqueue(new TCPPacket((error == QAbstractSocket::RemoteHostClosedError)?
-				packettype_leaved : packettype_kicked, Data->ID, 0));
-		}
+        void errorPeer(QAbstractSocket::SocketError error)
+        {
+            QTcpSocket* Peer = (QTcpSocket*) sender();
+            TCPPeerData* Data = (TCPPeerData*) Peer->userData(TCPPeerData::ClassID());
+            Peers.Remove(Data->ID);
+            PacketQueue.Enqueue(new TCPPacket((error == QAbstractSocket::RemoteHostClosedError)?
+                packettype_leaved : packettype_kicked, Data->ID, 0));
+        }
 
-	public:
-		TCPAgent(bool sizefield = false)
-		{
-			UsingSizeField = sizefield;
-			FocusedPacket = new TCPPacket(packettype_null, -1, 0);
-			connect(this, SIGNAL(newConnection()), this, SLOT(acceptPeer()));
-		}
+    public:
+        TCPAgent(bool sizefield = false)
+        {
+            UsingSizeField = sizefield;
+            FocusedPacket = new TCPPacket(packettype_null, -1, 0);
+            connect(this, SIGNAL(newConnection()), this, SLOT(acceptPeer()));
+        }
 
-		virtual ~TCPAgent()
-		{
-			for(TCPPacket* UnusedPacket = nullptr; UnusedPacket = PacketQueue.Dequeue();)
-				UnusedPacket->DestroyMe();
-			delete FocusedPacket;
-		}
+        virtual ~TCPAgent()
+        {
+            for(TCPPacket* UnusedPacket = nullptr; UnusedPacket = PacketQueue.Dequeue();)
+                UnusedPacket->DestroyMe();
+            delete FocusedPacket;
+        }
 
-		TCPAgent& operator=(const TCPAgent&)
-		{
-			BLIK_ASSERT("호출불가", false);
-			return *this;
-		}
+        TCPAgent& operator=(const TCPAgent&)
+        {
+            BLIK_ASSERT("호출불가", false);
+            return *this;
+        }
 
-	public:
-		bool TryPacket()
-		{
-			TCPPacket* PopPacket = PacketQueue.Dequeue();
-			if(!PopPacket) return false;
-			delete FocusedPacket;
-			FocusedPacket = PopPacket;
-			return true;
-		}
+    public:
+        bool TryPacket()
+        {
+            TCPPacket* PopPacket = PacketQueue.Dequeue();
+            if(!PopPacket) return false;
+            delete FocusedPacket;
+            FocusedPacket = PopPacket;
+            return true;
+        }
 
-		TCPPacket* GetFocusedPacket()
-		{
-			return FocusedPacket;
-		}
+        TCPPacket* GetFocusedPacket()
+        {
+            return FocusedPacket;
+        }
 
-		bool SendPacket(int peerid, const void* buffer, sint32 buffersize)
-		{
-			QTcpSocket* Peer = Peers[peerid];
-			if(!Peer)
-			{
-				Peers.Remove(peerid);
-				return false;
-			}
-			return (Peer->write((chars) buffer, buffersize) == buffersize);
-		}
-	};
+        bool SendPacket(int peerid, const void* buffer, sint32 buffersize)
+        {
+            QTcpSocket* Peer = Peers[peerid];
+            if(!Peer)
+            {
+                Peers.Remove(peerid);
+                return false;
+            }
+            return (Peer->write((chars) buffer, buffersize) == buffersize);
+        }
+    };
 
     #if BLIK_ANDROID
         class SerialPortForAndroid
@@ -1770,121 +1770,121 @@
         typedef QSerialPort SerialPortClass;
     #endif
 
-	class SerialClass
-	{
-	private:
+    class SerialClass
+    {
+    private:
         SerialPortClass* mSerial;
-		SerialDecodeCB mDec;
-		SerialEncodeCB mEnc;
-		uint08s mReadStream;
-		uint08s mWriteStream;
-		uint08s mLastDecodedData;
-		sint32 mLastDecodedDataFocus;
+        SerialDecodeCB mDec;
+        SerialEncodeCB mEnc;
+        uint08s mReadStream;
+        uint08s mWriteStream;
+        uint08s mLastDecodedData;
+        sint32 mLastDecodedDataFocus;
 
-	private:
-		class Chunk
-		{
-		public:
-			uint08* mPtr;
-			bytes mPtrConst;
-			sint32 mLength;
-			bool mBigEndian;
-		public:
-			Chunk() {mPtr = nullptr; mPtrConst = nullptr; mLength = 0; mBigEndian = false;}
-			Chunk(uint08* ptr, sint32 length, bool bigendian) {Init(ptr, length, bigendian);}
-			Chunk(bytes ptr, sint32 length, bool bigendian) {InitConst(ptr, length, bigendian);}
-			~Chunk() {}
-			void Init(uint08* ptr, sint32 length, bool bigendian)
-			{
-				mPtr = ptr;
-				mPtrConst = nullptr;
-				mLength = length;
-				mBigEndian = bigendian;
-			}
-			void InitConst(bytes ptr, sint32 length, bool bigendian)
-			{
-				mPtr = nullptr;
-				mPtrConst = ptr;
-				mLength = length;
-				mBigEndian = bigendian;
-			}
-			sint64 GetLength() const
-			{
-				sint64 Result;
-				Load(&Result, sizeof(sint64));
-				return Result;
-			}
-			void Load(void* outptr, sint32 length) const
-			{
-				Memory::Set(outptr, 0, length);
-				const sint32 CopyLength = Math::Min(mLength, length);
-				if(!mBigEndian) Memory::Copy(outptr, mPtrConst, CopyLength);
-				else
-				{
-					uint08* Dest = ((uint08*) outptr) + CopyLength - 1;
-					for(sint32 i = 0; i < CopyLength; ++i)
-						Dest[-i] = mPtrConst[i];
-				}
-			}
-			void Save(bytes ptr, sint32 length)
-			{
-				Memory::Set(mPtr, 0, mLength);
-				const sint32 CopyLength = Math::Min(mLength, length);
-				if(!mBigEndian) Memory::Copy(mPtr, ptr, CopyLength);
-				else
-				{
-					uint08* Dest = ((uint08*) mPtr) + CopyLength - 1;
-					for(sint32 i = 0; i < CopyLength; ++i)
-						Dest[-i] = ptr[i];
-				}
-			}
-		};
-
-	public:
-		static Strings GetList(String* spec)
-		{
-			Strings Result;
-			Property SpecCollector;
-			const QList<QSerialPortInfo>& AllPorts = QSerialPortInfo::availablePorts();
-            foreach(const auto& CurPort, AllPorts)
+    private:
+        class Chunk
+        {
+        public:
+            uint08* mPtr;
+            bytes mPtrConst;
+            sint32 mLength;
+            bool mBigEndian;
+        public:
+            Chunk() {mPtr = nullptr; mPtrConst = nullptr; mLength = 0; mBigEndian = false;}
+            Chunk(uint08* ptr, sint32 length, bool bigendian) {Init(ptr, length, bigendian);}
+            Chunk(bytes ptr, sint32 length, bool bigendian) {InitConst(ptr, length, bigendian);}
+            ~Chunk() {}
+            void Init(uint08* ptr, sint32 length, bool bigendian)
             {
-				String CurName = CurPort.portName().toUtf8().constData();
-				if(CurName.Length() == 0)
-					CurName = CurPort.description().toUtf8().constData();
-				Result.AtAdding() = CurName;
-				if(spec)
-				{
-					Property& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
-					NewChild.At("portname").Set(CurPort.portName().toUtf8().constData());
-					NewChild.At("description").Set(CurPort.description().toUtf8().constData());
-					NewChild.At("systemlocation").Set(CurPort.systemLocation().toUtf8().constData());
-					NewChild.At("manufacturer").Set(CurPort.manufacturer().toUtf8().constData());
-					NewChild.At("serialnumber").Set(CurPort.serialNumber().toUtf8().constData());
-				}
+                mPtr = ptr;
+                mPtrConst = nullptr;
+                mLength = length;
+                mBigEndian = bigendian;
             }
-			if(spec)
-				*spec = SpecCollector.SaveJson(*spec);
-			return Result;
-		}
+            void InitConst(bytes ptr, sint32 length, bool bigendian)
+            {
+                mPtr = nullptr;
+                mPtrConst = ptr;
+                mLength = length;
+                mBigEndian = bigendian;
+            }
+            sint64 GetLength() const
+            {
+                sint64 Result;
+                Load(&Result, sizeof(sint64));
+                return Result;
+            }
+            void Load(void* outptr, sint32 length) const
+            {
+                Memory::Set(outptr, 0, length);
+                const sint32 CopyLength = Math::Min(mLength, length);
+                if(!mBigEndian) Memory::Copy(outptr, mPtrConst, CopyLength);
+                else
+                {
+                    uint08* Dest = ((uint08*) outptr) + CopyLength - 1;
+                    for(sint32 i = 0; i < CopyLength; ++i)
+                        Dest[-i] = mPtrConst[i];
+                }
+            }
+            void Save(bytes ptr, sint32 length)
+            {
+                Memory::Set(mPtr, 0, mLength);
+                const sint32 CopyLength = Math::Min(mLength, length);
+                if(!mBigEndian) Memory::Copy(mPtr, ptr, CopyLength);
+                else
+                {
+                    uint08* Dest = ((uint08*) mPtr) + CopyLength - 1;
+                    for(sint32 i = 0; i < CopyLength; ++i)
+                        Dest[-i] = ptr[i];
+                }
+            }
+        };
 
-	public:
-		SerialClass(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
-		{
-			mSerial = nullptr;
-			mDec = (dec)? dec : DefaultSerialDecode;
-			mEnc = (enc)? enc : DefaultSerialEncode;
-			mLastDecodedDataFocus = 0;
+    public:
+        static Strings GetList(String* spec)
+        {
+            Strings Result;
+            Property SpecCollector;
             const QList<QSerialPortInfo>& AllPorts = QSerialPortInfo::availablePorts();
             foreach(const auto& CurPort, AllPorts)
             {
-				if(*name == '\0' || CurPort.portName() == name || CurPort.description() == name)
+                String CurName = CurPort.portName().toUtf8().constData();
+                if(CurName.Length() == 0)
+                    CurName = CurPort.description().toUtf8().constData();
+                Result.AtAdding() = CurName;
+                if(spec)
+                {
+                    Property& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
+                    NewChild.At("portname").Set(CurPort.portName().toUtf8().constData());
+                    NewChild.At("description").Set(CurPort.description().toUtf8().constData());
+                    NewChild.At("systemlocation").Set(CurPort.systemLocation().toUtf8().constData());
+                    NewChild.At("manufacturer").Set(CurPort.manufacturer().toUtf8().constData());
+                    NewChild.At("serialnumber").Set(CurPort.serialNumber().toUtf8().constData());
+                }
+            }
+            if(spec)
+                *spec = SpecCollector.SaveJson(*spec);
+            return Result;
+        }
+
+    public:
+        SerialClass(chars name, SerialDecodeCB dec, SerialEncodeCB enc)
+        {
+            mSerial = nullptr;
+            mDec = (dec)? dec : DefaultSerialDecode;
+            mEnc = (enc)? enc : DefaultSerialEncode;
+            mLastDecodedDataFocus = 0;
+            const QList<QSerialPortInfo>& AllPorts = QSerialPortInfo::availablePorts();
+            foreach(const auto& CurPort, AllPorts)
+            {
+                if(*name == '\0' || CurPort.portName() == name || CurPort.description() == name)
                 {
                     mSerial = new SerialPortClass(CurPort);
-					mSerial->setBaudRate(QSerialPort::Baud115200);
-					mSerial->setDataBits(QSerialPort::Data8);
-					mSerial->setParity(QSerialPort::NoParity);
-					mSerial->setStopBits(QSerialPort::OneStop);
-					mSerial->setFlowControl(QSerialPort::NoFlowControl);
+                    mSerial->setBaudRate(QSerialPort::Baud115200);
+                    mSerial->setDataBits(QSerialPort::Data8);
+                    mSerial->setParity(QSerialPort::NoParity);
+                    mSerial->setStopBits(QSerialPort::OneStop);
+                    mSerial->setFlowControl(QSerialPort::NoFlowControl);
                     if(!mSerial->open(QIODevice::ReadWrite))
                     {
                         BLIK_TRACE("QSerialPort error: port=%s, error=%s(%d)",
@@ -1895,139 +1895,139 @@
                         mSerial = nullptr;
                         if(*name == '\0') continue;
                     }
-					break;
+                    break;
                 }
             }
-		}
+        }
 
-		~SerialClass()
-		{
-			delete mSerial;
-		}
+        ~SerialClass()
+        {
+            delete mSerial;
+        }
 
-	public:
-		bool IsValid()
-		{
-			return (mSerial != nullptr);
-		}
+    public:
+        bool IsValid()
+        {
+            return (mSerial != nullptr);
+        }
 
         bool Connected()
-		{
-			return (mSerial->error() == QSerialPort::NoError);
-		}
+        {
+            return (mSerial->error() == QSerialPort::NoError);
+        }
 
-		bool ReadReady(sint32* gettype)
-		{
-			// 데이터수신시 읽기스트림에 추가연결
-			if(mSerial->waitForReadyRead(1))
-			{
-				QByteArray NewArray = mSerial->readAll();
-				Memory::Copy(mReadStream.AtDumpingAdded(NewArray.length()), NewArray.constData(), NewArray.length());
-			}
+        bool ReadReady(sint32* gettype)
+        {
+            // 데이터수신시 읽기스트림에 추가연결
+            if(mSerial->waitForReadyRead(1))
+            {
+                QByteArray NewArray = mSerial->readAll();
+                Memory::Copy(mReadStream.AtDumpingAdded(NewArray.length()), NewArray.constData(), NewArray.length());
+            }
 
-			// 읽기스트림의 처리
-			if(0 < mReadStream.Count())
-			{
-				// 디코딩과정
-				mLastDecodedData.SubtractionAll();
-				mLastDecodedDataFocus = 0;
-				const sint32 UsedLength = mDec(&mReadStream[0], mReadStream.Count(), mLastDecodedData, gettype);
-				if(0 < UsedLength)
-				{
-					BLIK_ASSERT("SerialDecodeCB의 리턴값이 허용범위를 초과합니다", UsedLength <= mReadStream.Count());
-					const sint32 CopyLength = mReadStream.Count() - UsedLength;
-					if(0 < CopyLength)
-					{
-						uint08s NewReadStream;
-						Memory::Copy(NewReadStream.AtDumping(0, CopyLength), &mReadStream[UsedLength], CopyLength);
-						mReadStream = NewReadStream;
-					}
-					else mReadStream.SubtractionAll();
-					return (0 < mLastDecodedData.Count());
-				}
-			}
-			return false;
-		}
+            // 읽기스트림의 처리
+            if(0 < mReadStream.Count())
+            {
+                // 디코딩과정
+                mLastDecodedData.SubtractionAll();
+                mLastDecodedDataFocus = 0;
+                const sint32 UsedLength = mDec(&mReadStream[0], mReadStream.Count(), mLastDecodedData, gettype);
+                if(0 < UsedLength)
+                {
+                    BLIK_ASSERT("SerialDecodeCB의 리턴값이 허용범위를 초과합니다", UsedLength <= mReadStream.Count());
+                    const sint32 CopyLength = mReadStream.Count() - UsedLength;
+                    if(0 < CopyLength)
+                    {
+                        uint08s NewReadStream;
+                        Memory::Copy(NewReadStream.AtDumping(0, CopyLength), &mReadStream[UsedLength], CopyLength);
+                        mReadStream = NewReadStream;
+                    }
+                    else mReadStream.SubtractionAll();
+                    return (0 < mLastDecodedData.Count());
+                }
+            }
+            return false;
+        }
 
-		sint32 ReadAvailable()
-		{
-			return mLastDecodedData.Count() - mLastDecodedDataFocus;
-		}
+        sint32 ReadAvailable()
+        {
+            return mLastDecodedData.Count() - mLastDecodedDataFocus;
+        }
 
-		sint32 Read(chars format, va_list args)
-		{
-			Map<Chunk> Cache;
-			chars Pos = format;
-			bool CurEndian = false;
-			sint32 CurIndex = -1;
-			while(*Pos)
-			{
-				if(*Pos == '#')
-				{
-					CurIndex++;
-					// 인용길이
-					sint64 LastLength = 0;
-					     if('1' <= Pos[1] && Pos[1] <= '8') LastLength = Pos[1] - '0';
-					else if('a' <= Pos[1] && Pos[1] <= 'z') LastLength = Cache[Pos[1] - 'a'].GetLength();
-					else if('A' <= Pos[1] && Pos[1] <= 'Z') LastLength = Cache[Pos[1] - 'A'].GetLength();
-					else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-					if(ReadAvailable() < LastLength) return BLIK_SERIAL_ERROR_SHORT_STREAM - CurIndex;
-					Pos += 2;
+        sint32 Read(chars format, va_list args)
+        {
+            Map<Chunk> Cache;
+            chars Pos = format;
+            bool CurEndian = false;
+            sint32 CurIndex = -1;
+            while(*Pos)
+            {
+                if(*Pos == '#')
+                {
+                    CurIndex++;
+                    // 인용길이
+                    sint64 LastLength = 0;
+                         if('1' <= Pos[1] && Pos[1] <= '8') LastLength = Pos[1] - '0';
+                    else if('a' <= Pos[1] && Pos[1] <= 'z') LastLength = Cache[Pos[1] - 'a'].GetLength();
+                    else if('A' <= Pos[1] && Pos[1] <= 'Z') LastLength = Cache[Pos[1] - 'A'].GetLength();
+                    else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                    if(ReadAvailable() < LastLength) return BLIK_SERIAL_ERROR_SHORT_STREAM - CurIndex;
+                    Pos += 2;
 
-					bytes LastPtr = &mLastDecodedData[mLastDecodedDataFocus];
-					// 캐시로 읽기
-					if(*Pos == '=')
-					{
-						     if('a' <= Pos[1] && Pos[1] <= 'z') Cache[Pos[1] - 'a'].InitConst(LastPtr, LastLength, CurEndian);
-						else if('A' <= Pos[1] && Pos[1] <= 'Z') Cache[Pos[1] - 'A'].InitConst(LastPtr, LastLength, CurEndian);
-						else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-						Pos += 2;
-					}
-					// 타입힌트식 읽기
-					else if(*Pos == ':')
-					{
-						if(Pos[1] == 's' && Pos[2] == 'k' && Pos[3] == 'i' && Pos[4] == 'p') Pos += 5;
-						else
-						{
-							const Chunk NewChunk(LastPtr, LastLength, CurEndian);
-							if(Pos[1] == 's')
-							{
-								     if(Pos[2] == '1') NewChunk.Load(va_arg(args, sint08*), sizeof(sint08));
-								else if(Pos[2] == '2') NewChunk.Load(va_arg(args, sint16*), sizeof(sint16));
-								else if(Pos[2] == '4') NewChunk.Load(va_arg(args, sint32*), sizeof(sint32));
-								else if(Pos[2] == '8') NewChunk.Load(va_arg(args, sint64*), sizeof(sint64));
-								else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-							}
-							else if(Pos[1] == 'u')
-							{
-								     if(Pos[2] == '1') NewChunk.Load(va_arg(args, uint08*), sizeof(uint08));
-								else if(Pos[2] == '2') NewChunk.Load(va_arg(args, uint16*), sizeof(uint16));
-								else if(Pos[2] == '4') NewChunk.Load(va_arg(args, uint32*), sizeof(uint32));
-								else if(Pos[2] == '8') NewChunk.Load(va_arg(args, uint64*), sizeof(uint64));
-								else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-							}
-							else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-							Pos += 3;
-						}
-					}
-					// 일반적인 읽기
+                    bytes LastPtr = &mLastDecodedData[mLastDecodedDataFocus];
+                    // 캐시로 읽기
+                    if(*Pos == '=')
+                    {
+                             if('a' <= Pos[1] && Pos[1] <= 'z') Cache[Pos[1] - 'a'].InitConst(LastPtr, LastLength, CurEndian);
+                        else if('A' <= Pos[1] && Pos[1] <= 'Z') Cache[Pos[1] - 'A'].InitConst(LastPtr, LastLength, CurEndian);
+                        else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                        Pos += 2;
+                    }
+                    // 타입힌트식 읽기
+                    else if(*Pos == ':')
+                    {
+                        if(Pos[1] == 's' && Pos[2] == 'k' && Pos[3] == 'i' && Pos[4] == 'p') Pos += 5;
+                        else
+                        {
+                            const Chunk NewChunk(LastPtr, LastLength, CurEndian);
+                            if(Pos[1] == 's')
+                            {
+                                     if(Pos[2] == '1') NewChunk.Load(va_arg(args, sint08*), sizeof(sint08));
+                                else if(Pos[2] == '2') NewChunk.Load(va_arg(args, sint16*), sizeof(sint16));
+                                else if(Pos[2] == '4') NewChunk.Load(va_arg(args, sint32*), sizeof(sint32));
+                                else if(Pos[2] == '8') NewChunk.Load(va_arg(args, sint64*), sizeof(sint64));
+                                else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                            }
+                            else if(Pos[1] == 'u')
+                            {
+                                     if(Pos[2] == '1') NewChunk.Load(va_arg(args, uint08*), sizeof(uint08));
+                                else if(Pos[2] == '2') NewChunk.Load(va_arg(args, uint16*), sizeof(uint16));
+                                else if(Pos[2] == '4') NewChunk.Load(va_arg(args, uint32*), sizeof(uint32));
+                                else if(Pos[2] == '8') NewChunk.Load(va_arg(args, uint64*), sizeof(uint64));
+                                else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                            }
+                            else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                            Pos += 3;
+                        }
+                    }
+                    // 일반적인 읽기
                     else Chunk(LastPtr, LastLength, CurEndian).Load(va_arg(args, void*), LastLength);
-					mLastDecodedDataFocus += LastLength;
-				}
-				else if(*Pos == '[')
-				{
-					     if(Pos[1] == 'b' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = true;
-					else if(Pos[1] == 'l' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = false;
-					else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-					Pos += 4;
-				}
-				else Pos++;
-			}
-			return ReadAvailable();
-		}
+                    mLastDecodedDataFocus += LastLength;
+                }
+                else if(*Pos == '[')
+                {
+                         if(Pos[1] == 'b' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = true;
+                    else if(Pos[1] == 'l' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = false;
+                    else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                    Pos += 4;
+                }
+                else Pos++;
+            }
+            return ReadAvailable();
+        }
 
-		sint32 Write(chars format, va_list args)
-		{
+        sint32 Write(chars format, va_list args)
+        {
             #if BLIK_ANDROID
                 #define va_sint08 sint32
                 #define va_sint16 sint32
@@ -2048,126 +2048,126 @@
                 #define va_uint64 uint64
             #endif
 
-			chars Pos = format;
-			bool CurEndian = false;
-			while(*Pos)
-			{
-				if(*Pos == '#')
-				{
-					// 인용길이
-					sint64 LastLength = 0;
-					if('1' <= Pos[1] && Pos[1] <= '8') LastLength = Pos[1] - '0';
-					else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-					Pos += 2;
+            chars Pos = format;
+            bool CurEndian = false;
+            while(*Pos)
+            {
+                if(*Pos == '#')
+                {
+                    // 인용길이
+                    sint64 LastLength = 0;
+                    if('1' <= Pos[1] && Pos[1] <= '8') LastLength = Pos[1] - '0';
+                    else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                    Pos += 2;
 
-					uint08* LastPtr = mWriteStream.AtDumpingAdded(LastLength);
-					// 상수로 쓰기
-					if(*Pos == '=')
-					{
-						const sint32 SavedPos = &Pos[-1] - format;
-						uint08s Value;
-						if(Pos[1] == '0' && (Pos[2] == 'x' || Pos[2] == 'X'))
-						{
-							Pos += 2;
-							bool AddingTurn = false;
-							while(*(++Pos))
-							{
-								if(AddingTurn = !AddingTurn)
-								{
-									     if('0' <= *Pos && *Pos <= '9') Value.AtAdding() = ((*Pos - '0') & 0xF) << 4;
-									else if('a' <= *Pos && *Pos <= 'f') Value.AtAdding() = ((*Pos - 'a' + 10) & 0xF) << 4;
-									else if('A' <= *Pos && *Pos <= 'F') Value.AtAdding() = ((*Pos - 'A' + 10) & 0xF) << 4;
-									else break;
-								}
-								else
-								{
-									     if('0' <= *Pos && *Pos <= '9') Value.At(-1) |= (*Pos - '0') & 0xF;
-									else if('a' <= *Pos && *Pos <= 'f') Value.At(-1) |= (*Pos - 'a' + 10) & 0xF;
-									else if('A' <= *Pos && *Pos <= 'F') Value.At(-1) |= (*Pos - 'A' + 10) & 0xF;
-									else break;
-								}
-							}
-						}
-						else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                    uint08* LastPtr = mWriteStream.AtDumpingAdded(LastLength);
+                    // 상수로 쓰기
+                    if(*Pos == '=')
+                    {
+                        const sint32 SavedPos = &Pos[-1] - format;
+                        uint08s Value;
+                        if(Pos[1] == '0' && (Pos[2] == 'x' || Pos[2] == 'X'))
+                        {
+                            Pos += 2;
+                            bool AddingTurn = false;
+                            while(*(++Pos))
+                            {
+                                if(AddingTurn = !AddingTurn)
+                                {
+                                         if('0' <= *Pos && *Pos <= '9') Value.AtAdding() = ((*Pos - '0') & 0xF) << 4;
+                                    else if('a' <= *Pos && *Pos <= 'f') Value.AtAdding() = ((*Pos - 'a' + 10) & 0xF) << 4;
+                                    else if('A' <= *Pos && *Pos <= 'F') Value.AtAdding() = ((*Pos - 'A' + 10) & 0xF) << 4;
+                                    else break;
+                                }
+                                else
+                                {
+                                         if('0' <= *Pos && *Pos <= '9') Value.At(-1) |= (*Pos - '0') & 0xF;
+                                    else if('a' <= *Pos && *Pos <= 'f') Value.At(-1) |= (*Pos - 'a' + 10) & 0xF;
+                                    else if('A' <= *Pos && *Pos <= 'F') Value.At(-1) |= (*Pos - 'A' + 10) & 0xF;
+                                    else break;
+                                }
+                            }
+                        }
+                        else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
                         // 16진수는 큰수가 메모리의 앞쪽에 오므로 CurEndian을 반대로 적용
                         Chunk(LastPtr, LastLength, !CurEndian).Save(&Value[0], Value.Count());
-					}
-					// 타입힌트식 쓰기
-					else if(*Pos == ':')
-					{
-						Chunk NewChunk(LastPtr, LastLength, CurEndian);
-						if(Pos[1] == 's')
-						{
+                    }
+                    // 타입힌트식 쓰기
+                    else if(*Pos == ':')
+                    {
+                        Chunk NewChunk(LastPtr, LastLength, CurEndian);
+                        if(Pos[1] == 's')
+                        {
                                  if(Pos[2] == '1') {auto v = va_arg(args, va_sint08); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '2') {auto v = va_arg(args, va_sint16); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '4') {auto v = va_arg(args, va_sint32); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '8') {auto v = va_arg(args, va_sint64); NewChunk.Save((bytes) &v, sizeof(v));}
-							else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-						}
-						else if(Pos[1] == 'u')
-						{
+                            else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                        }
+                        else if(Pos[1] == 'u')
+                        {
                                  if(Pos[2] == '1') {auto v = va_arg(args, va_uint08); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '2') {auto v = va_arg(args, va_uint16); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '4') {auto v = va_arg(args, va_uint32); NewChunk.Save((bytes) &v, sizeof(v));}
                             else if(Pos[2] == '8') {auto v = va_arg(args, va_uint64); NewChunk.Save((bytes) &v, sizeof(v));}
-							else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-						}
-						else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-						Pos += 3;
-					}
-					// 일반적인 쓰기
-					else
-					{
-						Chunk NewChunk(LastPtr, LastLength, CurEndian);
+                            else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                        }
+                        else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                        Pos += 3;
+                    }
+                    // 일반적인 쓰기
+                    else
+                    {
+                        Chunk NewChunk(LastPtr, LastLength, CurEndian);
                              if(LastLength == 1) {auto v = va_arg(args, va_uint08); NewChunk.Save((bytes) &v, sizeof(v));}
                         else if(LastLength == 2) {auto v = va_arg(args, va_uint16); NewChunk.Save((bytes) &v, sizeof(v));}
                         else if(LastLength == 4) {auto v = va_arg(args, va_uint32); NewChunk.Save((bytes) &v, sizeof(v));}
                         else if(LastLength == 8) {auto v = va_arg(args, va_uint64); NewChunk.Save((bytes) &v, sizeof(v));}
-						else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[-1] - format);
-					}
-				}
-				else if(*Pos == '[')
-				{
-					     if(Pos[1] == 'b' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = true;
-					else if(Pos[1] == 'l' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = false;
-					else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
-					Pos += 4;
-				}
-				else Pos++;
-			}
-			return mWriteStream.Count();
-		}
+                        else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[-1] - format);
+                    }
+                }
+                else if(*Pos == '[')
+                {
+                         if(Pos[1] == 'b' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = true;
+                    else if(Pos[1] == 'l' && Pos[2] == 'e' && Pos[3] == ']') CurEndian = false;
+                    else return BLIK_SERIAL_ERROR_BROKEN_FORMAT - (&Pos[1] - format);
+                    Pos += 4;
+                }
+                else Pos++;
+            }
+            return mWriteStream.Count();
+        }
 
-		void WriteFlush(sint32 type)
-		{
-			// 쓰기스트림의 처리
-			if(0 < mWriteStream.Count())
-			{
-				static uint08s NewEncodedData;
-				NewEncodedData.SubtractionAll();
-				mEnc(&mWriteStream[0], mWriteStream.Count(), NewEncodedData, type);
-				mWriteStream.SubtractionAll();
+        void WriteFlush(sint32 type)
+        {
+            // 쓰기스트림의 처리
+            if(0 < mWriteStream.Count())
+            {
+                static uint08s NewEncodedData;
+                NewEncodedData.SubtractionAll();
+                mEnc(&mWriteStream[0], mWriteStream.Count(), NewEncodedData, type);
+                mWriteStream.SubtractionAll();
 
-				if(0 < NewEncodedData.Count())
-				{
+                if(0 < NewEncodedData.Count())
+                {
                     mSerial->write((const char*) &NewEncodedData[0], NewEncodedData.Count());
-					mSerial->flush();
-				}
-			}
-		}
+                    mSerial->flush();
+                }
+            }
+        }
 
-	private:
-		static sint32 DefaultSerialDecode(bytes data, sint32 length, uint08s& outdata, sint32* outtype)
-		{
-			Memory::Copy(outdata.AtDumping(0, length), data, length);
-			return length;
-		}
+    private:
+        static sint32 DefaultSerialDecode(bytes data, sint32 length, uint08s& outdata, sint32* outtype)
+        {
+            Memory::Copy(outdata.AtDumping(0, length), data, length);
+            return length;
+        }
 
-		static void DefaultSerialEncode(bytes data, sint32 length, uint08s& outdata, sint32 type)
-		{
-			Memory::Copy(outdata.AtDumping(0, length), data, length);
-		}
-	};
+        static void DefaultSerialEncode(bytes data, sint32 length, uint08s& outdata, sint32 type)
+        {
+            Memory::Copy(outdata.AtDumping(0, length), data, length);
+        }
+    };
 
     class CameraSurface : public QAbstractVideoSurface
     {

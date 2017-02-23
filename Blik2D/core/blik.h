@@ -139,7 +139,7 @@
         case 0: BLIK_DBG_BREAK; break; \
         case 1: IsIgnore = 1; break; \
         }} while(0)
-	#define BLIK_ASSERT_ARG(TEXT, QUERY, ...) do{ \
+    #define BLIK_ASSERT_ARG(TEXT, QUERY, ...) do{ \
         static int IsIgnore = 0; \
         if(IsIgnore || (QUERY) != 0) break; \
         switch(blik_platform_assert(__VA_ARGS__, TEXT, #QUERY)) \
@@ -188,12 +188,12 @@
         typedef char* blik_va_list;
     #endif
 
-	int blik_platform_assert(BLIK_DBG_PRM const char* name, const char* query);
+    int blik_platform_assert(BLIK_DBG_PRM const char* name, const char* query);
     void blik_platform_trace(const char* text, ...);
 
-	////////////////////////////////////////////////////////////////////////////////
-	// String
-	////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    // String
+    ////////////////////////////////////////////////////////////////////////////////
     double blik_atof(const char* str);
     size_t blik_strlen(const char* str);
     size_t blik_wcslen(const wchar_t* str);
@@ -210,23 +210,23 @@
     int blik_wcsicmp(const wchar_t* str1, const wchar_t* str2);
     int blik_wcsnicmp(const wchar_t* str1, const wchar_t* str2, size_t maxcount);
 
-	////////////////////////////////////////////////////////////////////////////////
-	// File
-	////////////////////////////////////////////////////////////////////////////////
-	void* blik_fopen(char const* filename, char const* mode);
-	int blik_fclose(void* stream);
-	int blik_fseek(void* stream, long int offset, int origin);
-	long int blik_ftell(void* stream);
-	size_t blik_fread(void* ptr, size_t size, size_t count, void* stream);
-	size_t blik_fwrite(const void* ptr, size_t size, size_t count, void* stream);
-	int blik_fgetc(void* stream);
-	int blik_ungetc(int character, void* stream);
-	void blik_rewind(void* stream);
-	char* blik_fgets(char* str, int num, void* stream);
-	void* blik_opendir(const char* dirname);
-	void* blik_readdir(void* dir);
-	const char* blik_getdirname(void* dirent);
-	int blik_closedir(void* dir);
+    ////////////////////////////////////////////////////////////////////////////////
+    // File
+    ////////////////////////////////////////////////////////////////////////////////
+    void* blik_fopen(char const* filename, char const* mode);
+    int blik_fclose(void* stream);
+    int blik_fseek(void* stream, long int offset, int origin);
+    long int blik_ftell(void* stream);
+    size_t blik_fread(void* ptr, size_t size, size_t count, void* stream);
+    size_t blik_fwrite(const void* ptr, size_t size, size_t count, void* stream);
+    int blik_fgetc(void* stream);
+    int blik_ungetc(int character, void* stream);
+    void blik_rewind(void* stream);
+    char* blik_fgets(char* str, int num, void* stream);
+    void* blik_opendir(const char* dirname);
+    void* blik_readdir(void* dir);
+    const char* blik_getdirname(void* dirent);
+    int blik_closedir(void* dir);
 #ifdef __cplusplus
     }
 #endif

@@ -90,13 +90,13 @@ namespace BLIK
         */
         static sint32 GetAnswerCount(id_tasking tasking);
 
-		/*!
+        /*!
         \brief 수신한 응답을 처리하지 않고 다시 보관
         \param tasking : 태스킹ID
-		\param answer : 수신된 버퍼
+        \param answer : 수신된 버퍼
         \see GetAnswer
         */
-		static void KeepAnswer(id_tasking tasking, buffer answer);
+        static void KeepAnswer(id_tasking tasking, buffer answer);
 
         /*!
         \brief 해당 태스킹으로부터 공통버퍼 얻기

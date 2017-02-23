@@ -1093,7 +1093,7 @@ const int INTER_RESIZE_COEF_SCALE=1 << INTER_RESIZE_COEF_BITS;
 void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
                  double inv_scale_x, double inv_scale_y, int interpolation )
 {
-	static ResizeFunc linear_tab[] =
+    static ResizeFunc linear_tab[] =
     {
         resizeGeneric_<
             HResizeLinear<uchar, int, short,
@@ -1465,8 +1465,8 @@ static short BicubicTab_i[INTER_TAB_SIZE2][4][4];
 static float Lanczos4Tab_f[INTER_TAB_SIZE2][8][8];
 static short Lanczos4Tab_i[INTER_TAB_SIZE2][8][8];
 #if CV_SSE2 || CV_NEON
-	static short BilinearTab_iC4_buf[INTER_TAB_SIZE2+2][2][8];
-	static short (*BilinearTab_iC4)[2][8] = (short (*)[2][8])alignPtr(BilinearTab_iC4_buf, 16);
+    static short BilinearTab_iC4_buf[INTER_TAB_SIZE2+2][2][8];
+    static short (*BilinearTab_iC4)[2][8] = (short (*)[2][8])alignPtr(BilinearTab_iC4_buf, 16);
 #endif
 
 typedef void (*RemapNNFunc)(const Mat& _src, Mat& _dst, const Mat& _xy,
@@ -2366,7 +2366,7 @@ void cv::remap( InputArray _src, OutputArray _dst,
                 InputArray _map1, InputArray _map2,
                 int interpolation, int borderType, const Scalar& borderValue )
 {
-	static RemapNNFunc nn_tab[] =
+    static RemapNNFunc nn_tab[] =
     {
         remapNearest<uchar>, remapNearest<schar>, remapNearest<ushort>, remapNearest<short>,
         remapNearest<int>, remapNearest<float>, remapNearest<double>, 0
@@ -2507,7 +2507,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                       OutputArray _dstmap1, OutputArray _dstmap2,
                       int dstm1type, bool nninterpolate )
 {
-	Mat map1 = _map1.getMat(), map2 = _map2.getMat(), dstmap1, dstmap2;
+    Mat map1 = _map1.getMat(), map2 = _map2.getMat(), dstmap1, dstmap2;
     Size size = map1.size();
     const Mat *m1 = &map1, *m2 = &map2;
     int m1type = m1->type(), m2type = m2->type();
@@ -3140,7 +3140,7 @@ void cv::warpAffine( InputArray _src, OutputArray _dst,
                      InputArray _M0, Size dsize,
                      int flags, int borderType, const Scalar& borderValue )
 {
-	CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat(),
+    CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat(),
                ocl_warpTransform(_src, _dst, _M0, dsize, flags, borderType,
                                  borderValue, OCL_OP_AFFINE))
 
@@ -3605,7 +3605,7 @@ private:
 void cv::warpPerspective( InputArray _src, OutputArray _dst, InputArray _M0,
                           Size dsize, int flags, int borderType, const Scalar& borderValue )
 {
-	CV_Assert( _src.total() > 0 );
+    CV_Assert( _src.total() > 0 );
 
     CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat(),
                ocl_warpTransform(_src, _dst, _M0, dsize, flags, borderType, borderValue,
@@ -3702,7 +3702,7 @@ void cv::warpPerspective( InputArray _src, OutputArray _dst, InputArray _M0,
 
 cv::Mat cv::getRotationMatrix2D( Point2f center, double angle, double scale )
 {
-	angle *= CV_PI/180;
+    angle *= CV_PI/180;
     double alpha = cos(angle)*scale;
     double beta = sin(angle)*scale;
 
@@ -3721,7 +3721,7 @@ cv::Mat cv::getRotationMatrix2D( Point2f center, double angle, double scale )
 
 cv::Mat cv::getPerspectiveTransform( const Point2f src[], const Point2f dst[] )
 {
-	Mat M(3, 3, CV_64F), X(8, 1, CV_64F, M.ptr());
+    Mat M(3, 3, CV_64F), X(8, 1, CV_64F, M.ptr());
     double a[8][8], b[8];
     Mat A(8, 8, CV_64F, a), B(8, 1, CV_64F, b);
 
@@ -3748,14 +3748,14 @@ cv::Mat cv::getPerspectiveTransform( const Point2f src[], const Point2f dst[] )
 
 cv::Mat cv::getPerspectiveTransform( InputArray _src, InputArray _dst )
 {
-	Mat src = _src.getMat(), dst = _dst.getMat();
+    Mat src = _src.getMat(), dst = _dst.getMat();
     CV_Assert(src.checkVector(2, CV_32F) == 4 && dst.checkVector(2, CV_32F) == 4);
     return getPerspectiveTransform((const Point2f*)src.data, (const Point2f*)dst.data);
 }
 
 void cvResize( const CvArr* srcarr, CvArr* dstarr, int method )
 {
-	cv::Mat src = cv::cvarrToMat(srcarr), dst = cv::cvarrToMat(dstarr);
+    cv::Mat src = cv::cvarrToMat(srcarr), dst = cv::cvarrToMat(dstarr);
     CV_Assert( src.type() == dst.type() );
     cv::resize( src, dst, dst.size(), (double)dst.cols/src.cols,
         (double)dst.rows/src.rows, method );

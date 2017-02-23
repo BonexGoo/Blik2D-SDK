@@ -12,14 +12,14 @@ namespace BLIK
     public:
         static const Share* Create(buffer gift);
         static const Share* Create(const buffer& sample, sint32 mincount);
-		static void Destroy(id_cloned_share cloned);
+        static void Destroy(id_cloned_share cloned);
         static const Share* CopyOnWrite(const Share* share, sint32 mincount);
         static void Remove(const Share*& share);
         static void DebugPrint();
 
     public:
         chars Type() const;
-		sblock TypeID() const;
+        sblock TypeID() const;
         const Share* Clone() const;
         sint32 Count() const;
         template<typename TYPE>

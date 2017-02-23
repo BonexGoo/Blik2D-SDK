@@ -199,7 +199,7 @@ namespace BLIK
         Spec->ResetOne(buf, index);
     }
 
-	void Buffer::ResetAll(buffer buf)
+    void Buffer::ResetAll(buffer buf)
     {
         const nakedbuffer Naked = BufferImpl::Convert(buf);
         const BufferSpec* Spec = (const BufferSpec*) Naked[1];

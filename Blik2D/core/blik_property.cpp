@@ -365,7 +365,7 @@ namespace BLIK
 
     bool Property::LoadJsonCore(chars src)
     {
-		if(*src == '\0') return true;
+        if(*src == '\0') return true;
         while(*src != '{' && *src != '[')
             if(*(++src) == '\0')
                 return true;

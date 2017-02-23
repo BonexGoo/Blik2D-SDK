@@ -127,10 +127,10 @@ namespace BLIK
         return Result;
     }
 
-	ViewPanel::ViewPanel(float width, float height, const buffer touch)
+    ViewPanel::ViewPanel(float width, float height, const buffer touch)
         : m_width(width), m_height(height)
     {
-		m_ref_touch = touch;
+        m_ref_touch = touch;
         ((ViewManager::Touch*) m_ref_touch)->ready((sint32) width, (sint32) height);
         m_stack_clip.AtAdding() = Clip(0, 0, width, height, true);
         m_stack_scissor.AtAdding() = Rect(0, 0, width, height);
@@ -179,7 +179,7 @@ namespace BLIK
         Platform::Graphics::DrawBezier(begin + PointAdd, end + PointAdd, thick);
     }
 
-	void ViewPanel::polygon(Points p) const
+    void ViewPanel::polygon(Points p) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::FillPolygon(LastClip.l, LastClip.t, p);
@@ -197,34 +197,34 @@ namespace BLIK
         Platform::Graphics::DrawPolyBezier(LastClip.l, LastClip.t, p, thick, showfirst, showlast);
     }
 
-	static inline sint32 GetXAlignCode(UIAlign align)
-	{
-		sint32 XAlignCode = 0;
+    static inline sint32 GetXAlignCode(UIAlign align)
+    {
+        sint32 XAlignCode = 0;
         switch(align)
         {
         case UIA_LeftTop:    XAlignCode = 0; break; case UIA_CenterTop:    XAlignCode = 1; break; case UIA_RightTop:    XAlignCode = 2; break;
         case UIA_LeftMiddle: XAlignCode = 0; break; case UIA_CenterMiddle: XAlignCode = 1; break; case UIA_RightMiddle: XAlignCode = 2; break;
         case UIA_LeftBottom: XAlignCode = 0; break; case UIA_CenterBottom: XAlignCode = 1; break; case UIA_RightBottom: XAlignCode = 2; break;
         }
-		return XAlignCode;
-	}
+        return XAlignCode;
+    }
 
-	static inline sint32 GetYAlignCode(UIAlign align)
-	{
-		sint32 YAlignCode = 0;
+    static inline sint32 GetYAlignCode(UIAlign align)
+    {
+        sint32 YAlignCode = 0;
         switch(align)
         {
         case UIA_LeftTop:    YAlignCode = 0; break; case UIA_CenterTop:    YAlignCode = 0; break; case UIA_RightTop:    YAlignCode = 0; break;
         case UIA_LeftMiddle: YAlignCode = 1; break; case UIA_CenterMiddle: YAlignCode = 1; break; case UIA_RightMiddle: YAlignCode = 1; break;
         case UIA_LeftBottom: YAlignCode = 2; break; case UIA_CenterBottom: YAlignCode = 2; break; case UIA_RightBottom: YAlignCode = 2; break;
         }
-		return YAlignCode;
-	}
+        return YAlignCode;
+    }
 
-	haschild ViewPanel::icon(const Image& image, UIAlign align)
-	{
-		const Clip& LastClip = m_stack_clip[-1];
-		const sint32 XAlignCode = GetXAlignCode(align);
+    haschild ViewPanel::icon(const Image& image, UIAlign align)
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        const sint32 XAlignCode = GetXAlignCode(align);
         const sint32 YAlignCode = GetYAlignCode(align);
         const float DstX = ((XAlignCode == 0)? 0 : ((XAlignCode == 1)? (LastClip.Width() - image.GetWidth()) * 0.5f : LastClip.Width() - image.GetWidth()));
         const float DstY = ((YAlignCode == 0)? 0 : ((YAlignCode == 1)? (LastClip.Height() - image.GetHeight()) * 0.5f : LastClip.Height() - image.GetHeight()));
@@ -242,12 +242,12 @@ namespace BLIK
             return haschild_ok;
         }
         return haschild_null;
-	}
+    }
 
     haschild ViewPanel::icon(float x, float y, const Image& image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
-		const sint32 XAlignCode = GetXAlignCode(align);
+        const sint32 XAlignCode = GetXAlignCode(align);
         const sint32 YAlignCode = GetYAlignCode(align);
         const float DstX = ((XAlignCode == 0)? x : ((XAlignCode == 1)? x - image.GetWidth() * 0.5f : x - image.GetWidth()));
         const float DstY = ((YAlignCode == 0)? y : ((YAlignCode == 1)? y - image.GetHeight() * 0.5f : y - image.GetHeight()));
@@ -267,47 +267,47 @@ namespace BLIK
         return haschild_null;
     }
 
-	haschild ViewPanel::iconNatived(id_image_read image, UIAlign align)
-	{
-		const Clip& LastClip = m_stack_clip[-1];
-		const sint32 XAlignCode = GetXAlignCode(align);
+    haschild ViewPanel::iconNatived(id_image_read image, UIAlign align)
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        const sint32 XAlignCode = GetXAlignCode(align);
         const sint32 YAlignCode = GetYAlignCode(align);
-		const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
-		const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
-		const float DstX = ((XAlignCode == 0)? 0 : ((XAlignCode == 1)? (LastClip.Width() - ImageWidth) * 0.5f : LastClip.Width() - ImageWidth));
+        const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
+        const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
+        const float DstX = ((XAlignCode == 0)? 0 : ((XAlignCode == 1)? (LastClip.Width() - ImageWidth) * 0.5f : LastClip.Width() - ImageWidth));
         const float DstY = ((YAlignCode == 0)? 0 : ((YAlignCode == 1)? (LastClip.Height() - ImageHeight) * 0.5f : LastClip.Height() - ImageHeight));
 
-		Platform::Graphics::DrawImage(image, 0, 0, ImageWidth, ImageHeight,
-			LastClip.l + DstX, LastClip.t + DstY, ImageWidth, ImageHeight);
-		return haschild_null;
-	}
+        Platform::Graphics::DrawImage(image, 0, 0, ImageWidth, ImageHeight,
+            LastClip.l + DstX, LastClip.t + DstY, ImageWidth, ImageHeight);
+        return haschild_null;
+    }
 
-	haschild ViewPanel::iconNatived(float x, float y, id_image_read image, UIAlign align)
-	{
-		const Clip& LastClip = m_stack_clip[-1];
-		const sint32 XAlignCode = GetXAlignCode(align);
+    haschild ViewPanel::iconNatived(float x, float y, id_image_read image, UIAlign align)
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        const sint32 XAlignCode = GetXAlignCode(align);
         const sint32 YAlignCode = GetYAlignCode(align);
-		const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
-		const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
+        const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
+        const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
         const float DstX = ((XAlignCode == 0)? x : ((XAlignCode == 1)? x - ImageWidth * 0.5f : x - ImageWidth));
         const float DstY = ((YAlignCode == 0)? y : ((YAlignCode == 1)? y - ImageHeight * 0.5f : y - ImageHeight));
 
-		Platform::Graphics::DrawImage(image, 0, 0, ImageWidth, ImageHeight,
-			LastClip.l + DstX, LastClip.t + DstY, ImageWidth, ImageHeight);
-		return haschild_null;
-	}
+        Platform::Graphics::DrawImage(image, 0, 0, ImageWidth, ImageHeight,
+            LastClip.l + DstX, LastClip.t + DstY, ImageWidth, ImageHeight);
+        return haschild_null;
+    }
 
     haschild ViewPanel::stretch(const Image& image, bool rebuild)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const float XRate = LastClip.Width() / image.GetWidth();
         const float YRate = LastClip.Height() / image.GetHeight();
-		const float DstX = -image.L() * XRate;
+        const float DstX = -image.L() * XRate;
         const float DstY = -image.T() * YRate;
         const sint32 DstWidth = (sint32) (image.GetImageWidth() * XRate);
         const sint32 DstHeight = (sint32) (image.GetImageHeight() * YRate);
-		const sint32 ImageWidth = (rebuild)? DstWidth : image.GetImageWidth();
-		const sint32 ImageHeight = (rebuild)? DstHeight : image.GetImageHeight();
+        const sint32 ImageWidth = (rebuild)? DstWidth : image.GetImageWidth();
+        const sint32 ImageHeight = (rebuild)? DstHeight : image.GetImageHeight();
 
         const Color& LastColor = m_stack_color[-1];
         Platform::Graphics::DrawImage(image.GetImage(LastColor, ImageWidth, ImageHeight),
@@ -322,20 +322,20 @@ namespace BLIK
         return haschild_null;
     }
 
-	haschild ViewPanel::stretchNatived(id_image_read image)
-	{
-		const Clip& LastClip = m_stack_clip[-1];
-		const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
-		const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
+    haschild ViewPanel::stretchNatived(id_image_read image)
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
+        const sint32 ImageHeight = Platform::Graphics::GetImageHeight(image);
         const float XRate = LastClip.Width() / ImageWidth;
         const float YRate = LastClip.Height() / ImageHeight;
         const sint32 DstWidth = (sint32) (ImageWidth * XRate);
         const sint32 DstHeight = (sint32) (ImageHeight * YRate);
 
         Platform::Graphics::DrawImage(image, 0, 0, ImageWidth, ImageHeight,
-			LastClip.l, LastClip.t, DstWidth, DstHeight);
+            LastClip.l, LastClip.t, DstWidth, DstHeight);
         return haschild_null;
-	}
+    }
 
     haschild ViewPanel::ninepatch(const Image& image)
     {
@@ -472,7 +472,7 @@ namespace BLIK
     PanelState ViewPanel::state(chars uiname) const
     {
         PanelState Result = PS_Null;
-		auto CurTouch = (const ViewManager::Touch*) m_ref_touch;
+        auto CurTouch = (const ViewManager::Touch*) m_ref_touch;
         if(auto CurElement = CurTouch->get(uiname, 1))
         {
             if(CurTouch->ishovered(CurElement->m_hoverid))
@@ -947,8 +947,8 @@ namespace BLIK
     }
 
     autorun ViewManager::_makefunc(bool isnative, chars viewclass,
-		ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
-		ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f)
+        ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
+        ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f)
     {
         BLIK_ASSERT("중복된 이름의 뷰가 존재합니다", !_accessfunc(viewclass, false));
         Function* NewFunction = _accessfunc(viewclass, true);

@@ -4,120 +4,120 @@
 namespace BLIK
 {
     id_bitmap Bmp::Create(sint32 bytesperpixel, sint32 width, sint32 height, sint16 param1, sint16 param2)
-	{
-		const sint32 BmpRow = (bytesperpixel * width + 3) & ~3;
-		id_bitmap NewBitmap = (id_bitmap) Memory::Alloc(sizeof(bitmapfile) + sizeof(bitmapinfo) + BmpRow * height);
-		bitmapfile* BmpFileHeader = (bitmapfile*) NewBitmap;
-		BmpFileHeader->size = sizeof(bitmapfile) + sizeof(bitmapinfo) + BmpRow * height;
-		BmpFileHeader->param1 = param1;
-		BmpFileHeader->param2 = param2;
-		BmpFileHeader->offbits = sizeof(bitmapfile) + sizeof(bitmapinfo);
-		bitmapinfo* BmpInfoHeader = (bitmapinfo*) (((uint08*) NewBitmap) + sizeof(bitmapfile));
-		BmpInfoHeader->size = sizeof(bitmapinfo);
-		BmpInfoHeader->width = width;
-		BmpInfoHeader->height = height;
-		BmpInfoHeader->planes = 1;
-		BmpInfoHeader->bitcount = 8 * bytesperpixel;
-		BmpInfoHeader->compression = 0;
-		BmpInfoHeader->size_image = BmpRow * height;
-		BmpInfoHeader->xpels_meter = 3780;
-		BmpInfoHeader->ypels_meter = 3780;
-		BmpInfoHeader->color_used = 0;
-		BmpInfoHeader->color_important = 0;
-		return NewBitmap;
-	}
+    {
+        const sint32 BmpRow = (bytesperpixel * width + 3) & ~3;
+        id_bitmap NewBitmap = (id_bitmap) Memory::Alloc(sizeof(bitmapfile) + sizeof(bitmapinfo) + BmpRow * height);
+        bitmapfile* BmpFileHeader = (bitmapfile*) NewBitmap;
+        BmpFileHeader->size = sizeof(bitmapfile) + sizeof(bitmapinfo) + BmpRow * height;
+        BmpFileHeader->param1 = param1;
+        BmpFileHeader->param2 = param2;
+        BmpFileHeader->offbits = sizeof(bitmapfile) + sizeof(bitmapinfo);
+        bitmapinfo* BmpInfoHeader = (bitmapinfo*) (((uint08*) NewBitmap) + sizeof(bitmapfile));
+        BmpInfoHeader->size = sizeof(bitmapinfo);
+        BmpInfoHeader->width = width;
+        BmpInfoHeader->height = height;
+        BmpInfoHeader->planes = 1;
+        BmpInfoHeader->bitcount = 8 * bytesperpixel;
+        BmpInfoHeader->compression = 0;
+        BmpInfoHeader->size_image = BmpRow * height;
+        BmpInfoHeader->xpels_meter = 3780;
+        BmpInfoHeader->ypels_meter = 3780;
+        BmpInfoHeader->color_used = 0;
+        BmpInfoHeader->color_important = 0;
+        return NewBitmap;
+    }
 
     id_bitmap Bmp::Clone(id_bitmap_read bitmap)
     {
-		const sint32 BitCount = GetBitCount(bitmap);
-		if(BitCount == 24)
-		{
-			const sint32 Width = GetWidth(bitmap);
-			const sint32 Height = GetHeight(bitmap);
-			id_bitmap NewBitmap = Create(4, Width, Height, GetParam1(bitmap), GetParam2(bitmap));
-			auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
-			bytes SrcBits = GetBits(bitmap);
-			const sint32 SrcRow = (BitCount / 8 * Width + 3) & ~3;
-			for(sint32 y = 0; y < Height; ++y)
-			{
-				bytes CurBits = &SrcBits[y * SrcRow];
-				for(sint32 x = 0; x < Width; ++x)
-				{
-					DstBits->b = *(CurBits++);
-					DstBits->g = *(CurBits++);
-					DstBits->r = *(CurBits++);
-					DstBits->a = 0xFF;
-					DstBits++;
-				}
-			}
-			return NewBitmap;
-		}
-		else if(BitCount == 32)
-		{
-			const uint32 BitmapSize = GetFileSizeWithoutBM(bitmap);
-			id_bitmap NewBitmap = (id_bitmap) Memory::Alloc(BitmapSize);
-			Memory::Copy((void*) NewBitmap, (const void*) bitmap, BitmapSize);
-			return NewBitmap;
-		}
-		BLIK_ASSERT("본 함수가 지원하지 못하는 비트맵입니다", false);
-		return nullptr;
+        const sint32 BitCount = GetBitCount(bitmap);
+        if(BitCount == 24)
+        {
+            const sint32 Width = GetWidth(bitmap);
+            const sint32 Height = GetHeight(bitmap);
+            id_bitmap NewBitmap = Create(4, Width, Height, GetParam1(bitmap), GetParam2(bitmap));
+            auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
+            bytes SrcBits = GetBits(bitmap);
+            const sint32 SrcRow = (BitCount / 8 * Width + 3) & ~3;
+            for(sint32 y = 0; y < Height; ++y)
+            {
+                bytes CurBits = &SrcBits[y * SrcRow];
+                for(sint32 x = 0; x < Width; ++x)
+                {
+                    DstBits->b = *(CurBits++);
+                    DstBits->g = *(CurBits++);
+                    DstBits->r = *(CurBits++);
+                    DstBits->a = 0xFF;
+                    DstBits++;
+                }
+            }
+            return NewBitmap;
+        }
+        else if(BitCount == 32)
+        {
+            const uint32 BitmapSize = GetFileSizeWithoutBM(bitmap);
+            id_bitmap NewBitmap = (id_bitmap) Memory::Alloc(BitmapSize);
+            Memory::Copy((void*) NewBitmap, (const void*) bitmap, BitmapSize);
+            return NewBitmap;
+        }
+        BLIK_ASSERT("본 함수가 지원하지 못하는 비트맵입니다", false);
+        return nullptr;
     }
 
-	id_bitmap Bmp::CloneFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip)
-	{
-		if(bitcount == 24)
-		{
-			id_bitmap NewBitmap = Create(4, width, height);
-			auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
-			const sint32 SrcRow = (bitcount / 8 * width + 3) & ~3;
-			if(flip)
-			{
-				for(sint32 y = 0; y < height; ++y)
-				{
-					bytes CurBits = &bits[(height - 1 - y) * SrcRow];
-					for(sint32 x = 0; x < width; ++x)
-					{
-						DstBits->b = *(CurBits++);
-						DstBits->g = *(CurBits++);
-						DstBits->r = *(CurBits++);
-						DstBits->a = 0xFF;
-						DstBits++;
-					}
-				}
-			}
-			else for(sint32 y = 0; y < height; ++y)
-			{
-				bytes CurBits = &bits[y * SrcRow];
-				for(sint32 x = 0; x < width; ++x)
-				{
-					DstBits->b = *(CurBits++);
-					DstBits->g = *(CurBits++);
-					DstBits->r = *(CurBits++);
-					DstBits->a = 0xFF;
-					DstBits++;
-				}
-			}
-			return NewBitmap;
-		}
-		else if(bitcount == 32)
-		{
-			id_bitmap NewBitmap = Create(4, width, height);
-			auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
-			if(flip)
-			{
-				for(sint32 y = 0; y < height; ++y)
-				{
-					Memory::Copy(DstBits, &bits[(height - 1 - y) * sizeof(Bmp::bitmappixel) * width],
-						sizeof(Bmp::bitmappixel) * width);
-					DstBits += width;
-				}
-			}
-			else Memory::Copy(DstBits, bits, sizeof(Bmp::bitmappixel) * width * height);
-			return NewBitmap;
-		}
-		BLIK_ASSERT("본 함수가 지원하지 못하는 비트맵입니다", false);
-		return nullptr;
-	}
+    id_bitmap Bmp::CloneFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip)
+    {
+        if(bitcount == 24)
+        {
+            id_bitmap NewBitmap = Create(4, width, height);
+            auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
+            const sint32 SrcRow = (bitcount / 8 * width + 3) & ~3;
+            if(flip)
+            {
+                for(sint32 y = 0; y < height; ++y)
+                {
+                    bytes CurBits = &bits[(height - 1 - y) * SrcRow];
+                    for(sint32 x = 0; x < width; ++x)
+                    {
+                        DstBits->b = *(CurBits++);
+                        DstBits->g = *(CurBits++);
+                        DstBits->r = *(CurBits++);
+                        DstBits->a = 0xFF;
+                        DstBits++;
+                    }
+                }
+            }
+            else for(sint32 y = 0; y < height; ++y)
+            {
+                bytes CurBits = &bits[y * SrcRow];
+                for(sint32 x = 0; x < width; ++x)
+                {
+                    DstBits->b = *(CurBits++);
+                    DstBits->g = *(CurBits++);
+                    DstBits->r = *(CurBits++);
+                    DstBits->a = 0xFF;
+                    DstBits++;
+                }
+            }
+            return NewBitmap;
+        }
+        else if(bitcount == 32)
+        {
+            id_bitmap NewBitmap = Create(4, width, height);
+            auto DstBits = (Bmp::bitmappixel*) GetBits(NewBitmap);
+            if(flip)
+            {
+                for(sint32 y = 0; y < height; ++y)
+                {
+                    Memory::Copy(DstBits, &bits[(height - 1 - y) * sizeof(Bmp::bitmappixel) * width],
+                        sizeof(Bmp::bitmappixel) * width);
+                    DstBits += width;
+                }
+            }
+            else Memory::Copy(DstBits, bits, sizeof(Bmp::bitmappixel) * width * height);
+            return NewBitmap;
+        }
+        BLIK_ASSERT("본 함수가 지원하지 못하는 비트맵입니다", false);
+        return nullptr;
+    }
 
     id_bitmap Bmp::Copy(id_bitmap_read bitmap, sint32 l, sint32 t, sint32 r, sint32 b)
     {
@@ -135,18 +135,18 @@ namespace BLIK
         return NewBitmap;
     }
 
-	void Bmp::ChangeColor(id_bitmap bitmap, argb32 from, argb32 to)
-	{
-		const sint32 CurWidth = GetWidth(bitmap);
-		const sint32 CurHeight = GetHeight(bitmap);
-		bitmappixel* CurBits = (bitmappixel*) GetBits(bitmap);
-		for(sint32 y = 0; y < CurHeight; ++y)
-		for(sint32 x = 0; x < CurWidth; ++x)
-		{
-			bitmappixel& CurBit = CurBits[x + (CurHeight - 1 - y) * CurWidth];
+    void Bmp::ChangeColor(id_bitmap bitmap, argb32 from, argb32 to)
+    {
+        const sint32 CurWidth = GetWidth(bitmap);
+        const sint32 CurHeight = GetHeight(bitmap);
+        bitmappixel* CurBits = (bitmappixel*) GetBits(bitmap);
+        for(sint32 y = 0; y < CurHeight; ++y)
+        for(sint32 x = 0; x < CurWidth; ++x)
+        {
+            bitmappixel& CurBit = CurBits[x + (CurHeight - 1 - y) * CurWidth];
             if(CurBit.argb == from) CurBit.argb = to;
-		}
-	}
+        }
+    }
 
     void Bmp::Remove(id_bitmap bitmap)
     {
@@ -304,27 +304,27 @@ namespace BLIK
         return ((const bitmapfile*) bitmap)->size;
     }
 
-	sint16 Bmp::GetParam1(id_bitmap_read bitmap)
-	{
-		return ((const bitmapfile*) bitmap)->param1;
-	}
+    sint16 Bmp::GetParam1(id_bitmap_read bitmap)
+    {
+        return ((const bitmapfile*) bitmap)->param1;
+    }
 
-	sint16 Bmp::GetParam2(id_bitmap_read bitmap)
-	{
-		return ((const bitmapfile*) bitmap)->param2;
-	}
+    sint16 Bmp::GetParam2(id_bitmap_read bitmap)
+    {
+        return ((const bitmapfile*) bitmap)->param2;
+    }
 
-	sint32 Bmp::GetWidth(id_bitmap_read bitmap)
-	{
-		const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
-		return Info->width;
-	}
+    sint32 Bmp::GetWidth(id_bitmap_read bitmap)
+    {
+        const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
+        return Info->width;
+    }
 
-	sint32 Bmp::GetHeight(id_bitmap_read bitmap)
-	{
-		const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
-		return Info->height;
-	}
+    sint32 Bmp::GetHeight(id_bitmap_read bitmap)
+    {
+        const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
+        return Info->height;
+    }
 
     sint16 Bmp::GetBitCount(id_bitmap_read bitmap)
     {
@@ -332,19 +332,19 @@ namespace BLIK
         return Info->bitcount;
     }
 
-	uint32 Bmp::GetImageSize(id_bitmap_read bitmap)
-	{
-		const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
+    uint32 Bmp::GetImageSize(id_bitmap_read bitmap)
+    {
+        const bitmapinfo* Info = (const bitmapinfo*) (((bytes) bitmap) + sizeof(bitmapfile));
         return Info->size_image;
-	}
+    }
 
     bytes Bmp::GetBits(id_bitmap_read bitmap)
     {
         return ((bytes) bitmap) + sizeof(bitmapfile) + sizeof(bitmapinfo);
     }
 
-	uint08* Bmp::GetBits(id_bitmap bitmap)
-	{
-		return ((uint08*) bitmap) + sizeof(bitmapfile) + sizeof(bitmapinfo);
-	}
+    uint08* Bmp::GetBits(id_bitmap bitmap)
+    {
+        return ((uint08*) bitmap) + sizeof(bitmapfile) + sizeof(bitmapinfo);
+    }
 }

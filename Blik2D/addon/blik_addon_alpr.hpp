@@ -3,7 +3,7 @@
 
 namespace BLIK
 {
-	class AlprInstance;
+    class AlprInstance;
 
     class AlprClass
     {
@@ -13,13 +13,13 @@ namespace BLIK
         ~AlprClass();
         AlprClass& operator=(const AlprClass& rhs);
 
-	public:
+    public:
         bool Init(chars country, h_view listener);
-		inline h_view GetListener() {return m_listener;}
-		inline AlprInstance* GetInstance() {return m_instance;}
+        inline h_view GetListener() {return m_listener;}
+        inline AlprInstance* GetInstance() {return m_instance;}
 
-	private:
-		h_view m_listener;
-		AlprInstance* m_instance;
+    private:
+        h_view m_listener;
+        AlprInstance* m_instance;
     };
 }

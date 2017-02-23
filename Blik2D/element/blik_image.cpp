@@ -9,9 +9,9 @@ namespace BLIK
 {
     Image::Image()
     {
-		m_fileformat = Format::Null;
+        m_fileformat = Format::Null;
         m_bitmap = nullptr;
-		m_image_cache_max = 8;
+        m_image_cache_max = 8;
         ResetData();
     }
 
@@ -28,21 +28,21 @@ namespace BLIK
     Image& Image::operator=(const Image& rhs)
     {
         ResetBitmap();
-		m_fileformat = rhs.m_fileformat;
+        m_fileformat = rhs.m_fileformat;
         m_filepath = rhs.m_filepath;
-		Bmp::Remove(m_bitmap);
+        Bmp::Remove(m_bitmap);
         m_bitmap = (rhs.m_bitmap)? Bmp::Clone(rhs.m_bitmap) : nullptr;
-		m_image_cache_max = rhs.m_image_cache_max;
+        m_image_cache_max = rhs.m_image_cache_max;
         m_valid_rect.l = rhs.m_valid_rect.l;
         m_valid_rect.t = rhs.m_valid_rect.t;
         m_valid_rect.r = rhs.m_valid_rect.r;
         m_valid_rect.b = rhs.m_valid_rect.b;
-		m_child_ixzone = rhs.m_child_ixzone;
+        m_child_ixzone = rhs.m_child_ixzone;
         m_child_iyzone = rhs.m_child_iyzone;
-		m_patch_xzone = rhs.m_patch_xzone;
+        m_patch_xzone = rhs.m_patch_xzone;
         m_patch_yzone = rhs.m_patch_yzone;
-		m_patch_calced_sum_width = rhs.m_patch_calced_sum_width;
-		m_patch_calced_sum_height = rhs.m_patch_calced_sum_height;
+        m_patch_calced_sum_width = rhs.m_patch_calced_sum_width;
+        m_patch_calced_sum_height = rhs.m_patch_calced_sum_height;
         m_patch_calced_src_x = rhs.m_patch_calced_src_x;
         m_patch_calced_src_y = rhs.m_patch_calced_src_y;
         return *this;
@@ -51,25 +51,25 @@ namespace BLIK
     Image& Image::SetName(chars name)
     {
         m_filepath = name;
-		if(!m_filepath.Right(4).CompareNoCase(".bmp"))
-			m_fileformat = Format::Bmp;
-		else if(!m_filepath.Right(4).CompareNoCase(".jpg"))
-			m_fileformat = Format::Jpg;
-		else
-		{
-			m_filepath += ".bmp";
-			m_fileformat = Format::Bmp;
-		}
+        if(!m_filepath.Right(4).CompareNoCase(".bmp"))
+            m_fileformat = Format::Bmp;
+        else if(!m_filepath.Right(4).CompareNoCase(".jpg"))
+            m_fileformat = Format::Jpg;
+        else
+        {
+            m_filepath += ".bmp";
+            m_fileformat = Format::Bmp;
+        }
         return *this;
     }
 
     bool Image::Save(chars pathname) const
     {
-		String PathnameWithSlash = pathname;
-		if(0 < PathnameWithSlash.Length() && PathnameWithSlash[-2] != '/' && PathnameWithSlash[-2] != '\\')
-			PathnameWithSlash += '/';
+        String PathnameWithSlash = pathname;
+        if(0 < PathnameWithSlash.Length() && PathnameWithSlash[-2] != '/' && PathnameWithSlash[-2] != '\\')
+            PathnameWithSlash += '/';
 
-		const String Filename = m_filepath.Left(m_filepath.Length() - 4);
+        const String Filename = m_filepath.Left(m_filepath.Length() - 4);
         id_asset BmpAsset = Asset::OpenForWrite(String::Format("%s%s.bmp", (chars) PathnameWithSlash, (chars) Filename), true);
         id_asset JsonAsset = Asset::OpenForWrite(String::Format("%s%s.json", (chars) PathnameWithSlash, (chars) Filename), true);
         if(!BmpAsset || !JsonAsset)
@@ -107,7 +107,7 @@ namespace BLIK
             Json.At("child_iyzone").At(i).At("yend").Set(String::FromInteger(m_child_iyzone[i].yend));
         }
 
-		for(sint32 i = 0; i < m_patch_xzone.Count(); ++i)
+        for(sint32 i = 0; i < m_patch_xzone.Count(); ++i)
         {
             Json.At("patch_xzone").At(i).At("x").Set(String::FromInteger(m_patch_xzone[i].x));
             Json.At("patch_xzone").At(i).At("xend").Set(String::FromInteger(m_patch_xzone[i].xend));
@@ -126,46 +126,46 @@ namespace BLIK
 
     bool Image::Load(id_assetpath_read assetpath)
     {
-		// 초기화
-		ResetBitmap();
-		ResetData();
+        // 초기화
+        ResetBitmap();
+        ResetData();
 
-		// 파일오픈
-		if(m_fileformat == Format::Null) return false;
+        // 파일오픈
+        if(m_fileformat == Format::Null) return false;
         id_asset_read ImageAsset = Asset::OpenForRead(String::Format("%s", (chars) m_filepath), assetpath);
         if(!ImageAsset) return false;
-		const sint32 ImageAssetFilesize = Asset::Size(ImageAsset);
-		if(ImageAssetFilesize == 0)
-		{
-			Asset::Close(ImageAsset);
-			return false;
-		}
-		const String JsonFilename = m_filepath.Left(m_filepath.Length() - 4);
+        const sint32 ImageAssetFilesize = Asset::Size(ImageAsset);
+        if(ImageAssetFilesize == 0)
+        {
+            Asset::Close(ImageAsset);
+            return false;
+        }
+        const String JsonFilename = m_filepath.Left(m_filepath.Length() - 4);
         id_asset_read JsonAsset = Asset::OpenForRead(String::Format("%s.json", (chars) JsonFilename), assetpath);
 
-		// 디코딩
-		if(m_fileformat == Format::Bmp)
-		{
-			buffer BmpBuffer = Buffer::Alloc(BLIK_DBG ImageAssetFilesize - 2);
-			Asset::Skip(ImageAsset, 2);
-			Asset::Read(ImageAsset, (uint08*) BmpBuffer, ImageAssetFilesize - 2);
-			Asset::Close(ImageAsset);
-			m_bitmap = Bmp::Clone((id_bitmap) BmpBuffer);
-			Buffer::Free(BmpBuffer);
-		}
-		else if(m_fileformat == Format::Jpg)
-		{
-			buffer JpgBuffer = Buffer::Alloc(BLIK_DBG ImageAssetFilesize);
-			Asset::Read(ImageAsset, (uint08*) JpgBuffer, ImageAssetFilesize);
-			Asset::Close(ImageAsset);
-			m_bitmap = AddOn::Jpg::ToBmp((bytes) JpgBuffer, ImageAssetFilesize);
-			Buffer::Free(JpgBuffer);
-		}
-		RestoreFromMagentaAlpha();
-		const sint32 Width = Bmp::GetWidth(m_bitmap);
+        // 디코딩
+        if(m_fileformat == Format::Bmp)
+        {
+            buffer BmpBuffer = Buffer::Alloc(BLIK_DBG ImageAssetFilesize - 2);
+            Asset::Skip(ImageAsset, 2);
+            Asset::Read(ImageAsset, (uint08*) BmpBuffer, ImageAssetFilesize - 2);
+            Asset::Close(ImageAsset);
+            m_bitmap = Bmp::Clone((id_bitmap) BmpBuffer);
+            Buffer::Free(BmpBuffer);
+        }
+        else if(m_fileformat == Format::Jpg)
+        {
+            buffer JpgBuffer = Buffer::Alloc(BLIK_DBG ImageAssetFilesize);
+            Asset::Read(ImageAsset, (uint08*) JpgBuffer, ImageAssetFilesize);
+            Asset::Close(ImageAsset);
+            m_bitmap = AddOn::Jpg::ToBmp((bytes) JpgBuffer, ImageAssetFilesize);
+            Buffer::Free(JpgBuffer);
+        }
+        RestoreFromMagentaAlpha();
+        const sint32 Width = Bmp::GetWidth(m_bitmap);
         const sint32 Height = Bmp::GetHeight(m_bitmap);
 
-		// 데이터화
+        // 데이터화
         if(JsonAsset)
         {
             const sint32 JsonSize = Asset::Size(JsonAsset);
@@ -201,8 +201,8 @@ namespace BLIK
                 m_child_iyzone.At(-1).yend = Json("child_iyzone")[i]("yend").GetInt();
             }
 
-			BLIK_ASSERT("patch_xzone이 없습니다", Json("patch_xzone").IsValid());
-			for(sint32 i = 0, iend = Json("patch_xzone").LengthOfIndexable(); i < iend; ++i)
+            BLIK_ASSERT("patch_xzone이 없습니다", Json("patch_xzone").IsValid());
+            for(sint32 i = 0, iend = Json("patch_xzone").LengthOfIndexable(); i < iend; ++i)
             {
                 m_patch_xzone.AtAdding();
                 m_patch_xzone.At(-1).x = Json("patch_xzone")[i]("x").GetInt();
@@ -210,7 +210,7 @@ namespace BLIK
                 m_patch_xzone.At(-1).xend = Json("patch_xzone")[i]("xend").GetInt();
                 BLIK_ASSERT("patch_xzone이 잘못되었습니다", m_patch_xzone.At(-1).x < m_patch_xzone.At(-1).xend);
             }
-			BLIK_ASSERT("patch_yzone이 없습니다", Json("patch_yzone").IsValid());
+            BLIK_ASSERT("patch_yzone이 없습니다", Json("patch_yzone").IsValid());
             for(sint32 i = 0, iend = Json("patch_yzone").LengthOfIndexable(); i < iend; ++i)
             {
                 m_patch_yzone.AtAdding();
@@ -227,46 +227,46 @@ namespace BLIK
 
     bool Image::LoadBitmap(id_bitmap_read bitmap)
     {
-		// 초기화
-		ResetBitmap();
-		ResetData();
+        // 초기화
+        ResetBitmap();
+        ResetData();
 
         // 복제
-		const sint32 Width = Bmp::GetWidth(bitmap);
+        const sint32 Width = Bmp::GetWidth(bitmap);
         const sint32 Height = Bmp::GetHeight(bitmap);
-		m_bitmap = Bmp::Clone(bitmap);
+        m_bitmap = Bmp::Clone(bitmap);
 
         // 데이터화
-		MakeData(0, 0, Width, Height);
-		RecalcData();
+        MakeData(0, 0, Width, Height);
+        RecalcData();
         return true;
     }
 
-	bool Image::LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip)
-	{
-		// 초기화
-		ResetBitmap();
-		ResetData();
+    bool Image::LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip)
+    {
+        // 초기화
+        ResetBitmap();
+        ResetData();
 
         // 복제
-		m_bitmap = Bmp::CloneFromBits(bits, width, height, bitcount, flip);
+        m_bitmap = Bmp::CloneFromBits(bits, width, height, bitcount, flip);
 
         // 데이터화
-		MakeData(0, 0, width, height);
-		RecalcData();
+        MakeData(0, 0, width, height);
+        RecalcData();
         return true;
-	}
+    }
 
     bool Image::LoadUIBitmap(id_bitmap_read bitmap)
     {
-		// 초기화
-		ResetBitmap();
-		ResetData();
+        // 초기화
+        ResetBitmap();
+        ResetData();
 
-		// 최소화후 복사
-		const sint32 Width = Bmp::GetWidth(bitmap);
+        // 최소화후 복사
+        const sint32 Width = Bmp::GetWidth(bitmap);
         const sint32 Height = Bmp::GetHeight(bitmap);
-		const Bmp::bitmappixel* Bits = (const Bmp::bitmappixel*) Bmp::GetBits(bitmap);
+        const Bmp::bitmappixel* Bits = (const Bmp::bitmappixel*) Bmp::GetBits(bitmap);
         rect128 RectTest = {1, 1, Width - 1, Height - 1};
         Bmp::MinTest(bitmap, RectTest);
         m_bitmap = Bmp::Copy(bitmap, RectTest.l, RectTest.t, RectTest.r, RectTest.b);
@@ -282,8 +282,8 @@ namespace BLIK
         valid_rect.r = -0x0FFFFFFF;
         valid_rect.b = -0x0FFFFFFF;
 
-		// rect수집
-		for(sint32 x = 1; x < Width - 1; ++x)
+        // rect수집
+        for(sint32 x = 1; x < Width - 1; ++x)
         {
             const bool IsRed = (Bits[x + 0 * Width].argb == 0xFFFF0000);
             const bool IsBlue = (Bits[x + 0 * Width].argb == 0xFF0000FF);
@@ -304,7 +304,7 @@ namespace BLIK
             }
         }
 
-		// rect정보화 및 예외처리
+        // rect정보화 및 예외처리
         if(valid_rect.l != 0x0FFFFFFF && valid_rect.t != 0x0FFFFFFF)
         {
             m_valid_rect.l = valid_rect.l + XAdd;
@@ -320,8 +320,8 @@ namespace BLIK
             m_valid_rect.b = NewHeight;
         }
 
-		// patch수집
-		for(sint32 x = 1, oldx = -1; x < Width; ++x)
+        // patch수집
+        for(sint32 x = 1, oldx = -1; x < Width; ++x)
         {
             const bool IsRed = (Bits[x + (Height - 1) * Width].argb == 0xFFFF0000);
             if(oldx == -1 && IsRed) oldx = x;
@@ -346,19 +346,19 @@ namespace BLIK
             }
         }
 
-		// patch예외처리
-		if(m_patch_xzone.Count() == 0)
-		{
-			m_patch_xzone.AtAdding();
-			m_patch_xzone.At(-1).x = m_valid_rect.l;
-			m_patch_xzone.At(-1).xend = m_valid_rect.r;
-		}
-		if(m_patch_yzone.Count() == 0)
-		{
-			m_patch_yzone.AtAdding();
-			m_patch_yzone.At(-1).y = m_valid_rect.t;
-			m_patch_yzone.At(-1).yend = m_valid_rect.b;
-		}
+        // patch예외처리
+        if(m_patch_xzone.Count() == 0)
+        {
+            m_patch_xzone.AtAdding();
+            m_patch_xzone.At(-1).x = m_valid_rect.l;
+            m_patch_xzone.At(-1).xend = m_valid_rect.r;
+        }
+        if(m_patch_yzone.Count() == 0)
+        {
+            m_patch_yzone.AtAdding();
+            m_patch_yzone.At(-1).y = m_valid_rect.t;
+            m_patch_yzone.At(-1).yend = m_valid_rect.b;
+        }
         RecalcData(); // child정보의 가공을 위한 선행실행
 
         // child수집가공
@@ -465,22 +465,22 @@ namespace BLIK
         return true;
     }
 
-	id_bitmap Image::CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const
-	{
-		return (m_bitmap)? Bmp::Copy(m_bitmap, l, t, r, b) : nullptr;
-	}
+    id_bitmap Image::CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const
+    {
+        return (m_bitmap)? Bmp::Copy(m_bitmap, l, t, r, b) : nullptr;
+    }
 
-	void Image::ChangeToMagentaAlpha()
-	{
-		if(!m_bitmap) return;
-		Bmp::ChangeColor(m_bitmap, 0x00000000, 0x00FF00FF);
-	}
+    void Image::ChangeToMagentaAlpha()
+    {
+        if(!m_bitmap) return;
+        Bmp::ChangeColor(m_bitmap, 0x00000000, 0x00FF00FF);
+    }
 
-	void Image::RestoreFromMagentaAlpha()
-	{
-		if(!m_bitmap) return;
-		Bmp::ChangeColor(m_bitmap, 0x00FF00FF, 0x00000000);
-	}
+    void Image::RestoreFromMagentaAlpha()
+    {
+        if(!m_bitmap) return;
+        Bmp::ChangeColor(m_bitmap, 0x00FF00FF, 0x00000000);
+    }
 
     sint32 Image::GetImageWidth() const
     {
@@ -495,7 +495,7 @@ namespace BLIK
     Rect Image::CalcChildRect(const Rect& guide, sint32 ix, sint32 iy, sint32 xcount, sint32 ycount) const
     {
         BLIK_ASSERT("xcount는 1이상의 값이어야 합니다", 1 <= xcount);
-		BLIK_ASSERT("ycount는 1이상의 값이어야 합니다", 1 <= ycount);
+        BLIK_ASSERT("ycount는 1이상의 값이어야 합니다", 1 <= ycount);
 
         UpdatePatchBy(guide.Width(), guide.Height());
         const sint32 x1 = Math::Min(Math::Max(0, ix), m_child_ixzone.Count() - 1);
@@ -537,7 +537,7 @@ namespace BLIK
     bool Image::UpdatePatchBy(float w, float h) const
     {
         BLIK_ASSERT("m_patch_cached_dst_x이 할당되어 있지 않습니다", 0 < m_patch_cached_dst_x.Count());
-		BLIK_ASSERT("m_patch_cached_dst_y이 할당되어 있지 않습니다", 0 < m_patch_cached_dst_y.Count());
+        BLIK_ASSERT("m_patch_cached_dst_y이 할당되어 있지 않습니다", 0 < m_patch_cached_dst_y.Count());
 
         if(m_patch_cached_dst_terms_w != w)
         {
@@ -613,14 +613,14 @@ namespace BLIK
         Bmp::Remove(m_bitmap);
         m_bitmap = nullptr;
         for(sint32 i = 0, iend = m_image_cached_map.Count(); i < iend; ++i)
-		{
-			ImageMap& OldImageMap = *m_image_cached_map.AccessByOrder(i);
-			for(sint32 j = 0, jend = OldImageMap.Count(); j < jend; ++j)
-				Platform::Graphics::RemoveImage(*OldImageMap.AccessByOrder(j));
-		}
+        {
+            ImageMap& OldImageMap = *m_image_cached_map.AccessByOrder(i);
+            for(sint32 j = 0, jend = OldImageMap.Count(); j < jend; ++j)
+                Platform::Graphics::RemoveImage(*OldImageMap.AccessByOrder(j));
+        }
         m_image_cached_map.Reset();
-		while(m_image_cached_queue.Count())
-			delete m_image_cached_queue.Dequeue();
+        while(m_image_cached_queue.Count())
+            delete m_image_cached_queue.Dequeue();
     }
 
     void Image::ResetData()
@@ -629,14 +629,14 @@ namespace BLIK
         m_valid_rect.t = 0;
         m_valid_rect.r = 0;
         m_valid_rect.b = 0;
-		m_child_ixzone.Clear();
+        m_child_ixzone.Clear();
         m_child_iyzone.Clear();
-		m_patch_xzone.Clear();
+        m_patch_xzone.Clear();
         m_patch_yzone.Clear();
-		m_patch_calced_sum_width = 0;
-		m_patch_calced_sum_height = 0;
-		m_patch_calced_src_x.Clear();
-		m_patch_calced_src_y.Clear();
+        m_patch_calced_sum_width = 0;
+        m_patch_calced_sum_height = 0;
+        m_patch_calced_src_x.Clear();
+        m_patch_calced_src_y.Clear();
         m_patch_cached_dst_terms_w = -0xFFFF;
         m_patch_cached_dst_terms_h = -0xFFFF;
         m_patch_cached_dst_visible_w = false;
@@ -645,33 +645,33 @@ namespace BLIK
         m_patch_cached_dst_y.Clear();
     }
 
-	void Image::MakeData(sint32 l, sint32 t, sint32 r, sint32 b)
-	{
-		m_valid_rect.l = l;
+    void Image::MakeData(sint32 l, sint32 t, sint32 r, sint32 b)
+    {
+        m_valid_rect.l = l;
         m_valid_rect.t = t;
         m_valid_rect.r = r;
         m_valid_rect.b = b;
-		m_patch_xzone.AtAdding();
-		m_patch_xzone.At(-1).x = l;
-		m_patch_xzone.At(-1).xend = r;
-		m_patch_yzone.AtAdding();
-		m_patch_yzone.At(-1).y = t;
-		m_patch_yzone.At(-1).yend = b;
-	}
+        m_patch_xzone.AtAdding();
+        m_patch_xzone.At(-1).x = l;
+        m_patch_xzone.At(-1).xend = r;
+        m_patch_yzone.AtAdding();
+        m_patch_yzone.At(-1).y = t;
+        m_patch_yzone.At(-1).yend = b;
+    }
 
     void Image::RecalcData()
     {
-		BLIK_ASSERT("m_patch_calced_sum_width이 초기화되어 있지 않습니다", m_patch_calced_sum_width == 0);
-		BLIK_ASSERT("m_patch_calced_sum_height이 초기화되어 있지 않습니다", m_patch_calced_sum_height == 0);
-		BLIK_ASSERT("m_patch_calced_src_x이 초기화되어 있지 않습니다", m_patch_calced_src_x.Count() == 0);
-		BLIK_ASSERT("m_patch_calced_src_y이 초기화되어 있지 않습니다", m_patch_calced_src_y.Count() == 0);
+        BLIK_ASSERT("m_patch_calced_sum_width이 초기화되어 있지 않습니다", m_patch_calced_sum_width == 0);
+        BLIK_ASSERT("m_patch_calced_sum_height이 초기화되어 있지 않습니다", m_patch_calced_sum_height == 0);
+        BLIK_ASSERT("m_patch_calced_src_x이 초기화되어 있지 않습니다", m_patch_calced_src_x.Count() == 0);
+        BLIK_ASSERT("m_patch_calced_src_y이 초기화되어 있지 않습니다", m_patch_calced_src_y.Count() == 0);
 
-		for(sint32 i = 0, iend = m_patch_xzone.Count(); i < iend; ++i)
+        for(sint32 i = 0, iend = m_patch_xzone.Count(); i < iend; ++i)
             m_patch_calced_sum_width += m_patch_xzone[i].xend - m_patch_xzone[i].x;
-		for(sint32 i = 0, iend = m_patch_yzone.Count(); i < iend; ++i)
+        for(sint32 i = 0, iend = m_patch_yzone.Count(); i < iend; ++i)
             m_patch_calced_sum_height += m_patch_yzone[i].yend - m_patch_yzone[i].y;
 
-		BLIK_ASSERT("m_patch_xzone이 없습니다", 0 < m_patch_xzone.Count());
+        BLIK_ASSERT("m_patch_xzone이 없습니다", 0 < m_patch_xzone.Count());
         if(0 < PatchL())
             m_patch_calced_src_x.AtAdding() = 0;
         for(sint32 i = 0, iend = PatchXCount(); i < iend; ++i)
@@ -684,7 +684,7 @@ namespace BLIK
         BLIK_ASSERT("m_patch_cached_dst_x이 초기화되어 있지 않습니다", m_patch_cached_dst_x.Count() == 0);
         m_patch_cached_dst_x.AtWherever(m_patch_calced_src_x.Count() - 1);
 
-		BLIK_ASSERT("m_patch_yzone이 없습니다", 0 < m_patch_yzone.Count());
+        BLIK_ASSERT("m_patch_yzone이 없습니다", 0 < m_patch_yzone.Count());
         if(0 < PatchT())
             m_patch_calced_src_y.AtAdding() = 0;
         for(sint32 i = 0, iend = PatchYCount(); i < iend; ++i)
@@ -698,37 +698,37 @@ namespace BLIK
         m_patch_cached_dst_y.AtWherever(m_patch_calced_src_y.Count() - 1);
     }
 
-	id_image_read Image::GetImageCore(const Color& coloring, sint32 width, sint32 height) const
-	{
-		if(!m_bitmap) return nullptr;
-		width = Math::Max(1, width);
-		height = Math::Max(1, height);
-		const uint64 SizingKey = ((uint64) width) | (((uint64) height) << 32);
+    id_image_read Image::GetImageCore(const Color& coloring, sint32 width, sint32 height) const
+    {
+        if(!m_bitmap) return nullptr;
+        width = Math::Max(1, width);
+        height = Math::Max(1, height);
+        const uint64 SizingKey = ((uint64) width) | (((uint64) height) << 32);
         if(ImageMap* ResultMap = m_image_cached_map.Access(coloring.rgba))
-		if(id_image* Result = ResultMap->Access(SizingKey))
-			return *Result;
+        if(id_image* Result = ResultMap->Access(SizingKey))
+            return *Result;
 
-		// 최대수량을 초과한 오래된 캐시를 제거
-		while(m_image_cache_max <= m_image_cached_queue.Count())
-		{
-			const CacheKeys* OldCacheKeys = m_image_cached_queue.Dequeue();
-			ImageMap* OldImageMap = m_image_cached_map.Access(OldCacheKeys->coloring);
-			BLIK_ASSERT("잘못된 시나리오입니다", OldImageMap);
-			id_image* OldImage = OldImageMap->Access(OldCacheKeys->sizing);
-			BLIK_ASSERT("잘못된 시나리오입니다", OldImage);
-			Platform::Graphics::RemoveImage(*OldImage);
-			OldImageMap->Remove(OldCacheKeys->sizing);
-			if(OldImageMap->Count() == 0)
-				m_image_cached_map.Remove(OldCacheKeys->coloring);
-			delete OldCacheKeys;
-		}
-		CacheKeys* NewCacheKeys = new CacheKeys;
-		NewCacheKeys->coloring = coloring.rgba;
-		NewCacheKeys->sizing = SizingKey;
-		m_image_cached_queue.Enqueue(NewCacheKeys);
+        // 최대수량을 초과한 오래된 캐시를 제거
+        while(m_image_cache_max <= m_image_cached_queue.Count())
+        {
+            const CacheKeys* OldCacheKeys = m_image_cached_queue.Dequeue();
+            ImageMap* OldImageMap = m_image_cached_map.Access(OldCacheKeys->coloring);
+            BLIK_ASSERT("잘못된 시나리오입니다", OldImageMap);
+            id_image* OldImage = OldImageMap->Access(OldCacheKeys->sizing);
+            BLIK_ASSERT("잘못된 시나리오입니다", OldImage);
+            Platform::Graphics::RemoveImage(*OldImage);
+            OldImageMap->Remove(OldCacheKeys->sizing);
+            if(OldImageMap->Count() == 0)
+                m_image_cached_map.Remove(OldCacheKeys->coloring);
+            delete OldCacheKeys;
+        }
+        CacheKeys* NewCacheKeys = new CacheKeys;
+        NewCacheKeys->coloring = coloring.rgba;
+        NewCacheKeys->sizing = SizingKey;
+        m_image_cached_queue.Enqueue(NewCacheKeys);
 
-		// 옵션대로 생성하여 캐시맵에 할당
+        // 옵션대로 생성하여 캐시맵에 할당
         return (m_image_cached_map[coloring.rgba][SizingKey] =
-			Platform::Graphics::CreateImage(m_bitmap, coloring, width, height));
-	}
+            Platform::Graphics::CreateImage(m_bitmap, coloring, width, height));
+    }
 }

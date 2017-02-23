@@ -45,14 +45,14 @@ namespace BLIK
         \param key : 검색키
         \return 해당 객체
         */
-		TYPE& operator[](uint08 key) {return CreativeByIndexable(key);}
-		TYPE& operator[](uint16 key) {return CreativeByIndexable(key);}
-		TYPE& operator[](uint32 key) {return CreativeByIndexable(key);}
-		TYPE& operator[](uint64 key) {return CreativeByIndexable(key);}
-		TYPE& operator[](sint08 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint08) key);}
-		TYPE& operator[](sint16 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint16) key);}
-		TYPE& operator[](sint32 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint32) key);}
-		TYPE& operator[](sint64 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint64) key);}
+        TYPE& operator[](uint08 key) {return CreativeByIndexable(key);}
+        TYPE& operator[](uint16 key) {return CreativeByIndexable(key);}
+        TYPE& operator[](uint32 key) {return CreativeByIndexable(key);}
+        TYPE& operator[](uint64 key) {return CreativeByIndexable(key);}
+        TYPE& operator[](sint08 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint08) key);}
+        TYPE& operator[](sint16 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint16) key);}
+        TYPE& operator[](sint32 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint32) key);}
+        TYPE& operator[](sint64 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return CreativeByIndexable((uint64) key);}
 
         /*!
         \brief 문자열(UTF8/CP949)식 접근(생성가능)
@@ -151,14 +151,14 @@ namespace BLIK
         \param key : 검색키
         \return 해당 객체의 포인터
         */
-		TYPE* Access(uint08 key) const {return AccessByIndexable(key);}
-		TYPE* Access(uint16 key) const {return AccessByIndexable(key);}
-		TYPE* Access(uint32 key) const {return AccessByIndexable(key);}
-		TYPE* Access(uint64 key) const {return AccessByIndexable(key);}
-		TYPE* Access(sint08 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint08) key);}
-		TYPE* Access(sint16 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint16) key);}
-		TYPE* Access(sint32 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint32) key);}
-		TYPE* Access(sint64 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint64) key);}
+        TYPE* Access(uint08 key) const {return AccessByIndexable(key);}
+        TYPE* Access(uint16 key) const {return AccessByIndexable(key);}
+        TYPE* Access(uint32 key) const {return AccessByIndexable(key);}
+        TYPE* Access(uint64 key) const {return AccessByIndexable(key);}
+        TYPE* Access(sint08 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint08) key);}
+        TYPE* Access(sint16 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint16) key);}
+        TYPE* Access(sint32 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint32) key);}
+        TYPE* Access(sint64 key) const {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return AccessByIndexable((uint64) key);}
 
         /*!
         \brief 문자열(UTF8/CP949)식 접근(생성불가)
@@ -267,21 +267,21 @@ namespace BLIK
         \param key : 검색키
         \return 성공여부
         */
-		bool Remove(uint08 key) {return RemoveByIndexable(key);}
-		bool Remove(uint16 key) {return RemoveByIndexable(key);}
-		bool Remove(uint32 key) {return RemoveByIndexable(key);}
-		bool Remove(uint64 key) {return RemoveByIndexable(key);}
-		bool Remove(sint08 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint08) key);}
-		bool Remove(sint16 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint16) key);}
-		bool Remove(sint32 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint32) key);}
-		bool Remove(sint64 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint64) key);}
+        bool Remove(uint08 key) {return RemoveByIndexable(key);}
+        bool Remove(uint16 key) {return RemoveByIndexable(key);}
+        bool Remove(uint32 key) {return RemoveByIndexable(key);}
+        bool Remove(uint64 key) {return RemoveByIndexable(key);}
+        bool Remove(sint08 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint08) key);}
+        bool Remove(sint16 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint16) key);}
+        bool Remove(sint32 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint32) key);}
+        bool Remove(sint64 key) {BLIK_ASSERT("key가 음수값입니다", 0 <= key); return RemoveByIndexable((uint64) key);}
 
         /*!
         \brief 문자열(UTF8/CP949)식 데이터제거
         \param key : 검색키
         \return 성공여부
         */
-		bool Remove(chars key)
+        bool Remove(chars key)
         {
             if(RemoveCoreByNameable(key))
             {
@@ -296,7 +296,7 @@ namespace BLIK
         \param key : 검색키
         \return 성공여부
         */
-		bool Remove(wchars key)
+        bool Remove(wchars key)
         {
             if(RemoveCoreByNameable(key))
             {
@@ -464,9 +464,9 @@ namespace BLIK
             TYPE* Data;
         };
 
-		static inline uint64 ShiftedKey(uint64 key, sint32& step)
+        static inline uint64 ShiftedKey(uint64 key, sint32& step)
         {
-			uint32 flag;
+            uint32 flag;
             flag = !(key & oxFFFFFFFF00000000); key <<= flag << 5; step += flag << 3;
             flag = !(key & oxFFFF000000000000); key <<= flag << 4; step += flag << 2;
             flag = !(key & oxFF00000000000000); key <<= flag << 3; step += flag << 1;
@@ -474,27 +474,27 @@ namespace BLIK
             return key;
         }
 
-		static inline uint32 ShiftedKey(uint32 key, sint32& step)
+        static inline uint32 ShiftedKey(uint32 key, sint32& step)
         {
-			uint32 flag;
-			flag = !(key & 0xFFFF0000); key <<= flag << 4; step += flag << 2;
-			flag = !(key & 0xFF000000); key <<= flag << 3; step += flag << 1;
-			flag = !(key & 0xF0000000); key <<= flag << 2; step += flag << 0;
+            uint32 flag;
+            flag = !(key & 0xFFFF0000); key <<= flag << 4; step += flag << 2;
+            flag = !(key & 0xFF000000); key <<= flag << 3; step += flag << 1;
+            flag = !(key & 0xF0000000); key <<= flag << 2; step += flag << 0;
             return key;
         }
 
-		static inline uint16 ShiftedKey(uint16 key, sint32& step)
+        static inline uint16 ShiftedKey(uint16 key, sint32& step)
         {
-			uint32 flag;
+            uint32 flag;
             flag = !(key & 0xFF00); key <<= flag << 3; step += flag << 1;
             flag = !(key & 0xF000); key <<= flag << 2; step += flag << 0;
             return key;
         }
 
-		static inline uint08 ShiftedKey(uint08 key, sint32& step)
+        static inline uint08 ShiftedKey(uint08 key, sint32& step)
         {
-			uint32 flag;
-			flag = !(key & 0xF0); key <<= flag << 2; step += flag << 0;
+            uint32 flag;
+            flag = !(key & 0xF0); key <<= flag << 2; step += flag << 0;
             return key;
         }
 
@@ -546,12 +546,12 @@ namespace BLIK
             }
         }
 
-		template<typename KEYTYPE>
+        template<typename KEYTYPE>
         TYPE& CreativeByIndexable(KEYTYPE key)
-		{
-			const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
+        {
+            const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
 
-			sint32 step = 0;
+            sint32 step = 0;
             key = ShiftedKey(key, step);
             Map* CurNode = this;
             do
@@ -569,14 +569,14 @@ namespace BLIK
                     *((void**) CurNode->Data) = nullptr;
             }
             return *CurNode->Data;
-		}
+        }
 
-		template<typename KEYTYPE>
+        template<typename KEYTYPE>
         TYPE* AccessByIndexable(KEYTYPE key) const
         {
-			const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
+            const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
 
-			sint32 step = 0;
+            sint32 step = 0;
             key = ShiftedKey(key, step);
             const Map* CurNode = this;
             do
@@ -616,23 +616,23 @@ namespace BLIK
             }
         }
 
-		template<typename KEYTYPE>
+        template<typename KEYTYPE>
         bool RemoveByIndexable(KEYTYPE key)
-		{
-			sint32 step = 0;
-			key = ShiftedKey(key, step);
+        {
+            sint32 step = 0;
+            key = ShiftedKey(key, step);
             if(RemoveCoreByIndexable(key, step))
             {
                 Info->Count--;
                 return true;
             }
             return false;
-		}
+        }
 
-		template<typename KEYTYPE>
+        template<typename KEYTYPE>
         bool RemoveCoreByIndexable(KEYTYPE key, sint32 step)
         {
-			const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
+            const sint32 ShiftTest = sizeof(KEYTYPE) * 8 - 4;
 
             bool Result = false;
             Map* CurChild = nullptr;
@@ -651,7 +651,7 @@ namespace BLIK
             return Result;
         }
 
-		bool RemoveCoreByNameable(chars key)
+        bool RemoveCoreByNameable(chars key)
         {
             bool Result = false;
             Map* CurChild1 = nullptr;
@@ -671,7 +671,7 @@ namespace BLIK
             return Result;
         }
 
-		bool RemoveCoreByNameable(wchars key)
+        bool RemoveCoreByNameable(wchars key)
         {
             bool Result = false;
             Map* CurChild1 = nullptr;

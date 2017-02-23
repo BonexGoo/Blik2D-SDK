@@ -13,11 +13,11 @@ namespace BLIK
         return new Share(sample, mincount);
     }
 
-	void Share::Destroy(id_cloned_share cloned)
-	{
-		const Share* OldShare = (const Share*) cloned;
-		Share::Remove(OldShare);
-	}
+    void Share::Destroy(id_cloned_share cloned)
+    {
+        const Share* OldShare = (const Share*) cloned;
+        Share::Remove(OldShare);
+    }
 
     const Share* Share::CopyOnWrite(const Share* share, sint32 mincount)
     {
@@ -43,10 +43,10 @@ namespace BLIK
                 Share* wshare = (Share*) share;
                 Buffer::ResetOne(wshare->data, --wshare->validcount);
             }
-			else if(mincount == -2 && 0 < share->validcount) // 전체삭제
+            else if(mincount == -2 && 0 < share->validcount) // 전체삭제
             {
                 Share* wshare = (Share*) share;
-				wshare->validcount = 0;
+                wshare->validcount = 0;
                 Buffer::ResetAll(wshare->data);
             }
         }
@@ -79,10 +79,10 @@ namespace BLIK
         return Buffer::NameOf(data);
     }
 
-	sblock Share::TypeID() const
-	{
-		return Buffer::TypeOf(data);
-	}
+    sblock Share::TypeID() const
+    {
+        return Buffer::TypeOf(data);
+    }
 
     const Share* Share::Clone() const
     {

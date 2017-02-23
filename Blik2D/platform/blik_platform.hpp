@@ -26,9 +26,9 @@ namespace BLIK
     class ViewClass;
     class ViewManager;
     typedef bool (*PassCB)(void*, payload);
-	typedef void (*ThreadCB)(void*);
-	typedef sint32 (*SerialDecodeCB)(bytes data, sint32 length, uint08s& outdata, sint32* outtype);
-	typedef void (*SerialEncodeCB)(bytes data, sint32 length, uint08s& outdata, sint32 type);
+    typedef void (*ThreadCB)(void*);
+    typedef sint32 (*SerialDecodeCB)(bytes data, sint32 length, uint08s& outdata, sint32* outtype);
+    typedef void (*SerialEncodeCB)(bytes data, sint32 length, uint08s& outdata, sint32 type);
 
     //! \brief 크로스플랫폼지원
     class Platform
@@ -50,12 +50,12 @@ namespace BLIK
         */
         static void SetWindowName(chars name);
 
-		/*!
-		\brief 윈도우위치 설정
-		\param x : 가로위치(px)
-		\param y : 세로위치(px)
-		*/
-		static void SetWindowPos(sint32 x, sint32 y);
+        /*!
+        \brief 윈도우위치 설정
+        \param x : 가로위치(px)
+        \param y : 세로위치(px)
+        */
+        static void SetWindowPos(sint32 x, sint32 y);
 
         /*!
         \brief 윈도우사이즈 설정
@@ -64,11 +64,11 @@ namespace BLIK
         */
         static void SetWindowSize(sint32 width, sint32 height);
 
-		/*!
-		\brief 윈도우영역 얻기
-		\param rect : 윈도우영역(px)
-		*/
-		static void GetWindowRect(rect128& rect);
+        /*!
+        \brief 윈도우영역 얻기
+        \param rect : 윈도우영역(px)
+        */
+        static void GetWindowRect(rect128& rect);
 
         /*!
         \brief 스크린영역 얻기
@@ -79,15 +79,15 @@ namespace BLIK
 
         /*!
         \brief 스크린샷 이미지 얻기
-		\param rect : 스크린영역(px)
-		\return 스크린샷 이미지(nullptr은 실패)
-		*/
+        \param rect : 스크린영역(px)
+        \return 스크린샷 이미지(nullptr은 실패)
+        */
         static id_image_read GetScreenshotImage(const rect128& rect);
 
         /*!
         \brief 윈도우뷰 설정
         \param viewclass : 로드할 뷰클래스(BLIK_DECLARE_VIEW로 선언, nullptr일 경우 _defaultview_)
-		\return 뷰핸들
+        \return 뷰핸들
         */
         static h_view SetWindowView(chars viewclass = nullptr);
 
@@ -266,11 +266,11 @@ namespace BLIK
             */
             static bool FileDialog(String& path, String* shortpath, chars title, bool isdir = false);
 
-			/*!
+            /*!
             \brief 웹브라우저 다이얄로그
             \param url : 접속할 URL
             */
-			static void WebBrowserDialog(String url);
+            static void WebBrowserDialog(String url);
 
             /*!
             \brief 텍스트편집 트래커 열기
@@ -347,14 +347,14 @@ namespace BLIK
             */
             static sint64 CurrentAvailableMemory(sint64* totalbytes = nullptr);
 
-			/*!
-			\brief 특정 콜백함수를 스레드방식으로 실행
-			\param cb : 콜백함수
-			\param data : 콜백함수에 전달할 데이터
-			*/
-			static void Threading(ThreadCB cb, payload data);
+            /*!
+            \brief 특정 콜백함수를 스레드방식으로 실행
+            \param cb : 콜백함수
+            \param data : 콜백함수에 전달할 데이터
+            */
+            static void Threading(ThreadCB cb, payload data);
 
-			/*!
+            /*!
             \brief 소속된 스레드ID 구하기
             \return 스레드ID
             */
@@ -420,45 +420,45 @@ namespace BLIK
             static void GetClockDetail(id_clock clock, sint64* nsec,
                 sint32* sec = nullptr, sint32* min = nullptr, sint32* hour = nullptr, sint32* day = nullptr, sint32* month = nullptr, sint32* year = nullptr);
 
-			/*!
+            /*!
             \brief 옵션플래그 설정하기
             \param name : 플래그명
             \param flag : 플래그값
             */
-			static void SetOptionFlag(chars name, bool flag);
+            static void SetOptionFlag(chars name, bool flag);
 
-			/*!
+            /*!
             \brief 옵션플래그 얻어오기
             \param name : 플래그명
             \return 플래그값(디폴트값은 false)
             */
-			static bool GetOptionFlag(chars name);
+            static bool GetOptionFlag(chars name);
 
-			/*!
+            /*!
             \brief 옵션플래그 리스팅
             \return 존재하는 모든 플래그명들
             */
-			static Strings GetOptionFlagNames();
+            static Strings GetOptionFlagNames();
 
-			/*!
+            /*!
             \brief 옵션페이로드 설정하기
             \param name : 페이로드명
             \param data : 데이터주소
             */
-			static void SetOptionPayload(chars name, payload data);
+            static void SetOptionPayload(chars name, payload data);
 
-			/*!
+            /*!
             \brief 옵션페이로드 얻어오기
             \param name : 페이로드명
             \return 데이터주소(디폴트값은 nullptr)
             */
-			static payload GetOptionPayload(chars name);
+            static payload GetOptionPayload(chars name);
 
-			/*!
+            /*!
             \brief 옵션페이로드 리스팅
             \return 존재하는 모든 페이로드명
             */
-			static Strings GetOptionPayloadNames();
+            static Strings GetOptionPayloadNames();
         };
 
         //! \brief 그래픽스지원
@@ -505,13 +505,13 @@ namespace BLIK
             */
             static void FillRect(float x, float y, float w, float h);
 
-			/*!
+            /*!
             \brief 폴리곤출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param p : 꼭지점들(px)
             */
-			static void FillPolygon(float x, float y, Points p);
+            static void FillPolygon(float x, float y, Points p);
 
             /*!
             \brief 타원출력
@@ -562,26 +562,26 @@ namespace BLIK
             \brief 이미지 생성
             \param bitmap : 비트맵
             \param coloring : 컬러링 색상
-			\param resizing_width : 리사이징용 가로길이(px)
-			\param resizing_height : 리사이징용 세로길이(px)
+            \param resizing_width : 리사이징용 가로길이(px)
+            \param resizing_height : 리사이징용 세로길이(px)
             \return 이미지
             */
             static id_image CreateImage(id_bitmap_read bitmap,
-				const Color& coloring = Color(Color::ColoringDefault), sint32 resizing_width = -1, sint32 resizing_height = -1);
+                const Color& coloring = Color(Color::ColoringDefault), sint32 resizing_width = -1, sint32 resizing_height = -1);
 
-			/*!
+            /*!
             \brief 이미지 가로길이 얻기
             \param image : 이미지
             \return 이미지 가로길이
             */
-			static sint32 GetImageWidth(id_image_read image);
+            static sint32 GetImageWidth(id_image_read image);
 
-			/*!
+            /*!
             \brief 이미지 세로길이 얻기
             \param image : 이미지
             \return 이미지 세로길이
             */
-			static sint32 GetImageHeight(id_image_read image);
+            static sint32 GetImageHeight(id_image_read image);
 
             /*!
             \brief 이미지 해제
@@ -723,27 +723,27 @@ namespace BLIK
             \param file : 파일ID
             \param data : 저장할 데이터
             \param size : 데이터의 길이(byte)
-			\return 읽은 파일사이즈
+            \return 읽은 파일사이즈
             \see OpenForRead
             */
             static const sint32 Read(id_file_read file, uint08* data, const sint32 size);
 
-			/*!
+            /*!
             \brief 파일에서 한줄읽기
             \param file : 파일ID
             \param text : 저장할 텍스트
             \param size : 텍스트의 길이(byte, 널문자포함)
-			\return 읽은 파일사이즈
+            \return 읽은 파일사이즈
             \see OpenForRead
             */
-			static const sint32 ReadLine(id_file_read file, char* text, const sint32 size);
+            static const sint32 ReadLine(id_file_read file, char* text, const sint32 size);
 
             /*!
             \brief 파일쓰기
             \param file : 파일ID
             \param data : 불러올 데이터
             \param size : 데이터의 길이(byte)
-			\return 쓴 파일사이즈
+            \return 쓴 파일사이즈
             \see OpenForWrite
             */
             static const sint32 Write(id_file file, bytes data, const sint32 size);
@@ -756,7 +756,7 @@ namespace BLIK
             */
             static void Seek(id_file_read file, const sint32 focus);
 
-			/*!
+            /*!
             \brief 파일포커스
             \param file : 파일ID
             \see Seek
@@ -1079,218 +1079,218 @@ namespace BLIK
             static void* GetServByName(chars name, chars proto);
         };
 
-		//! \brief 서버지원
+        //! \brief 서버지원
         class Server
-		{
-		public:
-			/*!
-			\brief 서버ID 할당
-			\param sizefield : 사이즈필드 사용여부
-			\return 서버ID(nullptr은 실패)
-			\see Release, Listen
-			*/
-			static id_server Create(bool sizefield);
+        {
+        public:
+            /*!
+            \brief 서버ID 할당
+            \param sizefield : 사이즈필드 사용여부
+            \return 서버ID(nullptr은 실패)
+            \see Release, Listen
+            */
+            static id_server Create(bool sizefield);
 
-			/*!
-			\brief 서버ID 반환
-			\param server : 서버ID
-			\see Create
-			*/
-			static void Release(id_server server);
+            /*!
+            \brief 서버ID 반환
+            \param server : 서버ID
+            \see Create
+            */
+            static void Release(id_server server);
 
-			/*!
-			\brief 서비스개시
-			\param server : 서버ID
-			\param port : 포트번호
-			\return 성공여부
-			\see Create, Release
-			*/
-			static bool Listen(id_server server, uint16 port);
+            /*!
+            \brief 서비스개시
+            \param server : 서버ID
+            \param port : 포트번호
+            \return 성공여부
+            \see Create, Release
+            */
+            static bool Listen(id_server server, uint16 port);
 
-			/*!
-			\brief 수신된 패킷확인 및 포커싱
-			\param server : 서버ID
-			\return 수신여부
-			\see GetPacketType, GetPacketPeerID, GetPacketBuffer
-			*/
-			static bool TryNextPacket(id_server server);
+            /*!
+            \brief 수신된 패킷확인 및 포커싱
+            \param server : 서버ID
+            \return 수신여부
+            \see GetPacketType, GetPacketPeerID, GetPacketBuffer
+            */
+            static bool TryNextPacket(id_server server);
 
-			/*!
-			\brief 포커싱된 패킷종류 반환
-			\param server : 서버ID
-			\return 패킷종류
-			\see TryNextPacket
-			*/
-			static packettype GetPacketType(id_server server);
+            /*!
+            \brief 포커싱된 패킷종류 반환
+            \param server : 서버ID
+            \return 패킷종류
+            \see TryNextPacket
+            */
+            static packettype GetPacketType(id_server server);
 
-			/*!
-			\brief 포커싱된 패킷의 송신자ID 반환
-			\param server : 서버ID
-			\return 송신자ID
-			\see TryNextPacket
-			*/
-			static sint32 GetPacketPeerID(id_server server);
+            /*!
+            \brief 포커싱된 패킷의 송신자ID 반환
+            \param server : 서버ID
+            \return 송신자ID
+            \see TryNextPacket
+            */
+            static sint32 GetPacketPeerID(id_server server);
 
-			/*!
-			\brief 포커싱된 패킷버퍼 반환
-			\param server : 서버ID
-			\param getsize : 버퍼의 길이를 요청
-			\return 패킷버퍼
-			\see TryNextPacket
-			*/
-			static bytes GetPacketBuffer(id_server server, sint32* getsize = nullptr);
+            /*!
+            \brief 포커싱된 패킷버퍼 반환
+            \param server : 서버ID
+            \param getsize : 버퍼의 길이를 요청
+            \return 패킷버퍼
+            \see TryNextPacket
+            */
+            static bytes GetPacketBuffer(id_server server, sint32* getsize = nullptr);
 
-			/*!
-			\brief 특정 송신자에게 데이터전달
-			\param server : 서버ID
-			\param peerid : 송신자ID
-			\param buffer : 데이터버퍼
-			\param buffersize : 버퍼의 길이
-			\return 성공여부
-			*/
-			static bool SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize);
-		};
+            /*!
+            \brief 특정 송신자에게 데이터전달
+            \param server : 서버ID
+            \param peerid : 송신자ID
+            \param buffer : 데이터버퍼
+            \param buffersize : 버퍼의 길이
+            \return 성공여부
+            */
+            static bool SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize);
+        };
 
-		//! \brief 시리얼통신지원
+        //! \brief 시리얼통신지원
         class Serial
-		{
-		public:
-			#define BLIK_SERIAL_ERROR_DISCONNECTED (-0x10000) // 접속해제, 해제사유코드
-			#define BLIK_SERIAL_ERROR_BROKEN_FORMAT (-0x20000) // 파싱포맷의 문법오류<포맷스트링내 위치> (휴먼에러)
-			#define BLIK_SERIAL_ERROR_SHORT_STREAM (-0x30000) // 읽기시 확보된 스트림부족<처리못한 가변인수의 순번> (휴먼에러)
+        {
+        public:
+            #define BLIK_SERIAL_ERROR_DISCONNECTED (-0x10000) // 접속해제, 해제사유코드
+            #define BLIK_SERIAL_ERROR_BROKEN_FORMAT (-0x20000) // 파싱포맷의 문법오류<포맷스트링내 위치> (휴먼에러)
+            #define BLIK_SERIAL_ERROR_SHORT_STREAM (-0x30000) // 읽기시 확보된 스트림부족<처리못한 가변인수의 순번> (휴먼에러)
 
-			/*!
+            /*!
             \brief 시리얼포트이름 리스팅
-			\param spec : json형태로 시리얼포트들의 스펙을 받음(선택사항)
+            \param spec : json형태로 시리얼포트들의 스펙을 받음(선택사항)
             \return 존재하는 모든 시리얼포트이름
             */
-			static Strings GetAllNames(String* spec = nullptr);
+            static Strings GetAllNames(String* spec = nullptr);
 
-			/*!
-			\brief 시리얼통신ID 할당
+            /*!
+            \brief 시리얼통신ID 할당
             \param name : 시리얼포트이름(없으면 첫번째 시리얼포트찾음)
-			\param dec : 읽기시 
-			\param enc :
-			\return 시리얼통신ID(nullptr은 실패)
-			\see Close
-			*/
-			static id_serial Open(chars name = "", SerialDecodeCB dec = nullptr, SerialEncodeCB enc = nullptr);
+            \param dec : 읽기시 
+            \param enc :
+            \return 시리얼통신ID(nullptr은 실패)
+            \see Close
+            */
+            static id_serial Open(chars name = "", SerialDecodeCB dec = nullptr, SerialEncodeCB enc = nullptr);
 
-			/*!
-			\brief 시리얼통신ID 반환
-			\param serial : 시리얼통신ID
-			\see Open
-			*/
-			static void Close(id_serial serial);
+            /*!
+            \brief 시리얼통신ID 반환
+            \param serial : 시리얼통신ID
+            \see Open
+            */
+            static void Close(id_serial serial);
 
-			/*!
-			\brief 현재 접속상황
-			\param serial : 시리얼통신ID
-			\return 접속여부
-			*/
-			static bool Connected(id_serial serial);
+            /*!
+            \brief 현재 접속상황
+            \param serial : 시리얼통신ID
+            \return 접속여부
+            */
+            static bool Connected(id_serial serial);
 
-			/*!
-			\brief 읽기스트림으로 청크단위 수신하기(등록된 디코더가 없다면 불특정길이)
-			\param serial : 시리얼통신ID
-			\param gettype : 디코더에 의해 부여된 패킷타입ID
-			\return 수신여부
-			*/
-			static bool ReadReady(id_serial serial, sint32* gettype = nullptr);
+            /*!
+            \brief 읽기스트림으로 청크단위 수신하기(등록된 디코더가 없다면 불특정길이)
+            \param serial : 시리얼통신ID
+            \param gettype : 디코더에 의해 부여된 패킷타입ID
+            \return 수신여부
+            */
+            static bool ReadReady(id_serial serial, sint32* gettype = nullptr);
 
-			/*!
-			\brief 현재 읽기스트림의 사이즈얻기
-			\param serial : 시리얼통신ID
-			\return 대기중인 읽기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
-			*/
-			static sint32 ReadAvailable(id_serial serial);
+            /*!
+            \brief 현재 읽기스트림의 사이즈얻기
+            \param serial : 시리얼통신ID
+            \return 대기중인 읽기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
+            */
+            static sint32 ReadAvailable(id_serial serial);
 
-			/*!
-			\brief 읽기스트림에서 파싱포맷에 의해 읽기
-			\param serial : 시리얼통신ID
-			\param format : 파싱포맷(ex: "[be] #4 / #2 #1 #4:s2 [le] #4:skip, #1=n #n:str", 빈칸/콤마/슬래시등은 주석)
-			\param ... : 포맷으로부터 입력받을 가변인수들(ex: &a, &b, &c)
-			\return 읽은후 남은 읽기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
-			*/
-			static sint32 Read(id_serial serial, chars format, ...);
+            /*!
+            \brief 읽기스트림에서 파싱포맷에 의해 읽기
+            \param serial : 시리얼통신ID
+            \param format : 파싱포맷(ex: "[be] #4 / #2 #1 #4:s2 [le] #4:skip, #1=n #n:str", 빈칸/콤마/슬래시등은 주석)
+            \param ... : 포맷으로부터 입력받을 가변인수들(ex: &a, &b, &c)
+            \return 읽은후 남은 읽기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
+            */
+            static sint32 Read(id_serial serial, chars format, ...);
 
-			/*!
-			\brief 쓰기스트림에 파싱포맷에 의해 쓰기
-			\param serial : 시리얼통신ID
-			\param format : 파싱포맷(ex: "[be] #4=12 #2=0x00 #1 #4:s2 [le] #1:s4 #n:str", 빈칸/콤마/슬래시등은 주석)
-			\param ... : 포맷으로 출력할 가변인수들(ex: a, b, c)
-			\return 모여진 쓰기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
-			*/
-			static sint32 Write(id_serial serial, chars format, ...);
+            /*!
+            \brief 쓰기스트림에 파싱포맷에 의해 쓰기
+            \param serial : 시리얼통신ID
+            \param format : 파싱포맷(ex: "[be] #4=12 #2=0x00 #1 #4:s2 [le] #1:s4 #n:str", 빈칸/콤마/슬래시등은 주석)
+            \param ... : 포맷으로 출력할 가변인수들(ex: a, b, c)
+            \return 모여진 쓰기스트림의 바이트길이(에러시, BLIK_SERIAL_ERROR계열)
+            */
+            static sint32 Write(id_serial serial, chars format, ...);
 
-			/*!
-			\brief 쓰기스트림을 송신하기
-			\param serial : 시리얼통신ID
-			\param type : 인코더에 전달될 패킷타입ID
-			*/
-			static void WriteFlush(id_serial serial, sint32 type = 0);
-		};
+            /*!
+            \brief 쓰기스트림을 송신하기
+            \param serial : 시리얼통신ID
+            \param type : 인코더에 전달될 패킷타입ID
+            */
+            static void WriteFlush(id_serial serial, sint32 type = 0);
+        };
 
         //! \brief 카메라지원
         class Camera
         {
         public:
-			/*!
+            /*!
             \brief 카메라이름 리스팅
-			\param spec : json형태로 카메라들의 스펙을 받음(선택사항)
+            \param spec : json형태로 카메라들의 스펙을 받음(선택사항)
             \return 존재하는 모든 카메라이름
             */
-			static Strings GetAllNames(String* spec = nullptr);
+            static Strings GetAllNames(String* spec = nullptr);
 
-			/*!
-			\brief 카메라ID 할당
+            /*!
+            \brief 카메라ID 할당
             \param name : 카메라이름(없으면 첫번째 카메라를 찾음)
             \param width : 가로해상도(-1이면 최대사이즈를 찾음)
             \param height : 세로해상도(-1이면 최대사이즈를 찾음)
-			\return 카메라ID(nullptr은 실패)
-			\see Close
-			*/
+            \return 카메라ID(nullptr은 실패)
+            \see Close
+            */
             static id_camera Open(chars name = "", sint32 width = -1, sint32 height = -1);
 
-			/*!
-			\brief 카메라ID 반환
-			\param camera : 카메라ID
-			\see Open
-			*/
-			static void Close(id_camera camera);
+            /*!
+            \brief 카메라ID 반환
+            \param camera : 카메라ID
+            \see Open
+            */
+            static void Close(id_camera camera);
 
             /*!
-			\brief 카메라ID 복제
-			\param camera : 카메라ID
+            \brief 카메라ID 복제
+            \param camera : 카메라ID
             \return 복제된 카메라ID(nullptr은 실패)
             \see Open
-			*/
+            */
             static id_camera Clone(id_camera camera);
 
-			/*!
-			\brief 촬영하기
+            /*!
+            \brief 촬영하기
             \param preview : 프리뷰식 촬영여부(해상도가 낮지만 촬영속도는 빠름)
-			\param camera : 카메라ID
+            \param camera : 카메라ID
             \param needstop : 캡쳐직후 촬영을 중지할 여부
-			*/
+            */
             static void Capture(id_camera camera, bool preview, bool needstop);
 
-			/*!
+            /*!
             \brief 마지막 촬영한 이미지 얻기
-			\param camera : 카메라ID
+            \param camera : 카메라ID
             \param maxwidth : 가로길이 최대값
             \param maxheight : 세로길이 최대값
-			\return 촬영한 이미지(nullptr은 실패)
-			*/
+            \return 촬영한 이미지(nullptr은 실패)
+            */
             static id_image_read LastCapturedImage(id_camera camera, sint32 maxwidth = -1, sint32 maxheight = -1);
 
-			/*!
+            /*!
             \brief 마지막 촬영한 비트맵 얻기
-			\param camera : 카메라ID
+            \param camera : 카메라ID
             \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
-			\return 촬영한 비트맵(nullptr은 실패)
-			*/
-			static id_bitmap_read LastCapturedBitmap(id_camera camera, bool vflip = true);
+            \return 촬영한 비트맵(nullptr은 실패)
+            */
+            static id_bitmap_read LastCapturedBitmap(id_camera camera, bool vflip = true);
 
             /*!
             \brief 마지막 촬영한 이미지크기 얻기
@@ -1319,7 +1319,7 @@ namespace BLIK
             \return 촬영횟수
             */
             static sint32 TotalPreviewShotCount(id_camera camera);
-		};
+        };
 
         //! \brief 마이크지원
         class Microphone
@@ -1327,69 +1327,69 @@ namespace BLIK
         public:
             /*!
             \brief 마이크이름 리스팅
-			\param spec : json형태로 마이크들의 스펙을 받음(선택사항)
+            \param spec : json형태로 마이크들의 스펙을 받음(선택사항)
             \return 존재하는 모든 마이크이름
             */
-			static Strings GetAllNames(String* spec = nullptr);
+            static Strings GetAllNames(String* spec = nullptr);
 
             /*!
-			\brief 마이크ID 할당
+            \brief 마이크ID 할당
             \param name : 마이크이름(없으면 첫번째 마이크를 찾음)
             \param maxcount : 사운드큐의 최대크기(너무 크게 잡으면 비디오와의 싱크가 맞지 않음)
-			\return 마이크ID(nullptr은 실패)
-			\see Close
-			*/
+            \return 마이크ID(nullptr은 실패)
+            \see Close
+            */
             static id_microphone Open(chars name = "", sint32 maxcount = 4);
 
             /*!
-			\brief 마이크ID 반환
-			\param microphone : 마이크ID
-			\see Open
-			*/
-			static void Close(id_microphone microphone);
+            \brief 마이크ID 반환
+            \param microphone : 마이크ID
+            \see Open
+            */
+            static void Close(id_microphone microphone);
 
             /*!
-			\brief BitRate정보 얻기
-			\param microphone : 마이크ID
-			\return BitRate정보
-			*/
+            \brief BitRate정보 얻기
+            \param microphone : 마이크ID
+            \return BitRate정보
+            */
             static sint32 GetBitRate(id_microphone microphone);
 
             /*!
-			\brief Channel정보 얻기
-			\param microphone : 마이크ID
-			\return Channel정보
-			*/
+            \brief Channel정보 얻기
+            \param microphone : 마이크ID
+            \return Channel정보
+            */
             static sint32 GetChannel(id_microphone microphone);
 
             /*!
-			\brief SampleRate정보 얻기
-			\param microphone : 마이크ID
-			\return SampleRate정보
-			*/
+            \brief SampleRate정보 얻기
+            \param microphone : 마이크ID
+            \return SampleRate정보
+            */
             static sint32 GetSampleRate(id_microphone microphone);
 
             /*!
-			\brief 적재된 사운드확인 및 포커싱
-			\param microphone : 마이크ID
+            \brief 적재된 사운드확인 및 포커싱
+            \param microphone : 마이크ID
             \return 포키싱여부
-			*/
+            */
             static bool TryNextSound(id_microphone microphone);
 
             /*!
-			\brief 포커싱된 사운드데이터 반환
-			\param microphone : 마이크ID
+            \brief 포커싱된 사운드데이터 반환
+            \param microphone : 마이크ID
             \return 사운드데이터(audio/pcm)
             \see TryNextSound
-			*/
+            */
             static bytes GetSoundData(id_microphone microphone);
 
             /*!
-			\brief 포커싱된 사운드데이터의 크기 반환
-			\param microphone : 마이크ID
+            \brief 포커싱된 사운드데이터의 크기 반환
+            \param microphone : 마이크ID
             \return 사운드데이터의 크기(바이트단위)
             \see TryNextSound
-			*/
+            */
             static sint32 GetSoundDataLength(id_microphone microphone);
         };
     };

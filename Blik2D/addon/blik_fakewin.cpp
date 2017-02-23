@@ -31,8 +31,8 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     #undef freeaddrinfo
     #undef gai_strerror
     #undef getpid
-	#undef mbstowcs_s
-	#undef wcstombs_s
+    #undef mbstowcs_s
+    #undef wcstombs_s
 
     #undef CreateFileW
     #undef CreateFileMapping
@@ -59,18 +59,18 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     #undef GetCurrentProcess
     #undef GetCurrentThreadId
     #undef GetExitCodeThread
-	#undef GetFileAttributes
+    #undef GetFileAttributes
     #undef GetFileAttributesW
     #undef GetFileAttributesExA
     #undef GetFileAttributesExW
-	#undef GetFullPathNameA
+    #undef GetFullPathNameA
     #undef GetFullPathNameW
     #undef GetLastError
     #undef SetLastError
     #undef LoadLibraryA
     #undef GetModuleHandleA
     #undef GetModuleHandleW
-	#undef GetModuleFileName
+    #undef GetModuleFileName
     #undef GetProcAddress
     #undef GetProcessAffinityMask
     #undef GetProcessWindowStation
@@ -78,16 +78,16 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     #undef GetShortPathNameW
     #undef GetStdHandle
     #undef GetSystemInfo
-	#undef GetNativeSystemInfo
+    #undef GetNativeSystemInfo
     #undef GetSystemTimeAsFileTime
     #undef SystemTimeToFileTime
     #undef GetTickCount
     #undef GetUserObjectInformationW
     #undef LocalFree
     #undef MessageBox
-	#undef CopyFile
-	#undef DeleteFileA
-	#undef MoveFileEx
+    #undef CopyFile
+    #undef DeleteFileA
+    #undef MoveFileEx
     #undef MoveFileExW
     #undef GetTempPathA
     #undef GetTempFileNameA
@@ -103,9 +103,9 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     #undef SetFileAttributesW
     #undef Sleep
     #undef VerifyVersionInfo
-	#undef SetEvent
-	#undef ResetEvent
-	#undef CreateEvent
+    #undef SetEvent
+    #undef ResetEvent
+    #undef CreateEvent
     #undef CreateEventW
     #undef WaitForSingleObject
     #undef WaitForMultipleObjects
@@ -140,20 +140,20 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     #undef _waccess
     #undef _wchmod
-	#undef _wfopen
-	#undef _wfopen_s
-	#undef _fopen
-	#undef _fopen_s
-	#undef _fseek
-	#undef _ftell
-	#undef _rewind
-	#undef _fread
-	#undef _fwrite
-	#undef _fgetc
-	#undef _fgets
-	#undef _ungetc
-	#undef _fclose
-	#undef _wopen
+    #undef _wfopen
+    #undef _wfopen_s
+    #undef _fopen
+    #undef _fopen_s
+    #undef _fseek
+    #undef _ftell
+    #undef _rewind
+    #undef _fread
+    #undef _fwrite
+    #undef _fgetc
+    #undef _fgets
+    #undef _ungetc
+    #undef _fclose
+    #undef _wopen
     #undef _close
     #undef _read
     #undef _write
@@ -182,39 +182,39 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     #undef _setmode
     #undef _stricmp
     #undef _strnicmp
-	#undef _mbsicmp
-	#undef _wcsicmp
-	#undef _snprintf
+    #undef _mbsicmp
+    #undef _wcsicmp
+    #undef _snprintf
     #undef _vscprintf
     #undef _vsnprintf_s
     #undef _vsntprintf
     #undef _vsnwprintf
     #undef _beginthreadex
-	#undef _fullpath
-	#undef _ltoa
-	#undef _ultoa
-	#undef _isnan
-	#undef _finite
-	#undef _splitpath
-	#undef _strtoi64
-	#undef _strtoui64
-	#undef _set_errno
-	// 명칭재정의관련
-	#undef wfopen
-	#undef wfopen_s
-	#undef fopen
-	#undef fopen_s
-	#undef fseek
-	#undef ftell
-	#undef rewind
-	#undef fread
-	#undef fwrite
-	#undef fgetc
-	#undef fgets
-	#undef ungetc
-	#undef fclose
+    #undef _fullpath
+    #undef _ltoa
+    #undef _ultoa
+    #undef _isnan
+    #undef _finite
+    #undef _splitpath
+    #undef _strtoi64
+    #undef _strtoui64
+    #undef _set_errno
+    // 명칭재정의관련
+    #undef wfopen
+    #undef wfopen_s
+    #undef fopen
+    #undef fopen_s
+    #undef fseek
+    #undef ftell
+    #undef rewind
+    #undef fread
+    #undef fwrite
+    #undef fgetc
+    #undef fgets
+    #undef ungetc
+    #undef fclose
     #undef ltoa
-	#undef _snprintf
+    #undef _snprintf
 
     extern "C" SOCKET blik_fakewin_socket(int af, int type, int protocol)
     {
@@ -280,11 +280,11 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     }
 
     extern "C" int blik_fakewin_ioctlsocket(SOCKET s, long cmd, u_long* argp)
-	{BLIK_ASSERT("ioctlsocket준비중", false); return 0;}
-	extern "C" struct hostent* blik_fakewin_gethostbyname(const char* name)
-	{BLIK_ASSERT("gethostbyname준비중", false); return 0;}
-	extern "C" unsigned short blik_fakewin_htons(unsigned short number)
-	{BLIK_ASSERT("htons준비중", false); return 0;}
+    {BLIK_ASSERT("ioctlsocket준비중", false); return 0;}
+    extern "C" struct hostent* blik_fakewin_gethostbyname(const char* name)
+    {BLIK_ASSERT("gethostbyname준비중", false); return 0;}
+    extern "C" unsigned short blik_fakewin_htons(unsigned short number)
+    {BLIK_ASSERT("htons준비중", false); return 0;}
 
     extern "C" int blik_fakewin_getaddrinfo(PCSTR pNodeName, PCSTR pServiceName, const ADDRINFOA* pHints, PADDRINFOA* ppResult)
     {
@@ -365,38 +365,38 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return "Unknown error";
     }
 
-	extern "C" int blik_fakewin_getpid()
-	{
-		BLIK_ASSERT("getpid준비중", false); return 0;
-	}
+    extern "C" int blik_fakewin_getpid()
+    {
+        BLIK_ASSERT("getpid준비중", false); return 0;
+    }
 
-	extern "C" errno_t blik_fakewin_mbstowcs_s(size_t* pReturnValue, wchar_t* wcstr,
-		size_t sizeInWords, const char* mbstr, size_t count)
-	{
-		const WString& NewString = WString::FromChars(mbstr, count);
-		const sint32 CopyLen = Math::Min(NewString.Length(), sizeInWords - 1);
-		if(pReturnValue) *pReturnValue = CopyLen;
-		if(wcstr)
-		{
-			Memory::Copy(wcstr, (wchars) NewString, sizeof(wchar_t) * CopyLen);
-			wcstr[CopyLen] = L'\0';
-		}
-		return 0;
-	}
+    extern "C" errno_t blik_fakewin_mbstowcs_s(size_t* pReturnValue, wchar_t* wcstr,
+        size_t sizeInWords, const char* mbstr, size_t count)
+    {
+        const WString& NewString = WString::FromChars(mbstr, count);
+        const sint32 CopyLen = Math::Min(NewString.Length(), sizeInWords - 1);
+        if(pReturnValue) *pReturnValue = CopyLen;
+        if(wcstr)
+        {
+            Memory::Copy(wcstr, (wchars) NewString, sizeof(wchar_t) * CopyLen);
+            wcstr[CopyLen] = L'\0';
+        }
+        return 0;
+    }
 
-	extern "C" errno_t blik_fakewin_wcstombs_s(size_t* pReturnValue, char* mbstr,
-		size_t sizeInBytes, const wchar_t* wcstr, size_t count)
-	{
-		const String& NewString = String::FromWChars(wcstr, count);
-		const sint32 CopyLen = Math::Min(NewString.Length(), sizeInBytes - 1);
-		if(pReturnValue) *pReturnValue = CopyLen;
-		if(mbstr)
-		{
-			Memory::Copy(mbstr, (chars) NewString, sizeof(char) * CopyLen);
-			mbstr[CopyLen] = '\0';
-		}
-		return 0;
-	}
+    extern "C" errno_t blik_fakewin_wcstombs_s(size_t* pReturnValue, char* mbstr,
+        size_t sizeInBytes, const wchar_t* wcstr, size_t count)
+    {
+        const String& NewString = String::FromWChars(wcstr, count);
+        const sint32 CopyLen = Math::Min(NewString.Length(), sizeInBytes - 1);
+        if(pReturnValue) *pReturnValue = CopyLen;
+        if(mbstr)
+        {
+            Memory::Copy(mbstr, (chars) NewString, sizeof(char) * CopyLen);
+            mbstr[CopyLen] = '\0';
+        }
+        return 0;
+    }
 
     class Helper_MapInfo
     {
@@ -430,13 +430,13 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return *((HANDLE*) &_LastMapInfoID);
     }
 
-	extern "C" BOOL blik_fakewin_CreateDirectory(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
-	{
+    extern "C" BOOL blik_fakewin_CreateDirectory(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+    {
         BLIK_ASSERT("CreateDirectory준비중", false); return 0;
     }
 
-	extern "C" BOOL blik_fakewin_RemoveDirectory(LPCSTR lpPathName)
-	{
+    extern "C" BOOL blik_fakewin_RemoveDirectory(LPCSTR lpPathName)
+    {
         BLIK_ASSERT("RemoveDirectory준비중", false); return 0;
     }
 
@@ -573,25 +573,25 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     extern "C" BOOL blik_fakewin_FindClose(HANDLE hFindFile)
     {
-		return (blik_closedir((void*) hFindFile) == 0);
+        return (blik_closedir((void*) hFindFile) == 0);
 
         /*SearchResult* CurResult = (SearchResult*) hFindFile;
         delete CurResult;
         return true;*/
     }
 
-	extern "C" HANDLE blik_fakewin_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
-	{
-		BLIK_ASSERT("FindFirstFileA준비중", false);
-		return 0;
-	}
+    extern "C" HANDLE blik_fakewin_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
+    {
+        BLIK_ASSERT("FindFirstFileA준비중", false);
+        return 0;
+    }
 
     extern "C" HANDLE blik_fakewin_FindFirstFileW(LPCWSTR lpFileName, LPWIN32_FIND_DATAW lpFindFileData)
     {
-		HANDLE NewHandle = (HANDLE) blik_opendir(String::FromWChars(lpFileName));
-		return (NewHandle)? NewHandle : INVALID_HANDLE_VALUE;
+        HANDLE NewHandle = (HANDLE) blik_opendir(String::FromWChars(lpFileName));
+        return (NewHandle)? NewHandle : INVALID_HANDLE_VALUE;
 
-		/*const String FilenameUTF8 = String::FromWChars(lpFileName);
+        /*const String FilenameUTF8 = String::FromWChars(lpFileName);
         SearchResult* NewSearchResult = new SearchResult(FilenameUTF8);
         NewSearchResult->Itemnames.AtAdding() = ".";
         NewSearchResult->Itemnames.AtAdding() = "..";
@@ -614,27 +614,27 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return (HANDLE) NewSearchResult;*/
     }
 
-	extern "C" HANDLE blik_fakewin_FindFirstFileExA(LPCSTR lpFileName, FINDEX_INFO_LEVELS fInfoLevelId,
-		LPVOID lpFindFileData, FINDEX_SEARCH_OPS fSearchOp, LPVOID lpSearchFilter, DWORD dwAdditionalFlags)
-	{
-		BLIK_ASSERT("FindFirstFileA준비중", false);
-		return 0;
-	}
+    extern "C" HANDLE blik_fakewin_FindFirstFileExA(LPCSTR lpFileName, FINDEX_INFO_LEVELS fInfoLevelId,
+        LPVOID lpFindFileData, FINDEX_SEARCH_OPS fSearchOp, LPVOID lpSearchFilter, DWORD dwAdditionalFlags)
+    {
+        BLIK_ASSERT("FindFirstFileA준비중", false);
+        return 0;
+    }
 
-	extern "C" BOOL blik_fakewin_FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData)
-	{
-		BLIK_ASSERT("FindNextFileA준비중", false);
-		return 0;
-	}
+    extern "C" BOOL blik_fakewin_FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData)
+    {
+        BLIK_ASSERT("FindNextFileA준비중", false);
+        return 0;
+    }
 
     extern "C" BOOL blik_fakewin_FindNextFileW(HANDLE hFindFile, LPWIN32_FIND_DATAW lpFindFileData)
     {
-		void* curdir = blik_readdir((void*) hFindFile);
-		chars CurDirname = blik_getdirname(curdir);
-		WString CurDirnameW = WString::FromChars(CurDirname);
-		Memory::Copy(lpFindFileData->cFileName, (wchars) CurDirnameW, CurDirnameW.Length());
-		lpFindFileData->cFileName[CurDirnameW.Length()] = L'\0';
-		return TRUE;
+        void* curdir = blik_readdir((void*) hFindFile);
+        chars CurDirname = blik_getdirname(curdir);
+        WString CurDirnameW = WString::FromChars(CurDirname);
+        Memory::Copy(lpFindFileData->cFileName, (wchars) CurDirnameW, CurDirnameW.Length());
+        lpFindFileData->cFileName[CurDirnameW.Length()] = L'\0';
+        return TRUE;
 
         /*SearchResult* CurResult = (SearchResult*) hFindFile;
         if(CurResult->Itemnames.Count() <= CurResult->Cursor)
@@ -669,9 +669,9 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     extern "C" BOOL blik_fakewin_GetExitCodeThread(HANDLE,LPDWORD) {BLIK_ASSERT("GetExitCodeThread준비중", false); return 0;}
 
-	extern "C" DWORD blik_fakewin_GetFileAttributes(LPCSTR lpFileName) {BLIK_ASSERT("GetFileAttributes준비중", false); return 0;}
+    extern "C" DWORD blik_fakewin_GetFileAttributes(LPCSTR lpFileName) {BLIK_ASSERT("GetFileAttributes준비중", false); return 0;}
 
-	extern "C" DWORD blik_fakewin_GetFileAttributesW(LPCWSTR lpFileName)
+    extern "C" DWORD blik_fakewin_GetFileAttributesW(LPCWSTR lpFileName)
     {
         const DWORD FileAttributes = Platform::File::GetAttributes(lpFileName);
         if(FileAttributes == -1)
@@ -679,11 +679,11 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return FileAttributes;
     }
 
-	extern "C" BOOL blik_fakewin_GetFileAttributesExA(LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
-	{
-		BLIK_ASSERT("GetFileAttributesExA준비중", false);
-		return 0;
-	}
+    extern "C" BOOL blik_fakewin_GetFileAttributesExA(LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
+    {
+        BLIK_ASSERT("GetFileAttributesExA준비중", false);
+        return 0;
+    }
 
     extern "C" BOOL blik_fakewin_GetFileAttributesExW(LPCWSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
     {
@@ -711,19 +711,19 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return true;
     }
 
-	extern "C" DWORD blik_fakewin_GetFullPathNameA(LPCSTR lpFileName, DWORD nBufferLength, LPSTR lpBuffer, LPSTR* lpFilePart)
+    extern "C" DWORD blik_fakewin_GetFullPathNameA(LPCSTR lpFileName, DWORD nBufferLength, LPSTR lpBuffer, LPSTR* lpFilePart)
     {
-		BLIK_ASSERT("lpFilePart는 nullptr만 지원합니다", lpFilePart == nullptr);
+        BLIK_ASSERT("lpFilePart는 nullptr만 지원합니다", lpFilePart == nullptr);
 
-		const WString FileNameUTF16 = WString::FromChars(lpFileName);
+        const WString FileNameUTF16 = WString::FromChars(lpFileName);
         const String NewFullPath = String::FromWChars(Platform::File::GetFullPath(FileNameUTF16));
-		if(!lpBuffer)
-			return NewFullPath.Length() + 1;
+        if(!lpBuffer)
+            return NewFullPath.Length() + 1;
 
-		const sint32 CopyLength = Math::Min(NewFullPath.Length(), nBufferLength - 1);
-		Memory::Copy(lpBuffer, (chars) NewFullPath, sizeof(char) * CopyLength);
-		lpBuffer[CopyLength] = '\0';
-		return CopyLength;
+        const sint32 CopyLength = Math::Min(NewFullPath.Length(), nBufferLength - 1);
+        Memory::Copy(lpBuffer, (chars) NewFullPath, sizeof(char) * CopyLength);
+        lpBuffer[CopyLength] = '\0';
+        return CopyLength;
     }
 
     extern "C" DWORD blik_fakewin_GetFullPathNameW(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer, LPWSTR* lpFilePart)
@@ -731,13 +731,13 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         BLIK_ASSERT("lpFilePart는 nullptr만 지원합니다", lpFilePart == nullptr);
 
         const WString NewFullPath = Platform::File::GetFullPath(lpFileName);
-		if(!lpBuffer)
-			return NewFullPath.Length() + 1;
+        if(!lpBuffer)
+            return NewFullPath.Length() + 1;
 
-		const sint32 CopyLength = Math::Min(NewFullPath.Length(), nBufferLength - 1);
-		Memory::Copy(lpBuffer, (wchars) NewFullPath, sizeof(wchar_t) * CopyLength);
-		lpBuffer[CopyLength] = L'\0';
-		return CopyLength;
+        const sint32 CopyLength = Math::Min(NewFullPath.Length(), nBufferLength - 1);
+        Memory::Copy(lpBuffer, (wchars) NewFullPath, sizeof(wchar_t) * CopyLength);
+        lpBuffer[CopyLength] = L'\0';
+        return CopyLength;
     }
 
     static DWORD Common_ErrCode = 0;
@@ -746,7 +746,7 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     extern "C" void blik_fakewin_SetLastError(DWORD dwErrCode)
     {Common_ErrCode = dwErrCode;}
 
-	extern "C" HMODULE blik_fakewin_LoadLibraryA(LPCSTR lpFileName) {BLIK_ASSERT("LoadLibraryA준비중", false); return 0;}
+    extern "C" HMODULE blik_fakewin_LoadLibraryA(LPCSTR lpFileName) {BLIK_ASSERT("LoadLibraryA준비중", false); return 0;}
 
     extern "C" HMODULE blik_fakewin_GetModuleHandleA(LPCSTR)
     {
@@ -754,14 +754,14 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
     }
 
     extern "C" HMODULE blik_fakewin_GetModuleHandleW(LPCWSTR) {BLIK_ASSERT("GetModuleHandleW준비중", false); return 0;}
-	extern "C" DWORD blik_fakewin_GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
-	{
+    extern "C" DWORD blik_fakewin_GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
+    {
         const String AppPath = "myapp.exe";
-		String AppPath2 = String::FromWChars(Platform::File::GetFullPath(WString::FromChars(AppPath)));
-		AppPath2.Replace('/', '\\');
-		Memory::Copy(lpFilename, (chars) AppPath2, AppPath2.Length() + 1);
-		return AppPath2.Length();
-	}
+        String AppPath2 = String::FromWChars(Platform::File::GetFullPath(WString::FromChars(AppPath)));
+        AppPath2.Replace('/', '\\');
+        Memory::Copy(lpFilename, (chars) AppPath2, AppPath2.Length() + 1);
+        return AppPath2.Length();
+    }
     extern "C" FARPROC blik_fakewin_GetProcAddress(HMODULE,LPCSTR) {BLIK_ASSERT("GetProcAddress준비중", false); return 0;}
     extern "C" BOOL blik_fakewin_GetProcessAffinityMask(HANDLE,PDWORD_PTR,PDWORD_PTR) {BLIK_ASSERT("GetProcessAffinityMask준비중", false); return 0;}
 
@@ -770,10 +770,10 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return (HWINSTA) 0x0000005c;
     }
 
-	extern "C" BOOL blik_fakewin_GetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime)
-	{
-		BLIK_ASSERT("GetProcessTimes준비중", false); return 0;
-	}
+    extern "C" BOOL blik_fakewin_GetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime)
+    {
+        BLIK_ASSERT("GetProcessTimes준비중", false); return 0;
+    }
 
     extern "C" DWORD blik_fakewin_GetShortPathNameW(LPCWSTR lpszLongPath, LPWSTR lpszShortPath, DWORD cchBuffer)
     {
@@ -791,7 +791,7 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         lpSystemInfo->dwAllocationGranularity = 65536;
     }
 
-	extern "C" void blik_fakewin_GetNativeSystemInfo(LPSYSTEM_INFO lpSystemInfo)
+    extern "C" void blik_fakewin_GetNativeSystemInfo(LPSYSTEM_INFO lpSystemInfo)
     {
         Memory::Set(lpSystemInfo, 0x00, sizeof(SYSTEM_INFO));
         lpSystemInfo->dwNumberOfProcessors = 1;
@@ -805,11 +805,11 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         lpSystemTimeAsFileTime->dwLowDateTime = FileTime & 0xFFFFFFFF;
     }
 
-	extern "C" BOOL blik_fakewin_SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime, LPFILETIME lpFileTime)
-	{
-		BLIK_ASSERT("SystemTimeToFileTime준비중", false);
-		return 0;
-	}
+    extern "C" BOOL blik_fakewin_SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime, LPFILETIME lpFileTime)
+    {
+        BLIK_ASSERT("SystemTimeToFileTime준비중", false);
+        return 0;
+    }
 
     extern "C" DWORD blik_fakewin_GetTickCount() {BLIK_ASSERT("GetTickCount준비중", false); return 0;}
 
@@ -839,16 +839,16 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     extern "C" int blik_fakewin_MessageBox(HWND,LPCTSTR,LPCTSTR,UINT) {BLIK_ASSERT("MessageBox준비중", false); return 0;}
 
-	extern "C" BOOL blik_fakewin_CopyFile(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists)
-	{BLIK_ASSERT("CopyFile준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_CopyFile(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists)
+    {BLIK_ASSERT("CopyFile준비중", false); return 0;}
 
     extern "C" BOOL blik_fakewin_DeleteFileA(LPCSTR lpFileName)
-	{BLIK_ASSERT("DeleteFileA준비중", false); return 0;}
+    {BLIK_ASSERT("DeleteFileA준비중", false); return 0;}
 
-	extern "C" BOOL blik_fakewin_MoveFileEx(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, DWORD dwFlags)
-	{
-		BLIK_ASSERT("MoveFileEx준비중", false); return 0;
-	}
+    extern "C" BOOL blik_fakewin_MoveFileEx(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, DWORD dwFlags)
+    {
+        BLIK_ASSERT("MoveFileEx준비중", false); return 0;
+    }
 
     extern "C" BOOL blik_fakewin_MoveFileExW(LPCWSTR lpExistingFileName, LPCWSTR lpNewFileName, DWORD dwFlags)
     {
@@ -859,15 +859,15 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return Platform::File::Rename(lpExistingFileName, lpNewFileName);
     }
 
-	extern "C" DWORD blik_fakewin_GetTempPathA(DWORD nBufferLength, LPSTR lpBuffer)
-	{
-		BLIK_ASSERT("GetTempPathA준비중", false); return 0;
-	}
+    extern "C" DWORD blik_fakewin_GetTempPathA(DWORD nBufferLength, LPSTR lpBuffer)
+    {
+        BLIK_ASSERT("GetTempPathA준비중", false); return 0;
+    }
 
-	extern "C" UINT blik_fakewin_GetTempFileNameA(LPCSTR lpPathName, LPCSTR lpPrefixString, UINT uUnique, LPSTR lpTempFileName)
-	{
-		BLIK_ASSERT("GetTempFileNameA준비중", false); return 0;
-	}
+    extern "C" UINT blik_fakewin_GetTempFileNameA(LPCSTR lpPathName, LPCSTR lpPrefixString, UINT uUnique, LPSTR lpTempFileName)
+    {
+        BLIK_ASSERT("GetTempFileNameA준비중", false); return 0;
+    }
 
     extern "C" int blik_fakewin_MultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr, int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar)
     {
@@ -940,10 +940,10 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return true;
     }
 
-	extern "C" BOOL blik_fakewin_SetEvent(HANDLE hEvent) {BLIK_ASSERT("SetEvent준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_ResetEvent(HANDLE hEvent) {BLIK_ASSERT("ResetEvent준비중", false); return 0;}
-	extern "C" HANDLE blik_fakewin_CreateEvent(LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCTSTR lpName) {BLIK_ASSERT("CreateEvent준비중", false); return 0;}
-	extern "C" HANDLE blik_fakewin_CreateEventW(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCWSTR) {BLIK_ASSERT("CreateEventW준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_SetEvent(HANDLE hEvent) {BLIK_ASSERT("SetEvent준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_ResetEvent(HANDLE hEvent) {BLIK_ASSERT("ResetEvent준비중", false); return 0;}
+    extern "C" HANDLE blik_fakewin_CreateEvent(LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCTSTR lpName) {BLIK_ASSERT("CreateEvent준비중", false); return 0;}
+    extern "C" HANDLE blik_fakewin_CreateEventW(LPSECURITY_ATTRIBUTES,BOOL,BOOL,LPCWSTR) {BLIK_ASSERT("CreateEventW준비중", false); return 0;}
     extern "C" DWORD blik_fakewin_WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) {BLIK_ASSERT("WaitForSingleObject준비중", false); return 0;}
     extern "C" DWORD blik_fakewin_WaitForMultipleObjects(DWORD nCount, const HANDLE* lpHandles, BOOL bWaitAll, DWORD dwMilliseconds) {BLIK_ASSERT("WaitForMultipleObjects준비중", false); return 0;}
 
@@ -956,23 +956,23 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         //BLIK_ASSERT("TryEnterCriticalSection준비중", false); return 0;
     }
     extern "C" void blik_fakewin_EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
-	{
-		//BLIK_ASSERT("EnterCriticalSection준비중", false);
-	}
+    {
+        //BLIK_ASSERT("EnterCriticalSection준비중", false);
+    }
     extern "C" void blik_fakewin_InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
-	{
+    {
         //BLIK_ASSERT("InitializeCriticalSection준비중", false);
-		lpCriticalSection->DebugInfo = 0;
+        lpCriticalSection->DebugInfo = 0;
         lpCriticalSection->LockCount = 0;
         lpCriticalSection->RecursionCount = 0;
         lpCriticalSection->OwningThread = 0;
         lpCriticalSection->LockSemaphore = 0;
         lpCriticalSection->SpinCount = 0;
-	}
+    }
     extern "C" void blik_fakewin_LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
-	{
-		//BLIK_ASSERT("LeaveCriticalSection준비중", false);
-	}
+    {
+        //BLIK_ASSERT("LeaveCriticalSection준비중", false);
+    }
 
     static DWORD Common_WSAErrCode = 0;
     extern "C" int blik_fakewin_WSAGetLastError()
@@ -994,36 +994,36 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     extern "C" INT blik_fakewin_WSAStringToAddressA(LPSTR,INT,LPWSAPROTOCOL_INFO,LPSOCKADDR,LPINT) {BLIK_ASSERT("WSAStringToAddressA준비중", false); return 0;}
 
-	extern "C" BOOL blik_fakewin_QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency) {BLIK_ASSERT("QueryPerformanceFrequency준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount) {BLIK_ASSERT("QueryPerformanceCounter준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency) {BLIK_ASSERT("QueryPerformanceFrequency준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount) {BLIK_ASSERT("QueryPerformanceCounter준비중", false); return 0;}
 
-	extern "C" void blik_fakewin_ZeroMemory(PVOID Destination, ULONG_PTR Length) {BLIK_ASSERT("ZeroMemory준비중", false);}
-	extern "C" int blik_fakewin_GetObject(HGDIOBJ hgdiobj, int cbBuffer, LPVOID lpvObject) {BLIK_ASSERT("GetObject준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_DeleteObject(HGDIOBJ hObject) {BLIK_ASSERT("DeleteObject준비중", false); return 0;}
-	extern "C" HDC blik_fakewin_GetDC(HWND hWnd) {BLIK_ASSERT("GetDC준비중", false); return 0;}
-	extern "C" int blik_fakewin_ReleaseDC(HWND hWnd, HDC hDC) {BLIK_ASSERT("ReleaseDC준비중", false); return 0;}
-	extern "C" HBITMAP blik_fakewin_CreateDIBSection(HDC hdc, const BITMAPINFO* pbmi, UINT iUsage, VOID** ppvBits, HANDLE hSection, DWORD dwOffset) {BLIK_ASSERT("CreateDIBSection준비중", false); return 0;}
+    extern "C" void blik_fakewin_ZeroMemory(PVOID Destination, ULONG_PTR Length) {BLIK_ASSERT("ZeroMemory준비중", false);}
+    extern "C" int blik_fakewin_GetObject(HGDIOBJ hgdiobj, int cbBuffer, LPVOID lpvObject) {BLIK_ASSERT("GetObject준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_DeleteObject(HGDIOBJ hObject) {BLIK_ASSERT("DeleteObject준비중", false); return 0;}
+    extern "C" HDC blik_fakewin_GetDC(HWND hWnd) {BLIK_ASSERT("GetDC준비중", false); return 0;}
+    extern "C" int blik_fakewin_ReleaseDC(HWND hWnd, HDC hDC) {BLIK_ASSERT("ReleaseDC준비중", false); return 0;}
+    extern "C" HBITMAP blik_fakewin_CreateDIBSection(HDC hdc, const BITMAPINFO* pbmi, UINT iUsage, VOID** ppvBits, HANDLE hSection, DWORD dwOffset) {BLIK_ASSERT("CreateDIBSection준비중", false); return 0;}
 
-	extern "C" DWORD blik_fakewin_TlsAlloc(void) {BLIK_ASSERT("TlsAlloc준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_TlsFree(DWORD dwTlsIndex) {BLIK_ASSERT("TlsFree준비중", false); return 0;}
-	extern "C" LPVOID blik_fakewin_TlsGetValue(DWORD dwTlsIndex) {BLIK_ASSERT("TlsGetValue준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) {BLIK_ASSERT("TlsSetValue준비중", false); return 0;}
+    extern "C" DWORD blik_fakewin_TlsAlloc(void) {BLIK_ASSERT("TlsAlloc준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_TlsFree(DWORD dwTlsIndex) {BLIK_ASSERT("TlsFree준비중", false); return 0;}
+    extern "C" LPVOID blik_fakewin_TlsGetValue(DWORD dwTlsIndex) {BLIK_ASSERT("TlsGetValue준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) {BLIK_ASSERT("TlsSetValue준비중", false); return 0;}
 
-	extern "C" HANDLE blik_fakewin_CreateMutexA(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName) {BLIK_ASSERT("CreateMutexA준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_ReleaseMutex(HANDLE hMutex) {BLIK_ASSERT("ReleaseMutex준비중", false); return 0;}
+    extern "C" HANDLE blik_fakewin_CreateMutexA(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName) {BLIK_ASSERT("CreateMutexA준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_ReleaseMutex(HANDLE hMutex) {BLIK_ASSERT("ReleaseMutex준비중", false); return 0;}
 
-	extern "C" HANDLE blik_fakewin_CreateSemaphoreA(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
-		LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName)
-	{BLIK_ASSERT("CreateSemaphoreA준비중", false); return 0;}
-	extern "C" BOOL blik_fakewin_ReleaseSemaphore(HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount)
-	{BLIK_ASSERT("ReleaseSemaphore준비중", false); return 0;}
-	extern "C" void blik_fakewin_GetStartupInfo(LPSTARTUPINFO lpStartupInfo)
-	{BLIK_ASSERT("GetStartupInfo준비중", false);}
-	extern "C" BOOL blik_fakewin_CreateProcessA(LPCSTR lpApplicationName, LPSTR lpCommandLine,
-		LPSECURITY_ATTRIBUTES lpProcessAttributes, LPSECURITY_ATTRIBUTES lpThreadAttributes,
-		BOOL bInheritHandles, DWORD dwCreationFlags, LPVOID lpEnvironment, LPCSTR lpCurrentDirectory,
-		LPSTARTUPINFO lpStartupInfo, LPPROCESS_INFORMATION lpProcessInformation)
-	{BLIK_ASSERT("CreateProcessA준비중", false); return 0;}
+    extern "C" HANDLE blik_fakewin_CreateSemaphoreA(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
+        LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName)
+    {BLIK_ASSERT("CreateSemaphoreA준비중", false); return 0;}
+    extern "C" BOOL blik_fakewin_ReleaseSemaphore(HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount)
+    {BLIK_ASSERT("ReleaseSemaphore준비중", false); return 0;}
+    extern "C" void blik_fakewin_GetStartupInfo(LPSTARTUPINFO lpStartupInfo)
+    {BLIK_ASSERT("GetStartupInfo준비중", false);}
+    extern "C" BOOL blik_fakewin_CreateProcessA(LPCSTR lpApplicationName, LPSTR lpCommandLine,
+        LPSECURITY_ATTRIBUTES lpProcessAttributes, LPSECURITY_ATTRIBUTES lpThreadAttributes,
+        BOOL bInheritHandles, DWORD dwCreationFlags, LPVOID lpEnvironment, LPCSTR lpCurrentDirectory,
+        LPSTARTUPINFO lpStartupInfo, LPPROCESS_INFORMATION lpProcessInformation)
+    {BLIK_ASSERT("CreateProcessA준비중", false); return 0;}
 
     extern "C" int blik_fakewin_waccess(const wchar_t* path, int mode)
     {
@@ -1046,77 +1046,77 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return blik_fakewin_fopen(String::FromWChars(filename), String::FromWChars(mode));
     }
 
-	extern "C" errno_t blik_fakewin_wfopen_s(FILE** pfile, const wchar_t* filename, const wchar_t* mode)
-	{
-		if(pfile)
-		{
-			*pfile = blik_fakewin_wfopen(filename, mode);
-			return (*pfile)? 0 : EINVAL;
-		}
-		return EINVAL;
-	}
-
-	extern "C" FILE* blik_fakewin_fopen(char const* filename, char const* mode)
-	{
-		return (FILE*) blik_fopen(filename, mode);
+    extern "C" errno_t blik_fakewin_wfopen_s(FILE** pfile, const wchar_t* filename, const wchar_t* mode)
+    {
+        if(pfile)
+        {
+            *pfile = blik_fakewin_wfopen(filename, mode);
+            return (*pfile)? 0 : EINVAL;
+        }
+        return EINVAL;
     }
 
-	extern "C" errno_t blik_fakewin_fopen_s(FILE** pfile, char const* filename, char const* mode)
-	{
-		if(pfile)
-		{
-			*pfile = blik_fakewin_fopen(filename, mode);
-			return (*pfile)? 0 : EINVAL;
-		}
-		return EINVAL;
+    extern "C" FILE* blik_fakewin_fopen(char const* filename, char const* mode)
+    {
+        return (FILE*) blik_fopen(filename, mode);
     }
 
-	extern "C" int blik_fakewin_fseek(FILE* stream, long int offset, int origin)
-	{
-		return blik_fseek(stream, offset, origin);
-	}
+    extern "C" errno_t blik_fakewin_fopen_s(FILE** pfile, char const* filename, char const* mode)
+    {
+        if(pfile)
+        {
+            *pfile = blik_fakewin_fopen(filename, mode);
+            return (*pfile)? 0 : EINVAL;
+        }
+        return EINVAL;
+    }
 
-	extern "C" long int blik_fakewin_ftell(FILE* stream)
-	{
-		return blik_ftell(stream);
-	}
+    extern "C" int blik_fakewin_fseek(FILE* stream, long int offset, int origin)
+    {
+        return blik_fseek(stream, offset, origin);
+    }
 
-	extern "C" void blik_fakewin_rewind(FILE* stream)
-	{
-		blik_rewind(stream);
-	}
+    extern "C" long int blik_fakewin_ftell(FILE* stream)
+    {
+        return blik_ftell(stream);
+    }
 
-	extern "C" size_t blik_fakewin_fread(void* ptr, size_t size, size_t count, FILE* stream)
-	{
-		return blik_fread(ptr, size, count, stream);
-	}
+    extern "C" void blik_fakewin_rewind(FILE* stream)
+    {
+        blik_rewind(stream);
+    }
 
-	extern "C" size_t blik_fakewin_fwrite(const void* ptr, size_t size, size_t count, FILE* stream)
-	{
-		return blik_fwrite(ptr, size, count, stream);
-	}
+    extern "C" size_t blik_fakewin_fread(void* ptr, size_t size, size_t count, FILE* stream)
+    {
+        return blik_fread(ptr, size, count, stream);
+    }
 
-	extern "C" int blik_fakewin_fgetc(FILE* stream)
-	{
-		return blik_fgetc(stream);
-	}
+    extern "C" size_t blik_fakewin_fwrite(const void* ptr, size_t size, size_t count, FILE* stream)
+    {
+        return blik_fwrite(ptr, size, count, stream);
+    }
 
-	extern "C" char* blik_fakewin_fgets(char* str, int num, FILE* stream)
-	{
-		return blik_fgets(str, num, stream);
-	}
+    extern "C" int blik_fakewin_fgetc(FILE* stream)
+    {
+        return blik_fgetc(stream);
+    }
 
-	extern "C" int blik_fakewin_ungetc(int character, FILE* stream)
-	{
-		return blik_ungetc(character, stream);
-	}
+    extern "C" char* blik_fakewin_fgets(char* str, int num, FILE* stream)
+    {
+        return blik_fgets(str, num, stream);
+    }
 
-	extern "C" int blik_fakewin_fclose(FILE* stream)
-	{
-		return blik_fclose(stream);
-	}
+    extern "C" int blik_fakewin_ungetc(int character, FILE* stream)
+    {
+        return blik_ungetc(character, stream);
+    }
 
-	extern "C" int blik_fakewin_wopen(const wchar_t* filename, int oflag, int pmode)
+    extern "C" int blik_fakewin_fclose(FILE* stream)
+    {
+        return blik_fclose(stream);
+    }
+
+    extern "C" int blik_fakewin_wopen(const wchar_t* filename, int oflag, int pmode)
     {
         int TotalOFlags = O_RDONLY | O_WRONLY | O_RDWR | O_APPEND | O_CREAT |
             O_EXCL | O_TRUNC | O_UNKNOWN | O_BINARY | O_NOINHERIT | O_TEMPORARY;
@@ -1160,10 +1160,10 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return Platform::File::FDSeek(fd, offset, origin);
     }
 
-	extern "C" void* blik_fakewin_lfind(const void* key, const void* base, unsigned int* num, unsigned int width, int (*compare)(const void*, const void*))
-	{
+    extern "C" void* blik_fakewin_lfind(const void* key, const void* base, unsigned int* num, unsigned int width, int (*compare)(const void*, const void*))
+    {
         BLIK_ASSERT("lfind준비중", false);
-		return 0;
+        return 0;
     }
 
     extern "C" errno_t blik_fakewin_chsize_s(int fd, __int64 size)
@@ -1335,15 +1335,15 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return blik_strnicmp(str1, str2, maxcount);
     }
 
-	extern "C" int blik_fakewin_mbsicmp(const unsigned char* str1, const unsigned char* str2)
-	{
-		return blik_stricmp((const char*) str1, (const char*) str2);
-	}
+    extern "C" int blik_fakewin_mbsicmp(const unsigned char* str1, const unsigned char* str2)
+    {
+        return blik_stricmp((const char*) str1, (const char*) str2);
+    }
 
-	extern "C" int blik_fakewin_wcsicmp(wchar_t const* str1, wchar_t const* str2)
-	{
-		return blik_wcsicmp(str1, str2);
-	}
+    extern "C" int blik_fakewin_wcsicmp(wchar_t const* str1, wchar_t const* str2)
+    {
+        return blik_wcsicmp(str1, str2);
+    }
 
     extern "C" int blik_fakewin_vscprintf(const char* _Format, va_list _ArgList)
     {
@@ -1367,111 +1367,111 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return blik_vsnwprintf(_DstBuf, _SizeInBytes, _Format, _ArgList);
     }
 
-	extern "C" uintptr_t blik_fakewin_beginthreadex(void* security, unsigned stack_size, unsigned (*start_address)(void*), void* arglist, unsigned initflag, unsigned* thrdaddr)
-	{
-		BLIK_ASSERT("_beginthreadex준비중", false);
-		return 0;
-	}
-	extern "C" char* blik_fakewin_fullpath(char* absPath, const char* relPath, size_t maxLength)
-	{
-		BLIK_ASSERT("_fullpath준비중", false);
-		return 0;
-	}
-	extern "C" char* blik_fakewin_ltoa(long value, char* str, int radix)
-	{
-		BLIK_ASSERT("_ltoa준비중", false);
-		return 0;
-	}
-	extern "C" char* blik_fakewin_ultoa(unsigned long value, char* str, int radix)
-	{
-		BLIK_ASSERT("_ultoa준비중", false);
-		return 0;
-	}
-	extern "C" int blik_fakewin_isnan(double x)
-	{
-		#if BLIK_WINDOWS
-			return _isnan(x);
-		#else
+    extern "C" uintptr_t blik_fakewin_beginthreadex(void* security, unsigned stack_size, unsigned (*start_address)(void*), void* arglist, unsigned initflag, unsigned* thrdaddr)
+    {
+        BLIK_ASSERT("_beginthreadex준비중", false);
+        return 0;
+    }
+    extern "C" char* blik_fakewin_fullpath(char* absPath, const char* relPath, size_t maxLength)
+    {
+        BLIK_ASSERT("_fullpath준비중", false);
+        return 0;
+    }
+    extern "C" char* blik_fakewin_ltoa(long value, char* str, int radix)
+    {
+        BLIK_ASSERT("_ltoa준비중", false);
+        return 0;
+    }
+    extern "C" char* blik_fakewin_ultoa(unsigned long value, char* str, int radix)
+    {
+        BLIK_ASSERT("_ultoa준비중", false);
+        return 0;
+    }
+    extern "C" int blik_fakewin_isnan(double x)
+    {
+        #if BLIK_WINDOWS
+            return _isnan(x);
+        #else
             BLIK_ASSERT("_isnan준비중", false);
             return 0;
-		#endif
-	}
-	extern "C" int blik_fakewin_finite(double x)
-	{
-		#if BLIK_WINDOWS
-			return _finite(x);
-		#else
+        #endif
+    }
+    extern "C" int blik_fakewin_finite(double x)
+    {
+        #if BLIK_WINDOWS
+            return _finite(x);
+        #else
             BLIK_ASSERT("_finite준비중", false);
             return 0;
-		#endif
-	}
-	extern "C" void blik_fakewin_splitpath(const char* path, char* drive, char* dir, char* fname, char* ext)
+        #endif
+    }
+    extern "C" void blik_fakewin_splitpath(const char* path, char* drive, char* dir, char* fname, char* ext)
     {
-		BLIK_ASSERT("_splitpath준비중", false);
-	}
-	extern "C" __int64 blik_fakewin_strtoi64(const char* nptr, char** endptr, int base)
-	{
-		BLIK_ASSERT("_strtoi64준비중", false);
-		return 0;
-	}
-	extern "C" unsigned __int64 blik_fakewin_strtoui64(const char* nptr, char** endptr, int base)
-	{
-		BLIK_ASSERT("_strtoui64준비중", false);
-		return 0;
-	}
-	extern "C" errno_t blik_fakewin_set_errno(int value)
-	{
-		BLIK_ASSERT("_set_errno준비중", false);
-		return 0;
-	}
+        BLIK_ASSERT("_splitpath준비중", false);
+    }
+    extern "C" __int64 blik_fakewin_strtoi64(const char* nptr, char** endptr, int base)
+    {
+        BLIK_ASSERT("_strtoi64준비중", false);
+        return 0;
+    }
+    extern "C" unsigned __int64 blik_fakewin_strtoui64(const char* nptr, char** endptr, int base)
+    {
+        BLIK_ASSERT("_strtoui64준비중", false);
+        return 0;
+    }
+    extern "C" errno_t blik_fakewin_set_errno(int value)
+    {
+        BLIK_ASSERT("_set_errno준비중", false);
+        return 0;
+    }
 
-	namespace std
-	{
-		#undef ifstream
-		blik_fakewin_ifstream::blik_fakewin_ifstream(const char* filename, ios_base::openmode mode)
-		{
-			string modeStr("r");
-			printf("Open file (read): %s\n", filename);
-			if (mode & ios_base::binary)
-				modeStr += "b";
+    namespace std
+    {
+        #undef ifstream
+        blik_fakewin_ifstream::blik_fakewin_ifstream(const char* filename, ios_base::openmode mode)
+        {
+            string modeStr("r");
+            printf("Open file (read): %s\n", filename);
+            if (mode & ios_base::binary)
+                modeStr += "b";
 
-			f = blik_fakewin_fopen(filename, modeStr.c_str());
-			if (f == NULL)
-			{
-				printf("Can't open file: %s\n", filename);
-				return;
-			}
+            f = blik_fakewin_fopen(filename, modeStr.c_str());
+            if (f == NULL)
+            {
+                printf("Can't open file: %s\n", filename);
+                return;
+            }
 
-			blik_fakewin_fseek(f, 0, SEEK_END);
-			size_t sz = blik_fakewin_ftell(f);
-			if (sz > 0)
-			{
-				char* buf = (char*) malloc(sz);
-				blik_fakewin_fseek(f, 0, SEEK_SET);
-				if (blik_fakewin_fread(buf, 1, sz, f) == sz)
-				{
-					this->str(std::string(buf, sz));
-				}
-				free(buf);
-			}
-		}
+            blik_fakewin_fseek(f, 0, SEEK_END);
+            size_t sz = blik_fakewin_ftell(f);
+            if (sz > 0)
+            {
+                char* buf = (char*) malloc(sz);
+                blik_fakewin_fseek(f, 0, SEEK_SET);
+                if (blik_fakewin_fread(buf, 1, sz, f) == sz)
+                {
+                    this->str(std::string(buf, sz));
+                }
+                free(buf);
+            }
+        }
 
-		blik_fakewin_ifstream::~blik_fakewin_ifstream()
-		{
-			close();
-		}
+        blik_fakewin_ifstream::~blik_fakewin_ifstream()
+        {
+            close();
+        }
 
-		bool blik_fakewin_ifstream::is_open() const
-		{
-			return f != NULL;
-		}
+        bool blik_fakewin_ifstream::is_open() const
+        {
+            return f != NULL;
+        }
 
-		void blik_fakewin_ifstream::close()
-		{
-			if (f)
-				blik_fakewin_fclose(f);
-			f = NULL;
-			this->str("");
-		}
-	}
+        void blik_fakewin_ifstream::close()
+        {
+            if (f)
+                blik_fakewin_fclose(f);
+            f = NULL;
+            this->str("");
+        }
+    }
 #endif

@@ -7,7 +7,7 @@ using namespace BLIK;
 namespace BLIK
 {
     // About base types
-	typedef signed char                       sint08; // "signed char" for __GNUC__
+    typedef signed char                       sint08; // "signed char" for __GNUC__
     typedef unsigned char                     uint08;
     typedef short                             sint16;
     typedef unsigned short                    uint16;
@@ -33,7 +33,7 @@ namespace BLIK
     // About extended types
     typedef void*                             payload;
     typedef long long                         unknown;
-	typedef bool                              autorun;
+    typedef bool                              autorun;
     typedef long long                         dependency;
     typedef const long long                   linkstep1;
     typedef const long long                   linkstep2;
@@ -84,8 +84,8 @@ namespace BLIK
         roottype_assets_syspath0, roottype_assetsrem_syspath0,
         roottype_assets_syspath1, roottype_assetsrem_syspath1,
         roottype_assets_syspath2, roottype_assetsrem_syspath2};
-	enum packettype:uint08 {packettype_null = 0,
-		packettype_entrance, packettype_message, packettype_leaved, packettype_kicked};
+    enum packettype:uint08 {packettype_null = 0,
+        packettype_entrance, packettype_message, packettype_leaved, packettype_kicked};
     enum jumper:sint32   {jumper_null = 0};
     enum jumper16:sint16 {jumper16_null = 0};
     template<sint32 ENUM> struct EnumToType {};
@@ -112,7 +112,7 @@ inline void operator delete[](void*, sblock) {}
     #define oxFFFF000000000000 0xFFFF000000000000ULL
     #define oxFF00000000000000 0xFF00000000000000ULL
     #define oxF000000000000000 0xF000000000000000ULL
-	#define ox0000000000000000 0x0000000000000000ULL
+    #define ox0000000000000000 0x0000000000000000ULL
     #define EpochToWindow(UTC) (((uint64) UTC) +  11644473600000ULL)
     #define WindowToEpoch(MS)  (((uint64) MS)  -  11644473600000ULL)
     #define EpochToJulian(UTC) (((uint64) UTC) + 210866803200000ULL)
@@ -131,7 +131,7 @@ inline void operator delete[](void*, sblock) {}
     #define oxFFFF000000000000 0xFFFF000000000000ui64
     #define oxFF00000000000000 0xFF00000000000000ui64
     #define oxF000000000000000 0xF000000000000000ui64
-	#define ox0000000000000000 0x0000000000000000ui64
+    #define ox0000000000000000 0x0000000000000000ui64
     #define EpochToWindow(UTC) (((uint64) UTC) +  11644473600000ui64)
     #define WindowToEpoch(MS)  (((uint64) MS)  -  11644473600000ui64)
     #define EpochToJulian(UTC) (((uint64) UTC) + 210866803200000ui64)
@@ -139,10 +139,10 @@ inline void operator delete[](void*, sblock) {}
 #endif
 #if BLIK_X64
     #define PtrToUint64(PTR) (*((const uint64*) &(PTR)))
-	#define AnyTypeToPtr(ANY) ((void*) (ANY))
+    #define AnyTypeToPtr(ANY) ((void*) (ANY))
 #else
     #define PtrToUint64(PTR) ((const uint64) *((const uint32*) &(PTR)))
-	#define AnyTypeToPtr(ANY) ((void*) (ANY))
+    #define AnyTypeToPtr(ANY) ((void*) (ANY))
 #endif
 #define JumperPos(JMP) ((const sint32*) &(JMP))
 #define JumperToPtr(JMP) (((sint32*) &(JMP)) + (JMP))
@@ -155,65 +155,65 @@ inline void operator delete[](void*, sblock) {}
     typedef struct struct_##NAME* NAME; \
     typedef const struct struct_##NAME* NAME##_read
 #define BLIK_DECLARE_HANDLE(NAME) \
-	class NAME \
-	{ \
-	private: \
-		struct data \
-		{ \
-			sint32 mRef; \
-			buffer mBuf; \
-			void* mPtr; \
-		}; \
-		data* mData; \
-	private: \
-		NAME(data* gift) {mData = gift; mData->mRef++;} \
-	public: \
-		NAME() {mData = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1); mData->mRef = 1;} \
-		NAME(const NAME& rhs) {mData = rhs.mData; mData->mRef++;} \
+    class NAME \
+    { \
+    private: \
+        struct data \
+        { \
+            sint32 mRef; \
+            buffer mBuf; \
+            void* mPtr; \
+        }; \
+        data* mData; \
+    private: \
+        NAME(data* gift) {mData = gift; mData->mRef++;} \
+    public: \
+        NAME() {mData = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1); mData->mRef = 1;} \
+        NAME(const NAME& rhs) {mData = rhs.mData; mData->mRef++;} \
         NAME(id_share rhs) {mData = (data*) rhs; mData->mRef++;} \
         NAME(id_cloned_share rhs) {mData = (data*) rhs;} \
-		~NAME() {release();} \
-		NAME& operator=(const NAME& rhs) \
-		{ \
-			release(); \
-			mData = rhs.mData; \
-			mData->mRef++; \
-			return *this; \
-		} \
-	public: \
-		static inline NAME null() \
-		{ \
-			return NAME((data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1)); \
-		} \
-		static inline NAME create_by_buf(BLIK_DBG_PRM buffer buf) \
-		{ \
-			data* newdata = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG_ARG 1); \
-			newdata->mBuf = buf; \
-			return NAME(newdata); \
-		} \
-		static inline NAME create_by_ptr(BLIK_DBG_PRM void* ptr) \
-		{ \
-			data* newdata = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG_ARG 1); \
-			newdata->mPtr = ptr; \
-			return NAME(newdata); \
-		} \
-	public: \
-		inline void clear_buf() {mData->mBuf = nullptr;} \
-		inline void set_buf(buffer buf) {buffer oldbuf = mData->mBuf; mData->mBuf = buf; Buffer::Free(oldbuf);} \
-		inline void* set_ptr(void* ptr) {void* oldptr = mData->mPtr; mData->mPtr = ptr; return oldptr;} \
-		inline void* get() const {return (void*) (((ublock) mData->mBuf) | ((ublock) mData->mPtr));} \
+        ~NAME() {release();} \
+        NAME& operator=(const NAME& rhs) \
+        { \
+            release(); \
+            mData = rhs.mData; \
+            mData->mRef++; \
+            return *this; \
+        } \
+    public: \
+        static inline NAME null() \
+        { \
+            return NAME((data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1)); \
+        } \
+        static inline NAME create_by_buf(BLIK_DBG_PRM buffer buf) \
+        { \
+            data* newdata = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG_ARG 1); \
+            newdata->mBuf = buf; \
+            return NAME(newdata); \
+        } \
+        static inline NAME create_by_ptr(BLIK_DBG_PRM void* ptr) \
+        { \
+            data* newdata = (data*) Buffer::Alloc<data, datatype_pod_canmemcpy_zeroset>(BLIK_DBG_ARG 1); \
+            newdata->mPtr = ptr; \
+            return NAME(newdata); \
+        } \
+    public: \
+        inline void clear_buf() {mData->mBuf = nullptr;} \
+        inline void set_buf(buffer buf) {buffer oldbuf = mData->mBuf; mData->mBuf = buf; Buffer::Free(oldbuf);} \
+        inline void* set_ptr(void* ptr) {void* oldptr = mData->mPtr; mData->mPtr = ptr; return oldptr;} \
+        inline void* get() const {return (void*) (((ublock) mData->mBuf) | ((ublock) mData->mPtr));} \
         inline id_share share() {return (id_share) mData;} \
         inline id_cloned_share cloned_share() {mData->mRef++; return (id_cloned_share) mData;} \
-	private: \
-		inline void release() \
-		{ \
-			if(mData && --mData->mRef == 0) \
-			{ \
-				Buffer::Free(mData->mBuf); \
-				Buffer::Free((buffer) mData); \
-			} \
-		} \
-	}; \
+    private: \
+        inline void release() \
+        { \
+            if(mData && --mData->mRef == 0) \
+            { \
+                Buffer::Free(mData->mBuf); \
+                Buffer::Free((buffer) mData); \
+            } \
+        } \
+    }; \
     typedef const NAME NAME##_read
 #define BLIK_DECLARE_ADDON_FUNCTION(GROUP, NAME, RET_TYPE, ...) \
     typedef RET_TYPE (*Type_AddOn_##GROUP##_##NAME)(__VA_ARGS__); \
@@ -239,12 +239,12 @@ namespace BLIK
 {
     BLIK_DECLARE_ID(id_file);
     BLIK_DECLARE_ID(id_socket);
-	BLIK_DECLARE_ID(id_server);
-	BLIK_DECLARE_ID(id_serial);
+    BLIK_DECLARE_ID(id_server);
+    BLIK_DECLARE_ID(id_serial);
     BLIK_DECLARE_ID(id_bitmap);
     BLIK_DECLARE_ID(id_image);
     BLIK_DECLARE_ID(id_clock);
-	BLIK_DECLARE_ID(id_camera);
+    BLIK_DECLARE_ID(id_camera);
     BLIK_DECLARE_ID(id_microphone);
 }
 
@@ -254,7 +254,7 @@ namespace BLIK
     #include <blik_asset.hpp>
     #include <blik_buffer.hpp>
     #include <blik_counter.hpp>
-	#include <blik_library.hpp>
+    #include <blik_library.hpp>
     #include <blik_map.hpp>
     #include <blik_math.hpp>
     #include <blik_memory.hpp>
@@ -264,7 +264,7 @@ namespace BLIK
     #include <blik_profile.hpp>
     #include <blik_property.hpp>
     #include <blik_queue.hpp>
-	#include <blik_remote.hpp>
+    #include <blik_remote.hpp>
     #include <blik_share.hpp>
     #include <blik_storage.hpp>
     #include <blik_string.hpp>
@@ -272,15 +272,15 @@ namespace BLIK
     #include <blik_updater.hpp>
     #include <blik_wstring.hpp>
 
-	namespace BLIK
-	{
-		BLIK_DECLARE_HANDLE(h_icon);
-		BLIK_DECLARE_HANDLE(h_action);
-		BLIK_DECLARE_HANDLE(h_policy);
-		BLIK_DECLARE_HANDLE(h_view);
-		BLIK_DECLARE_HANDLE(h_dock);
-		BLIK_DECLARE_HANDLE(h_window);
-	}
+    namespace BLIK
+    {
+        BLIK_DECLARE_HANDLE(h_icon);
+        BLIK_DECLARE_HANDLE(h_action);
+        BLIK_DECLARE_HANDLE(h_policy);
+        BLIK_DECLARE_HANDLE(h_view);
+        BLIK_DECLARE_HANDLE(h_dock);
+        BLIK_DECLARE_HANDLE(h_window);
+    }
 #endif
 
 // About user-config macro exist check

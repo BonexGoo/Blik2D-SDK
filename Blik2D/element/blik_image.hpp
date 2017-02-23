@@ -7,8 +7,8 @@ namespace BLIK
     //! \brief 재질-이미지
     class Image
     {
-	public:
-		enum class Format {Null, Bmp, Jpg};
+    public:
+        enum class Format {Null, Bmp, Jpg};
 
     public:
         Image();
@@ -21,20 +21,20 @@ namespace BLIK
         bool Save(chars pathname = "") const;
         bool Load(id_assetpath_read assetpath = nullptr);
         bool LoadBitmap(id_bitmap_read bitmap);
-		bool LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip);
+        bool LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip);
         bool LoadUIBitmap(id_bitmap_read bitmap);
-		id_bitmap CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const;
-		void ChangeToMagentaAlpha();
-		void RestoreFromMagentaAlpha();
+        id_bitmap CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const;
+        void ChangeToMagentaAlpha();
+        void RestoreFromMagentaAlpha();
 
     public:
-		inline bool HasBitmap() const {return (m_bitmap != nullptr);}
-		inline id_bitmap_read GetBitmap() const {return m_bitmap;}
-		inline id_image_read GetImage() const {return GetImageCore(Color(Color::ColoringDefault), GetImageWidth(), GetImageHeight());}
-		inline id_image_read GetImage(const Color& coloring) const {return GetImageCore(coloring, GetImageWidth(), GetImageHeight());}
-		inline id_image_read GetImage(const sint32 width, const sint32 height) const {return GetImageCore(Color(Color::ColoringDefault), width, height);}
-		inline id_image_read GetImage(const Color& coloring, const sint32 width, const sint32 height) const {return GetImageCore(coloring, width, height);}
-		inline void SetImageCacheMax(const sint32 count) {BLIK_ASSERT("count값은 1이상이어야 합니다", 1 <= count); m_image_cache_max = count;}
+        inline bool HasBitmap() const {return (m_bitmap != nullptr);}
+        inline id_bitmap_read GetBitmap() const {return m_bitmap;}
+        inline id_image_read GetImage() const {return GetImageCore(Color(Color::ColoringDefault), GetImageWidth(), GetImageHeight());}
+        inline id_image_read GetImage(const Color& coloring) const {return GetImageCore(coloring, GetImageWidth(), GetImageHeight());}
+        inline id_image_read GetImage(const sint32 width, const sint32 height) const {return GetImageCore(Color(Color::ColoringDefault), width, height);}
+        inline id_image_read GetImage(const Color& coloring, const sint32 width, const sint32 height) const {return GetImageCore(coloring, width, height);}
+        inline void SetImageCacheMax(const sint32 count) {BLIK_ASSERT("count값은 1이상이어야 합니다", 1 <= count); m_image_cache_max = count;}
         sint32 GetImageWidth() const;
         sint32 GetImageHeight() const;
         inline sint32 GetWidth() const {return m_valid_rect.r - m_valid_rect.l;}
@@ -56,8 +56,8 @@ namespace BLIK
         inline sint32 PatchT() const {return m_patch_yzone[0].y;}
         inline sint32 PatchR() const {return m_patch_xzone[-1].xend;}
         inline sint32 PatchB() const {return m_patch_yzone[-1].yend;}
-		inline sint32 PatchSumWidth() const {return m_patch_calced_sum_width;}
-		inline sint32 PatchSumHeight() const {return m_patch_calced_sum_height;}
+        inline sint32 PatchSumWidth() const {return m_patch_calced_sum_width;}
+        inline sint32 PatchSumHeight() const {return m_patch_calced_sum_height;}
         inline sint32 PatchSrcXCount() const {return m_patch_calced_src_x.Count();}
         inline sint32 PatchSrcYCount() const {return m_patch_calced_src_y.Count();}
         inline const sint32* PatchSrcXArray() const {return &m_patch_calced_src_x[0];}
@@ -72,26 +72,26 @@ namespace BLIK
     private:
         void ResetBitmap();
         void ResetData();
-		void MakeData(sint32 l, sint32 t, sint32 r, sint32 b);
+        void MakeData(sint32 l, sint32 t, sint32 r, sint32 b);
         void RecalcData();
-		id_image_read GetImageCore(const Color& coloring, sint32 width, sint32 height) const;
+        id_image_read GetImageCore(const Color& coloring, sint32 width, sint32 height) const;
 
     private:
         String m_filepath;
-		Format m_fileformat;
+        Format m_fileformat;
         id_bitmap m_bitmap;
-		sint32 m_image_cache_max;
-		typedef Map<id_image> ImageMap;
+        sint32 m_image_cache_max;
+        typedef Map<id_image> ImageMap;
         mutable Map<ImageMap> m_image_cached_map;
-		typedef struct {uint32 coloring; uint64 sizing;} CacheKeys;
-		mutable Queue<CacheKeys*> m_image_cached_queue;
-		rect128 m_valid_rect;
+        typedef struct {uint32 coloring; uint64 sizing;} CacheKeys;
+        mutable Queue<CacheKeys*> m_image_cached_queue;
+        rect128 m_valid_rect;
         Array<ixzone64, datatype_pod_canmemcpy> m_child_ixzone;
         Array<iyzone64, datatype_pod_canmemcpy> m_child_iyzone;
         Array<xzone64, datatype_pod_canmemcpy> m_patch_xzone;
         Array<yzone64, datatype_pod_canmemcpy> m_patch_yzone;
-		sint32 m_patch_calced_sum_width;
-		sint32 m_patch_calced_sum_height;
+        sint32 m_patch_calced_sum_width;
+        sint32 m_patch_calced_sum_height;
         sint32s m_patch_calced_src_x;
         sint32s m_patch_calced_src_y;
         mutable float m_patch_cached_dst_terms_w;

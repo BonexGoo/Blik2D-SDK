@@ -80,11 +80,11 @@ void blik_printf(BLIK_DBG_PRM const char *string, ...)
 }
 
 #if !BLIK_WINDOWS
-	void qsort_s(
-		void *els, size_t nel, size_t elsize, git__sort_r_cmp cmp, void *payload)
-	{
-		BLIK_ASSERT("qsort_s가 준비되지 않았습니다", false);
-	}
+    void qsort_s(
+        void *els, size_t nel, size_t elsize, git__sort_r_cmp cmp, void *payload)
+    {
+        BLIK_ASSERT("qsort_s가 준비되지 않았습니다", false);
+    }
 #endif
 
 #define NO_DUMMY_DECL

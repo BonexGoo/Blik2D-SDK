@@ -15,20 +15,20 @@ namespace BLIK
         return fmaxf(a, b);
     }
 
-	float Math::Ceil(const float v)
-	{
-		return ceilf(v);
-	}
+    float Math::Ceil(const float v)
+    {
+        return ceilf(v);
+    }
 
-	float Math::Floor(const float v)
-	{
-		return floorf(v);
-	}
+    float Math::Floor(const float v)
+    {
+        return floorf(v);
+    }
 
-	float Math::Round(const float v)
-	{
-		return roundf(v);
-	}
+    float Math::Round(const float v)
+    {
+        return roundf(v);
+    }
 
     float Math::Mod(const float a, const float b)
     {

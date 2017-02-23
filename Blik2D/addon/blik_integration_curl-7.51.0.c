@@ -2,8 +2,8 @@
 #if BLIK_NEED_ADDON_CURL
 
 #if BLIK_WINDOWS
-	#pragma comment(lib, "ws2_32.lib")
-	#pragma comment(lib, "wldap32.lib")
+    #pragma comment(lib, "ws2_32.lib")
+    #pragma comment(lib, "wldap32.lib")
 #endif
 
 #pragma warning(disable : 4090)

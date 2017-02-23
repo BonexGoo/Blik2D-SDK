@@ -75,14 +75,14 @@ namespace BLIK
                         FindFocus += 2;
                         continue;
                     }
-					else if(FindFocus[1] == 'h' && FindFocus[2] == 'p' && FindFocus[3] == 'p' && (FindFocus[4] == ' ' || FindFocus[4] == '\t'))
+                    else if(FindFocus[1] == 'h' && FindFocus[2] == 'p' && FindFocus[3] == 'p' && (FindFocus[4] == ' ' || FindFocus[4] == '\t'))
                     {
                         NewDst += ".hpp";
                         NewSrc += "_hpp";
                         FindFocus += 4;
                         continue;
                     }
-					else if(FindFocus[1] == 'i' && FindFocus[2] == 'n' && FindFocus[3] == 'c' && (FindFocus[4] == ' ' || FindFocus[4] == '\t'))
+                    else if(FindFocus[1] == 'i' && FindFocus[2] == 'n' && FindFocus[3] == 'c' && (FindFocus[4] == ' ' || FindFocus[4] == '\t'))
                     {
                         NewDst += ".inc";
                         NewSrc += "_inc";
@@ -96,7 +96,7 @@ namespace BLIK
                         FindFocus += 3;
                         continue;
                     }
-					else if(FindFocus[1] == 'D' && FindFocus[2] == '_')
+                    else if(FindFocus[1] == 'D' && FindFocus[2] == '_')
                     {
                         NewDst += ".";
                         NewSrc += "_D_";
@@ -129,10 +129,10 @@ namespace BLIK
         {
             const String Filename = itemname;
             if(!String::CompareNoCase(".c", Filename.Right(2))
-				|| !String::CompareNoCase(".cc", Filename.Right(3))
-				|| !String::CompareNoCase(".cpp", Filename.Right(4))
-				|| !String::CompareNoCase(".h", Filename.Right(2))
-				|| !String::CompareNoCase(".hpp", Filename.Right(4)))
+                || !String::CompareNoCase(".cc", Filename.Right(3))
+                || !String::CompareNoCase(".cpp", Filename.Right(4))
+                || !String::CompareNoCase(".h", Filename.Right(2))
+                || !String::CompareNoCase(".hpp", Filename.Right(4)))
             {
                 BatchBuilder* This = (BatchBuilder*) data;
                 This->Build_IncludeAlias(itemname, *This->m_ref_dsts, *This->m_ref_srcs, This->m_ref_comment);

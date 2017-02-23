@@ -18,7 +18,7 @@ namespace BLIK
         Point operator*(const Matrix& rhs) const;
         Point& operator*=(const float rhs);
         Point operator*(const float rhs) const;
-		Point& operator*=(const Size& rhs);
+        Point& operator*=(const Size& rhs);
         Point operator*(const Size& rhs) const;
         Point& operator/=(const float rhs);
         Point operator/(const float rhs) const;
@@ -28,7 +28,7 @@ namespace BLIK
         Point operator+(const Size& rhs) const;
         Point& operator-=(const Point& rhs);
         Point operator-(const Point& rhs) const;
-		Point& operator-=(const Size& rhs);
+        Point& operator-=(const Size& rhs);
         Point operator-(const Size& rhs) const;
         bool operator==(const Point& rhs) const;
         bool operator!=(const Point& rhs) const;

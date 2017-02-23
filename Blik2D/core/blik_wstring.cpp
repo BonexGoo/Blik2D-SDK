@@ -274,16 +274,16 @@ namespace BLIK
 
     sint32 WString::Compare(wchars text, wchars other, sint32 maxlength)
     {
-		if(maxlength == -1)
-			return blik_wcscmp(text, other);
-		return blik_wcsncmp(text, other, maxlength);
+        if(maxlength == -1)
+            return blik_wcscmp(text, other);
+        return blik_wcsncmp(text, other, maxlength);
     }
 
     sint32 WString::CompareNoCase(wchars text, wchars other, sint32 maxlength)
     {
         if(maxlength == -1)
-			return blik_wcsicmp(text, other);
-		return blik_wcsnicmp(text, other, maxlength);
+            return blik_wcsicmp(text, other);
+        return blik_wcsnicmp(text, other, maxlength);
     }
 
     const wchararray& WString::BlankString()

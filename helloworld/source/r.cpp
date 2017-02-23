@@ -8,7 +8,7 @@
 
 namespace BLIK
 {
-	static Map<Image> gImageMap;
+    static Map<Image> gImageMap;
     static String gAtlasDir;
 
     R::R(chars name)
@@ -34,26 +34,26 @@ namespace BLIK
     {
     }
 
-	class AtlasSet
-	{
-	public:
-		AtlasSet() {FileSize = 0; ModifyTime = 0;}
-		~AtlasSet() {}
-		AtlasSet& operator=(const AtlasSet& rhs)
-		{
-			KeyFilename = rhs.KeyFilename;
-			MapFilename = rhs.MapFilename;
-			FileSize = rhs.FileSize;
-			ModifyTime = rhs.ModifyTime;
-			return *this;
-		}
-	public:
-		String KeyFilename;
-		String MapFilename;
-		sint32 FileSize;
-		sint32 ModifyTime;
-	};
-	static Array<AtlasSet> gAtlasSets;
+    class AtlasSet
+    {
+    public:
+        AtlasSet() {FileSize = 0; ModifyTime = 0;}
+        ~AtlasSet() {}
+        AtlasSet& operator=(const AtlasSet& rhs)
+        {
+            KeyFilename = rhs.KeyFilename;
+            MapFilename = rhs.MapFilename;
+            FileSize = rhs.FileSize;
+            ModifyTime = rhs.ModifyTime;
+            return *this;
+        }
+    public:
+        String KeyFilename;
+        String MapFilename;
+        sint32 FileSize;
+        sint32 ModifyTime;
+    };
+    static Array<AtlasSet> gAtlasSets;
 
     void R::SetAtlasDir(chars dirname)
     {
@@ -61,14 +61,14 @@ namespace BLIK
         else gAtlasDir = String::Format("%s/", dirname);
     }
 
-	void R::AddAtlas(chars key_filename, chars map_filename, const Property& prop)
-	{
+    void R::AddAtlas(chars key_filename, chars map_filename, const Property& prop)
+    {
         gAtlasSets.AtAdding();
-		gAtlasSets.At(-1).KeyFilename = key_filename;
-		gAtlasSets.At(-1).MapFilename = map_filename;
+        gAtlasSets.At(-1).KeyFilename = key_filename;
+        gAtlasSets.At(-1).MapFilename = map_filename;
         gAtlasSets.At(-1).FileSize = prop(map_filename)("filesize").GetInt(0);
-		gAtlasSets.At(-1).ModifyTime = prop(map_filename)("modifytime").GetInt(0);
-	}
+        gAtlasSets.At(-1).ModifyTime = prop(map_filename)("modifytime").GetInt(0);
+    }
 
     void R::SaveAtlas(Property& prop)
     {
@@ -79,34 +79,34 @@ namespace BLIK
         }
     }
 
-	bool R::IsAtlasUpdated()
-	{
-		for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
-		{
-			String FullPath = Platform::File::RootForAssets() + gAtlasDir + gAtlasSets[i].MapFilename;
-			uint64 FileSize = 0, ModifyTime = 0;
-			if(Platform::File::GetAttributes(WString::FromChars(FullPath), &FileSize, nullptr, nullptr, &ModifyTime) != -1)
-			if(gAtlasSets[i].FileSize != (FileSize & 0x7FFFFFFF) || gAtlasSets[i].ModifyTime != (ModifyTime & 0x7FFFFFFF))
-				return true;
-		}
-		return false;
-	}
+    bool R::IsAtlasUpdated()
+    {
+        for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
+        {
+            String FullPath = Platform::File::RootForAssets() + gAtlasDir + gAtlasSets[i].MapFilename;
+            uint64 FileSize = 0, ModifyTime = 0;
+            if(Platform::File::GetAttributes(WString::FromChars(FullPath), &FileSize, nullptr, nullptr, &ModifyTime) != -1)
+            if(gAtlasSets[i].FileSize != (FileSize & 0x7FFFFFFF) || gAtlasSets[i].ModifyTime != (ModifyTime & 0x7FFFFFFF))
+                return true;
+        }
+        return false;
+    }
 
-	void R::RebuildAll()
-	{
-		gImageMap.Reset();
-		ImageBuilder Builder;
-		for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
-		{
-			String FullPath = Platform::File::RootForAssets() + gAtlasDir + gAtlasSets[i].MapFilename;
-			uint64 FileSize = 0, ModifyTime = 0;
-			if(Platform::File::GetAttributes(WString::FromChars(FullPath), &FileSize, nullptr, nullptr, &ModifyTime) != -1)
-			if(Builder.LoadAtlas(gAtlasDir + gAtlasSets[i].KeyFilename, gAtlasDir + gAtlasSets[i].MapFilename, 0 < i))
-			{
-				gAtlasSets.At(i).FileSize = (sint32) (FileSize & 0x7FFFFFFF);
-				gAtlasSets.At(i).ModifyTime = (sint32) (ModifyTime & 0x7FFFFFFF);
-			}
-		}
-		Builder.SaveSubImages(gAtlasDir);
-	}
+    void R::RebuildAll()
+    {
+        gImageMap.Reset();
+        ImageBuilder Builder;
+        for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
+        {
+            String FullPath = Platform::File::RootForAssets() + gAtlasDir + gAtlasSets[i].MapFilename;
+            uint64 FileSize = 0, ModifyTime = 0;
+            if(Platform::File::GetAttributes(WString::FromChars(FullPath), &FileSize, nullptr, nullptr, &ModifyTime) != -1)
+            if(Builder.LoadAtlas(gAtlasDir + gAtlasSets[i].KeyFilename, gAtlasDir + gAtlasSets[i].MapFilename, 0 < i))
+            {
+                gAtlasSets.At(i).FileSize = (sint32) (FileSize & 0x7FFFFFFF);
+                gAtlasSets.At(i).ModifyTime = (sint32) (ModifyTime & 0x7FFFFFFF);
+            }
+        }
+        Builder.SaveSubImages(gAtlasDir);
+    }
 }

@@ -3,9 +3,9 @@
 
 extern "C"
 {
-	#define JPEG_INTERNALS
-	#include <addon/opencv-3.1.0_for_blik/3rdparty/libjpeg/jinclude.h>
-	#include <addon/opencv-3.1.0_for_blik/3rdparty/libjpeg/jpeglib.h>
+    #define JPEG_INTERNALS
+    #include <addon/opencv-3.1.0_for_blik/3rdparty/libjpeg/jinclude.h>
+    #include <addon/opencv-3.1.0_for_blik/3rdparty/libjpeg/jpeglib.h>
 }
 
 #include <blik.hpp>

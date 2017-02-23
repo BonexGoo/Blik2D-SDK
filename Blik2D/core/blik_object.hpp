@@ -101,7 +101,7 @@ namespace BLIK
             return share->Type();
         }
 
-		/*!
+        /*!
         \brief 타입ID 구하기
         \return 타입ID
         */

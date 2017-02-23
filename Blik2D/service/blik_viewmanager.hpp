@@ -176,10 +176,10 @@ namespace BLIK
     //! \brief 뷰의 자료관리
     class ViewClass
     {
-		friend class ViewManager;
+        friend class ViewManager;
 
-	public:
-		typedef void (*CommandCB)(CommandType, chars, id_share, id_cloned_share*);
+    public:
+        typedef void (*CommandCB)(CommandType, chars, id_share, id_cloned_share*);
         typedef void (*NotifyCB)(chars, chars, id_share, id_cloned_share*);
         typedef void (*BindCB)(ViewClass*);
         typedef ViewClass* (*AllocCB)();
@@ -233,13 +233,13 @@ namespace BLIK
         sint32 m_resizing_height;
     };
 
-	//! \brief 뷰의 패널관리
+    //! \brief 뷰의 패널관리
     class ViewPanel
     {
-	public:
-		typedef void (*PanelCB)(GestureType, sint32, sint32);
+    public:
+        typedef void (*PanelCB)(GestureType, sint32, sint32);
         typedef std::function<void(ViewClass*, chars, GestureType, sint32, sint32)> SubPanelCB;
-		typedef void (*RenderCB)(ViewPanel&);
+        typedef void (*RenderCB)(ViewPanel&);
 
     public:
         ViewPanel(float width, float height, const buffer touch);
@@ -250,15 +250,15 @@ namespace BLIK
         void circle() const;
         void line(const Point& begin, const Point& end, float thick) const;
         void bezier(const Vector& begin, const Vector& end, float thick) const;
-		void polygon(Points p) const;
+        void polygon(Points p) const;
         void polyline(Points p, float thick) const;
         void polybezier(Points p, float thick, bool showfirst, bool showlast) const;
-		haschild icon(const Image& image, UIAlign align);
+        haschild icon(const Image& image, UIAlign align);
         haschild icon(float x, float y, const Image& image, UIAlign align); // 중점식
-		haschild iconNatived(id_image_read image, UIAlign align);
-		haschild iconNatived(float x, float y, id_image_read image, UIAlign align); // 중점식
+        haschild iconNatived(id_image_read image, UIAlign align);
+        haschild iconNatived(float x, float y, id_image_read image, UIAlign align); // 중점식
         haschild stretch(const Image& image, bool rebuild);
-		haschild stretchNatived(id_image_read image);
+        haschild stretchNatived(id_image_read image);
         haschild ninepatch(const Image& image);
         void pattern(const Image& image, UIAlign align, bool reversed_xorder = false, bool reversed_yorder = false) const;
         bool text(chars string, UIFontAlign align, UIFontElide elide = UIFE_None) const;
@@ -314,7 +314,7 @@ namespace BLIK
         bool m_test_scissor;
     };
 
-	//! \brief 뷰의 인스턴스관리
+    //! \brief 뷰의 인스턴스관리
     template<typename TYPE>
     class ViewInstance
     {
@@ -343,32 +343,32 @@ namespace BLIK
             if(ptr)
             {
                 m_ref_datas.AtAdding() = ptr;
-				m_ref_data_last = ptr;
+                m_ref_data_last = ptr;
             }
             else
             {
-				m_ref_datas.SubtractionOne();
-				if(0 < m_ref_datas.Count())
-					m_ref_data_last = m_ref_datas[-1];
-				else m_ref_data_last = nullptr;
+                m_ref_datas.SubtractionOne();
+                if(0 < m_ref_datas.Count())
+                    m_ref_data_last = m_ref_datas[-1];
+                else m_ref_data_last = nullptr;
             }
         }
 
     private:
         Array<TYPE*, datatype_pod_canmemcpy> m_ref_datas;
-		TYPE* m_ref_data_last;
+        TYPE* m_ref_data_last;
     };
 
     //! \brief 매니저-뷰
     class ViewManager
     {
-		friend class ViewClass;
-		friend class ViewPanel;
+        friend class ViewClass;
+        friend class ViewPanel;
 
-	public:
+    public:
         enum SearchCommand {SC_Search, SC_Create, SC_Destroy};
 
-	private:
+    private:
         //! \brief 뷰의 영역객체
         class Element
         {
@@ -557,10 +557,10 @@ namespace BLIK
         void _sendnotify(chars sender, chars topic, id_share in, id_cloned_share* out);
         void _setcallback(void* cb, void* data);
 
-	public:
+    public:
         static autorun _makefunc(bool isnative, chars viewclass,
-			ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
-			ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f);
+            ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
+            ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f);
         static Function* _accessfunc(chars viewclass, bool creatable);
         static const Map<h_view>* _searchview(chars viewclass, SearchCommand command, ViewClass* param = nullptr);
 

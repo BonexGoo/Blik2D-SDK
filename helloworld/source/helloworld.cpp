@@ -7,18 +7,18 @@ BLIK_DECLARE_VIEW_CLASS("HWView", HWData)
 BLIK_VIEW_API OnCommand(CommandType type, chars topic, id_share in, id_cloned_share* out)
 {
     if(type == CT_Tick)
-	{
+    {
         // 맵갱신을 인지하여 리로드
         static uint64 LastUpdateCheckTime = Platform::Utility::CurrentTimeMS();
         uint64 CurUpdateCheckTime = Platform::Utility::CurrentTimeMS();
-		if(LastUpdateCheckTime + 1000 < CurUpdateCheckTime)
+        if(LastUpdateCheckTime + 1000 < CurUpdateCheckTime)
         {
             LastUpdateCheckTime = CurUpdateCheckTime;
             if(R::IsAtlasUpdated())
-		    {
-			    R::RebuildAll();
-			    m->invalidate();
-		    }
+            {
+                R::RebuildAll();
+                m->invalidate();
+            }
         }
     }
 }
@@ -33,8 +33,8 @@ BLIK_VIEW_API OnPanel(GestureType type, sint32 x, sint32 y)
 
 BLIK_VIEW_API OnRender(ViewPanel& panel)
 {
-	BLIK_RGB(panel, 255, 255, 255)
-		panel.fill();
+    BLIK_RGB(panel, 255, 255, 255)
+        panel.fill();
 
     BLIK_RGBA(panel, 160, 128, 128, 16)
     {
@@ -71,7 +71,7 @@ BLIK_VIEW_API OnRender(ViewPanel& panel)
 
 HWData::HWData()
 {
-	mMessage = "Hello World!";
+    mMessage = "Hello World!";
 }
 
 HWData::~HWData()

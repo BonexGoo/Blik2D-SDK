@@ -25,8 +25,8 @@ namespace BLIK
             Copy = nullptr;
             Create = nullptr;
             Remove = nullptr;
-			ResetOne = nullptr;
-			ResetAll = nullptr;
+            ResetOne = nullptr;
+            ResetAll = nullptr;
             init(this);
         }
         ~BufferSpec() {}
@@ -41,8 +41,8 @@ namespace BLIK
         void (*Copy)(void*, const void*, const sint32);
         void (*Create)(void*, const sint32);
         void (*Remove)(void*, const sint32);
-		void (*ResetOne)(void*, const sint32);
-		void (*ResetAll)(void*, const sint32);
+        void (*ResetOne)(void*, const sint32);
+        void (*ResetAll)(void*, const sint32);
     };
 
     //! \brief 버퍼도구지원
@@ -71,8 +71,8 @@ namespace BLIK
                 self->Copy = Copy_class_nomemcpy;
                 self->Create = Create_class;
                 self->Remove = Remove_class;
-				self->ResetOne = ResetOne_class;
-				self->ResetAll = ResetAll_class;
+                self->ResetOne = ResetOne_class;
+                self->ResetAll = ResetAll_class;
             }, sizeof(TYPE), Naming());
             return &Spec;
         }
@@ -83,8 +83,8 @@ namespace BLIK
                 self->Copy = Copy_default;
                 self->Create = Create_class;
                 self->Remove = Remove_class;
-				self->ResetOne = ResetOne_class;
-				self->ResetAll = ResetAll_class;
+                self->ResetOne = ResetOne_class;
+                self->ResetAll = ResetAll_class;
             }, sizeof(TYPE), Naming());
             return &Spec;
         }
@@ -95,8 +95,8 @@ namespace BLIK
                 self->Copy = Copy_default;
                 self->Create = Create_default;
                 self->Remove = Remove_default;
-				self->ResetOne = ResetOne_default;
-				self->ResetAll = ResetAll_default;
+                self->ResetOne = ResetOne_default;
+                self->ResetAll = ResetAll_default;
             }, sizeof(TYPE), Naming());
             return &Spec;
         }
@@ -107,8 +107,8 @@ namespace BLIK
                 self->Copy = Copy_default;
                 self->Create = Create_pod_canmemcpy_zeroset;
                 self->Remove = Remove_default;
-				self->ResetOne = ResetOne_pod_canmemcpy_zeroset;
-				self->ResetAll = ResetAll_pod_canmemcpy_zeroset;
+                self->ResetOne = ResetOne_pod_canmemcpy_zeroset;
+                self->ResetAll = ResetAll_pod_canmemcpy_zeroset;
             }, sizeof(TYPE), Naming());
             return &Spec;
         }
@@ -148,10 +148,10 @@ namespace BLIK
         static void Create_default(void* dst, const sint32 count) {}
         static void Remove_class(void* dst, const sint32 count) {for(sint32 i = 0; i < count; ++i) ((TYPE*) dst)[i].~TYPE(); BufferImpl::Free((buffer) dst);}
         static void Remove_default(void* dst, const sint32 count) {BufferImpl::Free((buffer) dst);}
-		static void ResetOne_class(void* dst, const sint32 index) {((TYPE*) dst)[index].~TYPE(); new(BLIK_PTR_TO_SBLOCK(&((TYPE*) dst)[index])) TYPE;}
+        static void ResetOne_class(void* dst, const sint32 index) {((TYPE*) dst)[index].~TYPE(); new(BLIK_PTR_TO_SBLOCK(&((TYPE*) dst)[index])) TYPE;}
         static void ResetOne_pod_canmemcpy_zeroset(void* dst, const sint32 index) {Memory::Set(&(((TYPE*) dst)[index]), 0, sizeof(TYPE));}
         static void ResetOne_default(void* dst, const sint32 index) {}
-		static void ResetAll_class(void* dst, const sint32 count) {for(sint32 i = 0; i < count; ++i) {((TYPE*) dst)[i].~TYPE(); new(BLIK_PTR_TO_SBLOCK(&((TYPE*) dst)[i])) TYPE;}}
+        static void ResetAll_class(void* dst, const sint32 count) {for(sint32 i = 0; i < count; ++i) {((TYPE*) dst)[i].~TYPE(); new(BLIK_PTR_TO_SBLOCK(&((TYPE*) dst)[i])) TYPE;}}
         static void ResetAll_pod_canmemcpy_zeroset(void* dst, const sint32 count) {Memory::Set(dst, 0, sizeof(TYPE) * count);}
         static void ResetAll_default(void* dst, const sint32 count) {}
     };
@@ -267,14 +267,14 @@ namespace BLIK
         */
         static sblock TypeOf(const buffer buf);
 
-		/*!
+        /*!
         \brief 객체타입 구하기(BufferSpec을 이용)
         \return 객체타입(해당 BufferSpec의 주소)
         \see CountOf, SizeOf, NameOf, TypeCheck
         */
-		template<typename TYPE, datatype DATATYPE>
-		static sblock TypeOf()
-		{return (sblock) BufferSpecPool<TYPE>::Summon(EnumToType<DATATYPE>());}
+        template<typename TYPE, datatype DATATYPE>
+        static sblock TypeOf()
+        {return (sblock) BufferSpecPool<TYPE>::Summon(EnumToType<DATATYPE>());}
 
         /*!
         \brief 객체타입 확인하기
@@ -303,7 +303,7 @@ namespace BLIK
         */
         static void ResetOne(buffer buf, sint32 index);
 
-		/*!
+        /*!
         \brief 전체초기화
         \param buf : 버퍼주소
         */

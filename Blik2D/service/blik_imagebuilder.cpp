@@ -76,16 +76,16 @@ namespace BLIK
             'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't', 'u',
             'v', 'w', 'x', 'y', 'z', '_', '.'};
-		const sint32 KeyTailWidth = Bmp::GetWidth(Keys[-1]);
+        const sint32 KeyTailWidth = Bmp::GetWidth(Keys[-1]);
         for(sint32 i = 0; i < KeyHeads.Count(); ++i)
         {
             FileNames.AtAdding();
             const sint32 jxbegin = KeyHeads[i].x + KeyHeadWidth;
             const sint32 jybegin = KeyHeads[i].y;
-			sint32 jxlast = jxbegin;
+            sint32 jxlast = jxbegin;
             for(sint32 jx = jxbegin; jx < MapWidth; ++jx)
             {
-				if(KeyTailWidth < jx - jxlast) break;
+                if(KeyTailWidth < jx - jxlast) break;
                 else for(sint32 k = 0, kend = sizeof(KeyChars) / sizeof(KeyChars[0]); k < kend; ++k)
                 {
                     const sint32 kWidth = Bmp::GetWidth(Keys[k + 1]);
@@ -105,8 +105,8 @@ namespace BLIK
                         if(IsFinded)
                         {
                             FileNames.At(-1) += KeyChars[k];
-							jxlast = jx + kWidth;
-							jx = jx + kWidth - 1;
+                            jxlast = jx + kWidth;
+                            jx = jx + kWidth - 1;
                             break;
                         }
                     }
@@ -138,13 +138,13 @@ namespace BLIK
             }
         }
 
-		if(!keep_collection)
-			m_subimages.Clear();
+        if(!keep_collection)
+            m_subimages.Clear();
 
         // Save subimage
         for(sint32 i = 0; i < KeyHeads.Count(); ++i)
         {
-			Image& NewImage = m_subimages.AtAdding().SetName(FileNames[i]);
+            Image& NewImage = m_subimages.AtAdding().SetName(FileNames[i]);
             id_bitmap NewBitmap = Bmp::Copy(MapBitmap, SubImageUVs[i].l, SubImageUVs[i].t, SubImageUVs[i].r, SubImageUVs[i].b);
             const sint32 NewWidth = Bmp::GetWidth(NewBitmap);
             const sint32 NewHeight = Bmp::GetHeight(NewBitmap);
@@ -153,7 +153,7 @@ namespace BLIK
             if(NewBits[(NewHeight - 1) * NewWidth].argb == 0xFFFF0000)
                 NewImage.LoadUIBitmap(NewBitmap);
             else NewImage.LoadBitmap(NewBitmap);
-			NewImage.ChangeToMagentaAlpha();
+            NewImage.ChangeToMagentaAlpha();
             Bmp::Remove(NewBitmap);
         }
 
@@ -185,9 +185,9 @@ namespace BLIK
         return Result;
     }
 
-	id_bitmap ImageBuilder::MakeTagBitmap(chars key_filename, chars tagname)
-	{
-		id_bitmap KeyBitmap = MakeBitmap(key_filename);
+    id_bitmap ImageBuilder::MakeTagBitmap(chars key_filename, chars tagname)
+    {
+        id_bitmap KeyBitmap = MakeBitmap(key_filename);
         if(!KeyBitmap)
         {
             Bmp::Remove(KeyBitmap);
@@ -210,60 +210,60 @@ namespace BLIK
             }
         }
 
-		// Match key bitmaps
-		Array<sint32> MatchedIndex;
-		sint32 DstWidth = 0;
-		sint32 DstHeight = 0;
+        // Match key bitmaps
+        Array<sint32> MatchedIndex;
+        sint32 DstWidth = 0;
+        sint32 DstHeight = 0;
         const char KeyChars[29] = {
-			'~', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            '~', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
             'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't', 'u',
             'v', 'w', 'x', 'y', 'z', '_', '.'};
-		char CurTagChar = '~';
-		while(CurTagChar != '\0')
-		{
-			for(sint32 i = 0, iend = sizeof(KeyChars) / sizeof(char); i < iend; ++i)
-			{
-				if(CurTagChar == KeyChars[i] && i < Keys.Count())
-				{
-					MatchedIndex.AtAdding() = i;
-					DstWidth += Bmp::GetWidth(Keys[i]) + 1;
-					DstHeight = Math::Max(DstHeight, Bmp::GetHeight(Keys[i]));
-				}
-			}
-			CurTagChar = *(tagname++);
-		}
+        char CurTagChar = '~';
+        while(CurTagChar != '\0')
+        {
+            for(sint32 i = 0, iend = sizeof(KeyChars) / sizeof(char); i < iend; ++i)
+            {
+                if(CurTagChar == KeyChars[i] && i < Keys.Count())
+                {
+                    MatchedIndex.AtAdding() = i;
+                    DstWidth += Bmp::GetWidth(Keys[i]) + 1;
+                    DstHeight = Math::Max(DstHeight, Bmp::GetHeight(Keys[i]));
+                }
+            }
+            CurTagChar = *(tagname++);
+        }
 
-		// Copy result bitmap
-		id_bitmap DstBitmap = Bmp::Create(3, DstWidth, DstHeight);
-		uint08* DstBitmapBits = Bmp::GetBits(DstBitmap);
-		const sint32 DstBitmapRow = (3 * DstWidth + 3) & ~3;
-		Memory::Set(DstBitmapBits, 0xFF, DstBitmapRow * DstHeight);
-		sint32 DstPos = 0;
-		for(sint32 i = 0, iend = MatchedIndex.Count(); i < iend; ++i)
-		{
-			id_bitmap_read SrcBitmap = Keys[MatchedIndex[i]];
-			Bmp::bitmappixel* SrcBitmapBits = (Bmp::bitmappixel*) Bmp::GetBits(SrcBitmap);
-			const sint32 SrcWidth = Bmp::GetWidth(SrcBitmap);
-			const sint32 SrcHeight = Bmp::GetHeight(SrcBitmap);
-			for(sint32 y = 0; y < SrcHeight; ++y)
-			{
-				uint08* DstBits = &DstBitmapBits[3 * DstPos + DstBitmapRow * (DstHeight - 1 - y)];
-				const Bmp::bitmappixel* SrcBits = &SrcBitmapBits[SrcWidth * (SrcHeight - 1 - y)];
-				for(sint32 x = 0; x < SrcWidth; ++x)
-				{
-					*(DstBits++) = SrcBits->b;
-					*(DstBits++) = SrcBits->g;
-					*(DstBits++) = SrcBits->r;
-					SrcBits++;
-				}
-			}
-			DstPos += SrcWidth + 1;
-		}
+        // Copy result bitmap
+        id_bitmap DstBitmap = Bmp::Create(3, DstWidth, DstHeight);
+        uint08* DstBitmapBits = Bmp::GetBits(DstBitmap);
+        const sint32 DstBitmapRow = (3 * DstWidth + 3) & ~3;
+        Memory::Set(DstBitmapBits, 0xFF, DstBitmapRow * DstHeight);
+        sint32 DstPos = 0;
+        for(sint32 i = 0, iend = MatchedIndex.Count(); i < iend; ++i)
+        {
+            id_bitmap_read SrcBitmap = Keys[MatchedIndex[i]];
+            Bmp::bitmappixel* SrcBitmapBits = (Bmp::bitmappixel*) Bmp::GetBits(SrcBitmap);
+            const sint32 SrcWidth = Bmp::GetWidth(SrcBitmap);
+            const sint32 SrcHeight = Bmp::GetHeight(SrcBitmap);
+            for(sint32 y = 0; y < SrcHeight; ++y)
+            {
+                uint08* DstBits = &DstBitmapBits[3 * DstPos + DstBitmapRow * (DstHeight - 1 - y)];
+                const Bmp::bitmappixel* SrcBits = &SrcBitmapBits[SrcWidth * (SrcHeight - 1 - y)];
+                for(sint32 x = 0; x < SrcWidth; ++x)
+                {
+                    *(DstBits++) = SrcBits->b;
+                    *(DstBits++) = SrcBits->g;
+                    *(DstBits++) = SrcBits->r;
+                    SrcBits++;
+                }
+            }
+            DstPos += SrcWidth + 1;
+        }
 
-		Bmp::Remove(KeyBitmap);
-		for(sint32 i = 0; i < Keys.Count(); ++i)
+        Bmp::Remove(KeyBitmap);
+        for(sint32 i = 0; i < Keys.Count(); ++i)
             Bmp::Remove(Keys[i]);
-		return DstBitmap;
-	}
+        return DstBitmap;
+    }
 }
