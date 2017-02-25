@@ -23,6 +23,7 @@ namespace BLIK
         bool LoadBitmap(id_bitmap_read bitmap);
         bool LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip);
         bool LoadUIBitmap(id_bitmap_read bitmap);
+        void Crear();
         id_bitmap CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const;
         void ChangeToMagentaAlpha();
         void RestoreFromMagentaAlpha();

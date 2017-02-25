@@ -232,6 +232,17 @@
             return (id_image_read) &ScreenshotPixmap;
         }
 
+        id_bitmap_read Platform::GetScreenshotBitmap(const rect128& rect, bool vflip)
+        {
+            static Image ScreenshotImage;
+            QImage CurImage = QPixmap::grabWindow(QApplication::desktop()->winId(),
+                rect.l, rect.t, rect.r - rect.l, rect.b - rect.t).toImage();
+            CurImage = CurImage.convertToFormat(QImage::Format::Format_ARGB32);
+            ScreenshotImage.LoadBitmapFromBits(CurImage.constBits(), CurImage.width(), CurImage.height(),
+                CurImage.bitPlaneCount(), vflip);
+            return ScreenshotImage.GetBitmap();
+        }
+
         h_view Platform::SetWindowView(chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);

@@ -215,6 +215,14 @@
             return nullptr;
         }
 
+        id_bitmap_read Platform::GetScreenshotBitmap(const rect128& rect, bool vflip)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+
+            BLIK_ASSERT("Further development is needed.", false);
+            return nullptr;
+        }
+
         h_view Platform::SetWindowView(chars viewclass)
         {
             if(g_view)

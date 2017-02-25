@@ -465,6 +465,12 @@ namespace BLIK
         return true;
     }
 
+    void Image::Crear()
+    {
+        ResetBitmap();
+        ResetData();
+    }
+
     id_bitmap Image::CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const
     {
         return (m_bitmap)? Bmp::Copy(m_bitmap, l, t, r, b) : nullptr;
