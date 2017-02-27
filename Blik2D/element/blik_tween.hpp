@@ -8,7 +8,7 @@ namespace BLIK
     typedef std::function<bool(bool needRedraw)> TweenUpdateCB;
 
     //! \brief 1D트윈
-    class Tween1D : Updater
+    class Tween1D : public Updater
     {
     public:
         Tween1D(Updater* neighbor, float value = 0,
@@ -41,7 +41,7 @@ namespace BLIK
     typedef Array<Tween1D> Tween1Ds;
 
     //! \brief 2D트윈
-    class Tween2D : Updater
+    class Tween2D : public Updater
     {
     public:
         Tween2D(Updater* neighbor);
