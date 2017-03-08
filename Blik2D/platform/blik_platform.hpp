@@ -505,7 +505,16 @@ namespace BLIK
             static void SetZoom(float zoom);
 
             /*!
-            \brief 사각형출력
+            \brief 사각영역 지우기
+            \param x : 좌측위치(px)
+            \param y : 상단위치(px)
+            \param w : 가로길이(px)
+            \param h : 세로길이(px)
+            */
+            static void EraseRect(float x, float y, float w, float h);
+
+            /*!
+            \brief 사각형 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param w : 가로길이(px)
@@ -514,7 +523,7 @@ namespace BLIK
             static void FillRect(float x, float y, float w, float h);
 
             /*!
-            \brief 폴리곤출력
+            \brief 폴리곤 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param p : 꼭지점들(px)
@@ -522,7 +531,7 @@ namespace BLIK
             static void FillPolygon(float x, float y, Points p);
 
             /*!
-            \brief 타원출력
+            \brief 타원 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param w : 가로길이(px)
@@ -531,7 +540,7 @@ namespace BLIK
             static void DrawCircle(float x, float y, float w, float h);
 
             /*!
-            \brief 라인출력
+            \brief 라인 출력
             \param begin : 시작점(px)
             \param end : 끝점(px)
             \param thick : 두께(px)
@@ -539,7 +548,7 @@ namespace BLIK
             static void DrawLine(const Point& begin, const Point& end, float thick);
 
             /*!
-            \brief 베지어출력
+            \brief 베지어 출력
             \param begin : 시작점(px)
             \param end : 끝점(px)
             \param thick : 두께(px)
@@ -547,7 +556,7 @@ namespace BLIK
             static void DrawBezier(const Vector& begin, const Vector& end, float thick);
 
             /*!
-            \brief 폴리라인출력
+            \brief 폴리라인 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param p : 꼭지점들(px)
@@ -556,7 +565,7 @@ namespace BLIK
             static void DrawPolyLine(float x, float y, Points p, float thick);
 
             /*!
-            \brief 폴리베지어출력
+            \brief 폴리베지어 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param p : 꼭지점들(px)
@@ -572,7 +581,7 @@ namespace BLIK
             \param coloring : 컬러링 색상
             \param resizing_width : 리사이징용 가로길이(px)
             \param resizing_height : 리사이징용 세로길이(px)
-            \return 이미지
+            \return 생성된 이미지
             */
             static id_image CreateImage(id_bitmap_read bitmap,
                 const Color& coloring = Color(Color::ColoringDefault), sint32 resizing_width = -1, sint32 resizing_height = -1);
@@ -592,13 +601,13 @@ namespace BLIK
             static sint32 GetImageHeight(id_image_read image);
 
             /*!
-            \brief 이미지 해제
+            \brief 이미지 삭제
             \param image : 이미지
             */
             static void RemoveImage(id_image image);
 
             /*!
-            \brief 이미지출력
+            \brief 이미지 출력
             \param image : 출력할 이미지
             \param ix : 이미지의 좌측위치(px)
             \param iy : 이미지의 상단위치(px)
@@ -612,7 +621,7 @@ namespace BLIK
             static void DrawImage(id_image_read image, float ix, float iy, float iw, float ih, float x, float y, float w, float h);
 
             /*!
-            \brief 문자열출력
+            \brief 문자열 출력
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param w : 가로길이(px)
@@ -625,7 +634,7 @@ namespace BLIK
             static bool DrawString(float x, float y, float w, float h, chars string, UIFontAlign align, UIFontElide elide = UIFE_None);
 
             /*!
-            \brief 문자열출력(UTF16)
+            \brief 문자열 출력(UTF16)
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param w : 가로길이(px)
@@ -672,6 +681,75 @@ namespace BLIK
             \brief GL드로잉 끝
             */
             static void EndGL();
+
+            /*!
+            \brief 서피스(FBO) 생성
+            \param width : 가로길이(px)
+            \param height : 세로길이(px)
+            \return 생성된 서피스
+            */
+            static id_surface CreateSurface(sint32 width, sint32 height);
+
+            /*!
+            \brief 서피스 가로길이 얻기
+            \param surface : 서피스
+            \return 서피스 가로길이
+            */
+            static sint32 GetSurfaceWidth(id_surface_read surface);
+
+            /*!
+            \brief 서피스 세로길이 얻기
+            \param surface : 서피스
+            \return 서피스 세로길이
+            */
+            static sint32 GetSurfaceHeight(id_surface_read surface);
+
+            /*!
+            \brief 서피스 삭제
+            \param surface : 삭제할 서피스
+            */
+            static void RemoveSurface(id_surface surface);
+
+            /*!
+            \brief 현재 그래픽스에 서피스를 연동
+            \param surface : 해당 서피스
+            */
+            static void BindSurface(id_surface surface);
+
+            /*!
+            \brief 현재 그래픽스에서 서피스의 연동을 해제
+            \param surface : 해당 서피스
+            */
+            static void UnbindSurface(id_surface surface);
+
+            /*!
+            \brief 현재 그래픽스에 서피스 출력
+            \param surface : 출력할 서피스
+            \param sx : 서피스의 좌측위치(px)
+            \param sy : 서피스의 상단위치(px)
+            \param sw : 서피스의 가로길이(px)
+            \param sh : 서피스의 세로길이(px)
+            \param x : 좌측위치(px)
+            \param y : 상단위치(px)
+            \param w : 가로길이(px)
+            \param h : 세로길이(px)
+            */
+            static void DrawSurface(id_surface_read surface, float sx, float sy, float sw, float sh, float x, float y, float w, float h);
+
+            /*!
+            \brief 서피스에서 이미지 얻기
+            \param surface : 해당 서피스
+            \return 서피스 이미지(nullptr은 실패)
+            */
+            static id_image_read GetImageFromSurface(id_surface_read surface);
+
+            /*!
+            \brief 서피스에서 비트맵 얻기
+            \param surface : 해당 서피스
+            \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
+            \return 서피스 비트맵(nullptr은 실패)
+            */
+            static id_bitmap_read GetBitmapFromSurface(id_surface_read surface, bool vflip);
         };
 
         //! \brief 파일지원

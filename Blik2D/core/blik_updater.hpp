@@ -15,6 +15,7 @@ namespace BLIK
 
     public:
         Updater(Updater* neighbor = nullptr, bool atprev = true);
+        Updater(chars uigroup_literal, Updater* neighbor = nullptr, bool atprev = true);
         Updater(const Updater& rhs);
         virtual ~Updater();
 
@@ -37,6 +38,7 @@ namespace BLIK
         void Unbind();
 
     private:
+        chars const m_uigroup;
         Updater* m_prev;
         Updater* m_next;
     };
@@ -52,8 +54,8 @@ namespace BLIK
         FrameUpdater& operator=(const FrameUpdater& rhs);
 
     public:
-        bool Flush();
-        bool NeedWakeUp();
+        void Flush(void (*invalidator)(payload, chars), payload data);
+        void WakeUp(void (*invalidator)(payload, chars), payload data);
 
     protected:
         virtual bool UpdateForRender() override

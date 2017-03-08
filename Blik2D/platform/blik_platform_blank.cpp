@@ -557,6 +557,13 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
+        void Platform::Graphics::EraseRect(float x, float y, float w, float h)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
         void Platform::Graphics::FillRect(float x, float y, float w, float h)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
@@ -706,6 +713,74 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        id_surface Platform::Graphics::CreateSurface(sint32 width, sint32 height)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        sint32 Platform::Graphics::GetSurfaceWidth(id_surface_read surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
+
+        sint32 Platform::Graphics::GetSurfaceHeight(id_surface_read surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
+
+        void Platform::Graphics::RemoveSurface(id_surface surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Graphics::BindSurface(id_surface surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Graphics::UnbindSurface(id_surface surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Graphics::DrawSurface(id_surface_read surface, float sx, float sy, float sw, float sh, float x, float y, float w, float h)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        id_image_read Platform::Graphics::GetImageFromSurface(id_surface_read surface)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        id_bitmap_read Platform::Graphics::GetBitmapFromSurface(id_surface_read surface, bool vflip)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
         }
 
         ////////////////////////////////////////////////////////////////////////////////

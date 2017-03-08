@@ -56,23 +56,24 @@
     class SizePolicy
     {
     public:
-        SizePolicy()
-        {
-            m_minwidth = 0;
-            m_minheight = 0;
-            m_maxwidth = 0;
-            m_maxheight = 0;
-        }
-
-        ~SizePolicy()
-        {
-        }
-
+        SizePolicy();
+        ~SizePolicy();
     public:
         sint32 m_minwidth;
         sint32 m_minheight;
         sint32 m_maxwidth;
         sint32 m_maxheight;
+    };
+
+    class CanvasClass
+    {
+    public:
+        CanvasClass();
+        CanvasClass(QPaintDevice* paint);
+        ~CanvasClass();
+    public:
+        QPainter mPainter;
+        QColor mColor;
     };
 
     class ViewAPI : public QObject
@@ -307,12 +308,12 @@
         void paint()
         {
             // for assert dialog
-            if(CurPainter()) return;
+            if(CurCanvas()) return;
 
-            QPainter Canvas(getWidgetForPaint());
-            CurPainter() = &Canvas;
+            CanvasClass Canvas(getWidgetForPaint());
+            CurCanvas() = &Canvas;
             render(m_width, m_height);
-            CurPainter() = nullptr;
+            CurCanvas() = nullptr;
         }
 
         void nextPaint()
@@ -464,10 +465,8 @@
         }
 
     public:
-        static inline QPainter*& CurPainter()
-        {static QPainter* _ = nullptr; return _;}
-        static inline QColor& CurColor()
-        {static QColor _(0, 0, 0); return _;}
+        static inline CanvasClass*& CurCanvas()
+        {static CanvasClass* _ = nullptr; return _;}
 
     private:
         ParentType m_parent_type;
@@ -1236,6 +1235,74 @@
         Tracker m_tracker;
         sint32 m_select;
         QPoint m_parentpos;
+    };
+
+    class SurfaceClass
+    {
+    public:
+        SurfaceClass() : mFBO(0, 0, QOpenGLFramebufferObjectFormat()), mDevice(0, 0)
+        {
+            BLIK_ASSERT("잘못된 시나리오입니다", false);
+        }
+        SurfaceClass(sint32 width, sint32 height, QOpenGLFramebufferObjectFormat* format)
+            : mFBO(width, height, *format), mDevice(width, height)
+        {
+            mCanvas.mPainter.begin(&mDevice);
+            mCanvas.mPainter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+            mSavedCanvas = nullptr;
+        }
+        ~SurfaceClass()
+        {
+            BLIK_ASSERT("ViewAPI::CurPainter()를 반환하지 않았습니다", !mSavedCanvas);
+            mCanvas.mPainter.end();
+            mFBO.release();
+        }
+
+    public:
+        SurfaceClass(const SurfaceClass& rhs) : mFBO(0, 0, QOpenGLFramebufferObjectFormat()), mDevice(0, 0)
+        {
+            operator=(rhs);
+        }
+        SurfaceClass& operator=(const SurfaceClass& rhs)
+        {
+            BLIK_ASSERT("잘못된 시나리오입니다", false);
+            return *this;
+        }
+
+    public:
+        inline sint32 width() const {return mFBO.width();}
+        inline sint32 height() const {return mFBO.height();}
+
+    public:
+        void Bind()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            BLIK_ASSERT("Unbind되지 않은 Bind입니다", !mSavedCanvas);
+
+            mFBO.bind();
+            mSavedCanvas = ViewAPI::CurCanvas();
+            ViewAPI::CurCanvas() = &mCanvas;
+        }
+        void Unbind()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            BLIK_ASSERT("Bind시켰던 값과 일치하지 않습니다\n(다수의 Surface를 Bind하면 Unbind의 순서는 역순이어야 합니다)",
+                ViewAPI::CurCanvas() == &mCanvas);
+            BLIK_ASSERT("Bind되지 않은 Unbind입니다", mSavedCanvas);
+
+            ViewAPI::CurCanvas() = mSavedCanvas;
+            mSavedCanvas = nullptr;
+            mLastImage = mFBO.toImage();
+        }
+
+    private:
+        QOpenGLFramebufferObject mFBO;
+        QOpenGLPaintDevice mDevice;
+        CanvasClass mCanvas;
+        CanvasClass* mSavedCanvas;
+
+    public:
+        QImage mLastImage;
     };
 
     class ThreadClass : public QThread

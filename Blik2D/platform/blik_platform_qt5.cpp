@@ -10,6 +10,19 @@
     QWidget* g_view = nullptr;
     QGLFunctions* g_func = nullptr;
 
+    SizePolicy::SizePolicy()
+    {
+        m_minwidth = 0;
+        m_minheight = 0;
+        m_maxwidth = 0;
+        m_maxheight = 0;
+    }
+    SizePolicy::~SizePolicy() {}
+
+    CanvasClass::CanvasClass() : mColor(0, 0, 0) {}
+    CanvasClass::CanvasClass(QPaintDevice* paint) : mPainter(paint), mColor(0, 0, 0) {}
+    CanvasClass::~CanvasClass() {}
+
     #if BLIK_ANDROID
         QAndroidJniObject g_activity;
         QAndroidJniObject g_context;
@@ -695,43 +708,52 @@
         ////////////////////////////////////////////////////////////////////////////////
         void Platform::Graphics::SetScissor(float x, float y, float w, float h)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            const QMatrix& LastMatrix = ViewAPI::CurPainter()->matrix();
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            const QMatrix& LastMatrix = ViewAPI::CurCanvas()->mPainter.matrix();
             const float LastZoom = (float) LastMatrix.m11();
-            ViewAPI::CurPainter()->setClipRect(QRectF(
+            ViewAPI::CurCanvas()->mPainter.setClipRect(QRectF(
                 QPointF(Math::Floor(x * LastZoom) / LastZoom, Math::Floor(y * LastZoom) / LastZoom),
                 QPointF(Math::Ceil((x + w) * LastZoom) / LastZoom, Math::Ceil((y + h) * LastZoom) / LastZoom)));
         }
 
         void Platform::Graphics::SetColor(uint08 r, uint08 g, uint08 b, uint08 a)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurColor().setRgb(r, g, b, a);
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mColor.setRgb(r, g, b, a);
         }
 
         void Platform::Graphics::SetFont(chars name, float size)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->setFont(QFont(name, (sint32) size));
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.setFont(QFont(name, (sint32) size));
         }
 
         void Platform::Graphics::SetZoom(float zoom)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             QMatrix NewMatrix(zoom, 0, 0, zoom, 0, 0);
-            ViewAPI::CurPainter()->setMatrix(NewMatrix);
-            ViewAPI::CurPainter()->setRenderHint(QPainter::SmoothPixmapTransform, zoom < 1);
+            ViewAPI::CurCanvas()->mPainter.setMatrix(NewMatrix);
+            ViewAPI::CurCanvas()->mPainter.setRenderHint(QPainter::SmoothPixmapTransform, zoom < 1);
+        }
+
+        void Platform::Graphics::EraseRect(float x, float y, float w, float h)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            auto OldCompositionMode = ViewAPI::CurCanvas()->mPainter.compositionMode();
+            ViewAPI::CurCanvas()->mPainter.setCompositionMode(QPainter::CompositionMode_Clear);
+            ViewAPI::CurCanvas()->mPainter.eraseRect(QRectF(x, y, w, h));
+            ViewAPI::CurCanvas()->mPainter.setCompositionMode(OldCompositionMode);
         }
 
         void Platform::Graphics::FillRect(float x, float y, float w, float h)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->fillRect(QRectF(x, y, w, h), ViewAPI::CurColor());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.fillRect(QRectF(x, y, w, h), ViewAPI::CurCanvas()->mColor);
         }
 
         void Platform::Graphics::FillPolygon(float x, float y, Points p)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             const sint32 Count = p.Count();
             if(Count < 3) return;
 
@@ -742,44 +764,44 @@
                 NewPoint[i].setY(y + p[i].y);
             }
 
-            ViewAPI::CurPainter()->setPen(Qt::NoPen);
-            ViewAPI::CurPainter()->setBrush(QBrush(ViewAPI::CurColor()));
-            ViewAPI::CurPainter()->drawPolygon(NewPoint, Count);
+            ViewAPI::CurCanvas()->mPainter.setPen(Qt::NoPen);
+            ViewAPI::CurCanvas()->mPainter.setBrush(QBrush(ViewAPI::CurCanvas()->mColor));
+            ViewAPI::CurCanvas()->mPainter.drawPolygon(NewPoint, Count);
             delete[] NewPoint;
         }
 
         void Platform::Graphics::DrawCircle(float x, float y, float w, float h)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->setPen(Qt::NoPen);
-            ViewAPI::CurPainter()->setBrush(QBrush(ViewAPI::CurColor()));
-            ViewAPI::CurPainter()->drawEllipse(QRectF(x, y, w, h));
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.setPen(Qt::NoPen);
+            ViewAPI::CurCanvas()->mPainter.setBrush(QBrush(ViewAPI::CurCanvas()->mColor));
+            ViewAPI::CurCanvas()->mPainter.drawEllipse(QRectF(x, y, w, h));
         }
 
         void Platform::Graphics::DrawLine(const Point& begin, const Point& end, float thick)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->setPen(QPen(QBrush(ViewAPI::CurColor()), thick));
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
-            ViewAPI::CurPainter()->drawLine(QPointF(begin.x, begin.y), QPointF(end.x, end.y));
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.setPen(QPen(QBrush(ViewAPI::CurCanvas()->mColor), thick));
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
+            ViewAPI::CurCanvas()->mPainter.drawLine(QPointF(begin.x, begin.y), QPointF(end.x, end.y));
         }
 
         void Platform::Graphics::DrawBezier(const Vector& begin, const Vector& end, float thick)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             QPainterPath NewPath;
             NewPath.moveTo(begin.x, begin.y);
             NewPath.cubicTo(begin.x + begin.vx, begin.y + begin.vy,
                 end.x + end.vx, end.y + end.vy, end.x, end.y);
 
-            ViewAPI::CurPainter()->setPen(QPen(QBrush(ViewAPI::CurColor()), thick));
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
-            ViewAPI::CurPainter()->drawPath(NewPath);
+            ViewAPI::CurCanvas()->mPainter.setPen(QPen(QBrush(ViewAPI::CurCanvas()->mColor), thick));
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
+            ViewAPI::CurCanvas()->mPainter.drawPath(NewPath);
         }
 
         void Platform::Graphics::DrawPolyLine(float x, float y, Points p, float thick)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             const sint32 Count = p.Count();
             if(Count < 2) return;
 
@@ -790,15 +812,15 @@
                 NewPoint[i].setY(y + p[i].y);
             }
 
-            ViewAPI::CurPainter()->setPen(QPen(QBrush(ViewAPI::CurColor()), thick));
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
-            ViewAPI::CurPainter()->drawPolyline(NewPoint, Count);
+            ViewAPI::CurCanvas()->mPainter.setPen(QPen(QBrush(ViewAPI::CurCanvas()->mColor), thick));
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
+            ViewAPI::CurCanvas()->mPainter.drawPolyline(NewPoint, Count);
             delete[] NewPoint;
         }
 
         void Platform::Graphics::DrawPolyBezier(float x, float y, Points p, float thick, bool showfirst, bool showlast)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             const sint32 Count = p.Count();
             if(Count < 4) return;
 
@@ -823,9 +845,9 @@
             if(showlast)
                 NewPath.lineTo(x + p[-1].x, y + p[-1].y);
 
-            ViewAPI::CurPainter()->setPen(QPen(QBrush(ViewAPI::CurColor()), thick));
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
-            ViewAPI::CurPainter()->drawPath(NewPath);
+            ViewAPI::CurCanvas()->mPainter.setPen(QPen(QBrush(ViewAPI::CurCanvas()->mColor), thick));
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
+            ViewAPI::CurCanvas()->mPainter.drawPath(NewPath);
         }
 
         id_image Platform::Graphics::CreateImage(id_bitmap_read bitmap, const Color& coloring, sint32 resizing_width, sint32 resizing_height)
@@ -1034,11 +1056,11 @@
 
         void Platform::Graphics::DrawImage(id_image_read image, float ix, float iy, float iw, float ih, float x, float y, float w, float h)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             if(w == iw && h == ih)
-                ViewAPI::CurPainter()->drawPixmap(QPoint((sint32) x, (sint32) y), *((const QPixmap*) image),
+                ViewAPI::CurCanvas()->mPainter.drawPixmap(QPoint((sint32) x, (sint32) y), *((const QPixmap*) image),
                     QRect((sint32) ix, (sint32) iy, (sint32) iw, (sint32) ih));
-            else ViewAPI::CurPainter()->drawPixmap(QRect((sint32) x, (sint32) y, (sint32) w, (sint32) h), *((const QPixmap*) image),
+            else ViewAPI::CurCanvas()->mPainter.drawPixmap(QRect((sint32) x, (sint32) y, (sint32) w, (sint32) h), *((const QPixmap*) image),
                 QRect((sint32) ix, (sint32) iy, (sint32) iw, (sint32) ih));
             // 아래 코드의 랜더링결과는 품질이 좋지 않음
             //if(w == iw && h == ih)
@@ -1086,78 +1108,153 @@
 
         bool Platform::Graphics::DrawString(float x, float y, float w, float h, chars string, UIFontAlign align, UIFontElide elide)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->setPen(ViewAPI::CurColor());
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.setPen(ViewAPI::CurCanvas()->mColor);
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
 
             const QString Text = QString::fromUtf8(string);
             if(elide != UIFE_None)
             {
-                const QString ElidedText = ViewAPI::CurPainter()->fontMetrics().elidedText(Text, _ExchangeTextElideMode(elide), w);
+                const QString ElidedText = ViewAPI::CurCanvas()->mPainter.fontMetrics().elidedText(Text, _ExchangeTextElideMode(elide), w);
                 if(ElidedText != Text)
                 {
-                    ViewAPI::CurPainter()->drawText(QRectF(x, y, w, h), ElidedText, QTextOption(_ExchangeAlignment(align)));
+                    ViewAPI::CurCanvas()->mPainter.drawText(QRectF(x, y, w, h), ElidedText, QTextOption(_ExchangeAlignment(align)));
                     return true;
                 }
             }
-            ViewAPI::CurPainter()->drawText(QRectF(x, y, w, h), Text, QTextOption(_ExchangeAlignment(align)));
+            ViewAPI::CurCanvas()->mPainter.drawText(QRectF(x, y, w, h), Text, QTextOption(_ExchangeAlignment(align)));
             return false;
         }
 
         bool Platform::Graphics::DrawStringW(float x, float y, float w, float h, wchars string, UIFontAlign align, UIFontElide elide)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->setPen(ViewAPI::CurColor());
-            ViewAPI::CurPainter()->setBrush(Qt::NoBrush);
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.setPen(ViewAPI::CurCanvas()->mColor);
+            ViewAPI::CurCanvas()->mPainter.setBrush(Qt::NoBrush);
 
             const QString Text = QString::fromWCharArray(string);
             if(elide != UIFE_None)
             {
-                const QString ElidedText = ViewAPI::CurPainter()->fontMetrics().elidedText(Text, _ExchangeTextElideMode(elide), w);
+                const QString ElidedText = ViewAPI::CurCanvas()->mPainter.fontMetrics().elidedText(Text, _ExchangeTextElideMode(elide), w);
                 if(ElidedText != Text)
                 {
-                    ViewAPI::CurPainter()->drawText(QRectF(x, y, w, h), ElidedText, QTextOption(_ExchangeAlignment(align)));
+                    ViewAPI::CurCanvas()->mPainter.drawText(QRectF(x, y, w, h), ElidedText, QTextOption(_ExchangeAlignment(align)));
                     return true;
                 }
             }
-            ViewAPI::CurPainter()->drawText(QRectF(x, y, w, h), Text, QTextOption(_ExchangeAlignment(align)));
+            ViewAPI::CurCanvas()->mPainter.drawText(QRectF(x, y, w, h), Text, QTextOption(_ExchangeAlignment(align)));
             return false;
         }
 
         sint32 Platform::Graphics::GetStringWidth(chars string)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            return ViewAPI::CurPainter()->fontMetrics().width(QString::fromUtf8(string));
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            return ViewAPI::CurCanvas()->mPainter.fontMetrics().width(QString::fromUtf8(string));
         }
 
         sint32 Platform::Graphics::GetStringWidthW(wchars string)
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            return ViewAPI::CurPainter()->fontMetrics().width(QString::fromWCharArray(string));
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            return ViewAPI::CurCanvas()->mPainter.fontMetrics().width(QString::fromWCharArray(string));
         }
 
         sint32 Platform::Graphics::GetStringHeight()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            return ViewAPI::CurPainter()->fontMetrics().height();
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            return ViewAPI::CurCanvas()->mPainter.fontMetrics().height();
         }
 
         sint32 Platform::Graphics::GetStringAscent()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            return ViewAPI::CurPainter()->fontMetrics().ascent();
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            return ViewAPI::CurCanvas()->mPainter.fontMetrics().ascent();
         }
 
         void Platform::Graphics::BeginGL()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->beginNativePainting();
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.beginNativePainting();
         }
 
         void Platform::Graphics::EndGL()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
-            ViewAPI::CurPainter()->endNativePainting();
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            ViewAPI::CurCanvas()->mPainter.endNativePainting();
+        }
+
+        id_surface Platform::Graphics::CreateSurface(sint32 width, sint32 height)
+        {
+            QOpenGLFramebufferObjectFormat SurfaceFormat;
+            SurfaceFormat.setSamples(4);
+            SurfaceFormat.setMipmap(false);
+            SurfaceFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+            SurfaceFormat.setTextureTarget(GL_TEXTURE_2D);
+            SurfaceFormat.setInternalTextureFormat(GL_RGBA32F_ARB);
+
+            buffer NewSurface = Buffer::AllocNoConstructorOnce<SurfaceClass>(BLIK_DBG 1);
+            BLIK_CONSTRUCTOR(NewSurface, 0, SurfaceClass, width, height, &SurfaceFormat);
+            return (id_surface) NewSurface;
+        }
+
+        sint32 Platform::Graphics::GetSurfaceWidth(id_surface_read surface)
+        {
+            if(!surface) return 0;
+            return ((const SurfaceClass*) surface)->width();
+        }
+
+        sint32 Platform::Graphics::GetSurfaceHeight(id_surface_read surface)
+        {
+            if(!surface) return 0;
+            return ((const SurfaceClass*) surface)->height();
+        }
+
+        void Platform::Graphics::RemoveSurface(id_surface surface)
+        {
+            Buffer::Free((buffer) surface);
+        }
+
+        void Platform::Graphics::BindSurface(id_surface surface)
+        {
+            if(surface)
+                ((SurfaceClass*) surface)->Bind();
+        }
+
+        void Platform::Graphics::UnbindSurface(id_surface surface)
+        {
+            if(surface)
+                ((SurfaceClass*) surface)->Unbind();
+        }
+
+        void Platform::Graphics::DrawSurface(id_surface_read surface, float sx, float sy, float sw, float sh, float x, float y, float w, float h)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            if(!surface) return;
+
+            if(w == sw && h == sh)
+                ViewAPI::CurCanvas()->mPainter.drawImage(QPoint((sint32) x, (sint32) y),
+                    ((const SurfaceClass*) surface)->mLastImage, QRect((sint32) sx, (sint32) sy, (sint32) sw, (sint32) sh));
+            else ViewAPI::CurCanvas()->mPainter.drawImage(QRect((sint32) x, (sint32) y, (sint32) w, (sint32) h),
+                ((const SurfaceClass*) surface)->mLastImage, QRect((sint32) sx, (sint32) sy, (sint32) sw, (sint32) sh));
+        }
+
+        id_image_read Platform::Graphics::GetImageFromSurface(id_surface_read surface)
+        {
+            static QPixmap SurfacePixmap;
+            if(!surface) return nullptr;
+
+            SurfacePixmap = QPixmap::fromImage(((const SurfaceClass*) surface)->mLastImage);
+            return (id_image_read) &SurfacePixmap;
+        }
+
+        id_bitmap_read Platform::Graphics::GetBitmapFromSurface(id_surface_read surface, bool vflip)
+        {
+            static Image SurfaceImage;
+            if(!surface) return nullptr;
+
+            QImage CurImage = ((const SurfaceClass*) surface)->mLastImage.convertToFormat(QImage::Format::Format_ARGB32);
+            SurfaceImage.LoadBitmapFromBits(CurImage.constBits(), CurImage.width(), CurImage.height(),
+                CurImage.bitPlaneCount(), vflip);
+            return SurfaceImage.GetBitmap();
         }
 
         ////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,6 @@
 #include <element/blik_color.hpp>
 #include <element/blik_image.hpp>
 #include <element/blik_font.hpp>
-
 #include <functional>
 
 // 옵션스택관련
@@ -104,31 +103,41 @@
 #define BLIK_ZOOM(PANEL, ZOOM) \
     for(bool _ = (PANEL)._push_zoom(ZOOM); _; _ = (PANEL)._pop_zoom())
 
+// 서브패널관련
+#define BLIK_MAKE_SUB(PANEL, SURFACE) \
+    for(ViewPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE)); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define BLIK_MAKE_SUB_UI(PANEL, SURFACE, NAME) \
+    for(ViewPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE), NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define BLIK_MAKE_SUB_WH(PANEL, SURFACE, W, H) \
+    for(ViewPanel PANEL(SURFACE, W, H); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define BLIK_MAKE_SUB_UI_WH(PANEL, SURFACE, NAME, W, H) \
+    for(ViewPanel PANEL(SURFACE, W, H, NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
+
 // 뷰등록관련
 #define BLIK_VIEW_API static void
 #define BLIK_DECLARE_VIEW(NAME) BLIK_DECLARE_VIEW_CLASS(NAME, ViewClass)
 #define BLIK_DECLARE_VIEW_CLASS(NAME, CLASS) \
     BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
     BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnPanel(GestureType, sint32, sint32); \
+    BLIK_VIEW_API OnGesture(GestureType, sint32, sint32); \
     BLIK_VIEW_API OnRender(ViewPanel&); \
     static ViewInstance<CLASS> m; \
     static void _Bind(ViewClass* ptr) {m._bind((CLASS*) ptr);} \
     static ViewClass* _Alloc() {return (ViewClass*) Buffer::Alloc<CLASS>(BLIK_DBG 1);} \
     static void _Free(ViewClass* ptr) {Buffer::Free((buffer) ptr);} \
     static autorun _ = ViewManager::_makefunc(false, "" NAME, OnCommand, OnNotify, \
-        OnPanel, OnRender, _Bind, _Alloc, _Free);
+        OnGesture, OnRender, _Bind, _Alloc, _Free);
 #define BLIK_DECLARE_VIEW_NATIVE(NAME, CLASS) \
     BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
     BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnPanel(GestureType, sint32, sint32) {BLIK_ASSERT("This function should not be called directly.", false);} \
+    BLIK_VIEW_API OnGesture(GestureType, sint32, sint32) {BLIK_ASSERT("This function should not be called directly.", false);} \
     BLIK_VIEW_API OnRender(ViewPanel&) {BLIK_ASSERT("This function should not be called directly.", false);} \
     static ViewInstance<CLASS> m; \
     static void _Bind(ViewClass* ptr) {m._bind((CLASS*) ptr);} \
     static ViewClass* _Alloc() {return (ViewClass*) new CLASS;} \
     static void _Free(ViewClass* ptr) {delete (CLASS*) ptr;} \
     static autorun _ = ViewManager::_makefunc(true, "" NAME, OnCommand, OnNotify, \
-        OnPanel, OnRender, _Bind, _Alloc, _Free);
+        OnGesture, OnRender, _Bind, _Alloc, _Free);
 
 // UI제스처 콜백함수
 #define BLIK_GESTURE_T(TYPE, ...)                       [__VA_ARGS__](ViewClass*, chars, GestureType TYPE, sint32, sint32)->void
@@ -177,6 +186,7 @@ namespace BLIK
     class ViewClass
     {
         friend class ViewManager;
+        friend class ViewController;
 
     public:
         typedef void (*CommandCB)(CommandType, chars, id_share, id_cloned_share*);
@@ -200,6 +210,11 @@ namespace BLIK
 
     public:
         void invalidate(sint32 count = 1) const;
+        void invalidate(chars uigroup) const;
+    protected:
+        static void invalidator(payload data, chars uigroup);
+
+    public:
         ViewClass* next(chars viewclass);
         bool next(ViewManager* viewmanager);
         void exit();
@@ -220,8 +235,6 @@ namespace BLIK
 
     private:
         h_view m_view;
-
-    protected:
         void* m_resource;
         sint32 m_frame_counter;
         FrameUpdater m_frame_updater;
@@ -237,15 +250,17 @@ namespace BLIK
     class ViewPanel
     {
     public:
-        typedef void (*PanelCB)(GestureType, sint32, sint32);
-        typedef std::function<void(ViewClass*, chars, GestureType, sint32, sint32)> SubPanelCB;
+        typedef void (*GestureCB)(GestureType, sint32, sint32);
+        typedef std::function<void(ViewClass*, chars, GestureType, sint32, sint32)> SubGestureCB;
         typedef void (*RenderCB)(ViewPanel&);
 
     public:
         ViewPanel(float width, float height, const buffer touch);
+        ViewPanel(id_surface surface, float width, float height, chars uigroup = nullptr);
         ~ViewPanel();
 
     public:
+        void erase() const;
         void fill() const;
         void circle() const;
         void line(const Point& begin, const Point& end, float thick) const;
@@ -258,11 +273,12 @@ namespace BLIK
         haschild iconNatived(id_image_read image, UIAlign align);
         haschild iconNatived(float x, float y, id_image_read image, UIAlign align); // 중점식
         haschild stretch(const Image& image, bool rebuild);
-        haschild stretchNatived(id_image_read image);
+        haschild stretchNatived(id_image_read image) const;
         haschild ninepatch(const Image& image);
         void pattern(const Image& image, UIAlign align, bool reversed_xorder = false, bool reversed_yorder = false) const;
         bool text(chars string, UIFontAlign align, UIFontElide elide = UIFE_None) const;
         void text(float x, float y, chars string, UIFontAlign align) const; // 중점식
+        void sub(chars uigroup, id_surface surface) const;
         PanelState state(chars uiname = nullptr) const;
         Point toview(float x, float y) const;
         void test(UITestOrder order);
@@ -277,11 +293,11 @@ namespace BLIK
 
     public:
         didstack _push_clip(float l, float t, float r, float b, bool doScissor);
-        didstack _push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubPanelCB cb = nullptr, bool hoverpass = true);
+        didstack _push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
         didstack _push_clip_by_rect(const Rect& r, bool doScissor);
-        didstack _push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubPanelCB cb = nullptr, bool hoverpass = true);
+        didstack _push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
         didstack _push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor);
-        didstack _push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubPanelCB cb = nullptr, bool hoverpass = true);
+        didstack _push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
         didstack _push_color(sint32 r, sint32 g, sint32 b, sint32 a);
         didstack _push_color(const Color& color);
         didstack _push_color_clear();
@@ -296,10 +312,19 @@ namespace BLIK
         bool _push_scissor(float l, float t, float r, float b);
         void _pop_scissor();
 
+    public:
+        inline bool _is_dirty() const
+        {return m_dirty;}
+        inline void _clear_me()
+        {m_dirty = false;}
+
     protected:
+        bool m_dirty;
         const float m_width;
         const float m_height;
+        id_surface m_ref_surface;
         void* m_ref_touch;
+        void* m_ref_touch_collector;
         Clips m_stack_clip;
         Rects m_stack_scissor;
         Colors m_stack_color;
@@ -373,55 +398,32 @@ namespace BLIK
         class Element
         {
         public:
-            typedef void (*ElementPanelCB)(ViewManager*, const Element*, GestureType, sint32, sint32);
+            typedef void (*GestureCB)(ViewManager*, const Element*, GestureType, sint32, sint32);
+
+        public:
+            Element();
+            ~Element();
+            Element& operator=(const Element& rhs);
+
+        public:
+            PanelState GetState(void* touch) const;
+            bool IsStateChanged(void* touch) const;
 
         public:
             sint32 m_updateid;
             String m_name;
             rect128 m_rect;
             float m_zoom;
-            mutable point64 m_saved_xy;
-            ElementPanelCB m_cb;
-            ViewPanel::SubPanelCB m_subcb;
+            GestureCB m_cb;
+            ViewPanel::SubGestureCB m_subcb;
             bool m_hoverpass;
             sint32 m_hoverid;
+            mutable point64 m_saved_xy;
 
-        public:
-            Element()
-            {
-                m_updateid = -1;
-                m_rect.l = 0;
-                m_rect.t = 0;
-                m_rect.r = 0;
-                m_rect.b = 0;
-                m_zoom = 1;
-                m_saved_xy.x = 0;
-                m_saved_xy.y = 0;
-                m_cb = nullptr;
-                m_subcb = nullptr;
-                m_hoverpass = false;
-                m_hoverid = -1;
-            }
-
-            ~Element() {}
-
-            Element& operator=(const Element& rhs)
-            {
-                m_updateid = rhs.m_updateid;
-                m_name = rhs.m_name;
-                m_rect.l = rhs.m_rect.l;
-                m_rect.t = rhs.m_rect.t;
-                m_rect.r = rhs.m_rect.r;
-                m_rect.b = rhs.m_rect.b;
-                m_zoom = rhs.m_zoom;
-                m_saved_xy.x = rhs.m_saved_xy.x;
-                m_saved_xy.y = rhs.m_saved_xy.y;
-                m_cb = rhs.m_cb;
-                m_subcb = rhs.m_subcb;
-                m_hoverpass = rhs.m_hoverpass;
-                m_hoverid = rhs.m_hoverid;
-                return *this;
-            }
+        private:
+            mutable sint32 m_saved_updateid_for_state;
+            mutable PanelState m_saved_state;
+            mutable PanelState m_saved_state_old;
         };
 
     private:
@@ -457,7 +459,8 @@ namespace BLIK
 
         public:
             void ready(sint32 width, sint32 height);
-            void update(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubPanelCB cb, bool hoverpass);
+            void update(chars uiname, float l, float t, float r, float b,
+                float zoom, ViewPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest = nullptr);
             const Element* get() const;
             const Element* get(chars uiname, sint32 lag) const;
             const Element& get(sint32 x, sint32 y) const;
@@ -499,8 +502,8 @@ namespace BLIK
             }
 
         private:
-            static void OnPanel(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
-            static void OnSubPanel(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
+            static void OnGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
+            static void OnSubGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
 
         private:
             sint32 m_updateid;
@@ -531,7 +534,7 @@ namespace BLIK
             String m_viewclass;
             ViewClass::CommandCB m_command;
             ViewClass::NotifyCB m_notify;
-            ViewPanel::PanelCB m_panel;
+            ViewPanel::GestureCB m_gesture;
             ViewPanel::RenderCB m_render;
             ViewClass::BindCB m_bind;
             ViewClass::AllocCB m_alloc;
@@ -549,7 +552,7 @@ namespace BLIK
         void _destroy();
         void _size(sint32 w, sint32 h);
         void _tick();
-        void _panel(GestureType type, sint32 x, sint32 y);
+        void _gesture(GestureType type, sint32 x, sint32 y);
         void _render(sint32 width, sint32 height, const Rect& viewport);
         void _touch(TouchType type, sint32 id, sint32 x, sint32 y);
         bool _isnative();
@@ -559,7 +562,7 @@ namespace BLIK
 
     public:
         static autorun _makefunc(bool isnative, chars viewclass,
-            ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
+            ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::GestureCB g, ViewPanel::RenderCB r,
             ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f);
         static Function* _accessfunc(chars viewclass, bool creatable);
         static const Map<h_view>* _searchview(chars viewclass, SearchCommand command, ViewClass* param = nullptr);

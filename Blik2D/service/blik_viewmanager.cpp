@@ -4,12 +4,77 @@
 BLIK_DECLARE_VIEW("_defaultview_")
 BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*) {}
 BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*) {}
-BLIK_VIEW_API OnPanel(GestureType, sint32, sint32) {}
+BLIK_VIEW_API OnGesture(GestureType, sint32, sint32) {}
 BLIK_VIEW_API OnRender(ViewPanel& panel)
 {BLIK_RGB(panel, 0x80, 0x80, 0x80) panel.fill();}
 
 namespace BLIK
 {
+    class TouchRect
+    {
+    public:
+        TouchRect() {BLIK_ASSERT("잘못된 시나리오입니다", false);}
+        TouchRect(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubGestureCB cb, bool hoverpass)
+        {
+            mName = uiname;
+            mL = l;
+            mT = t;
+            mR = r;
+            mB = b;
+            mZoom = zoom;
+            mCB = cb;
+            mHoverPass = hoverpass;
+        }
+        ~TouchRect() {}
+        TouchRect(const TouchRect& rhs) {operator=(rhs);}
+        TouchRect& operator=(const TouchRect& rhs)
+        {BLIK_ASSERT("잘못된 시나리오입니다", false); return *this;}
+
+    public:
+        static buffer Create(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubGestureCB cb, bool hoverpass)
+        {
+            buffer NewBuffer = Buffer::AllocNoConstructorOnce<TouchRect>(BLIK_DBG 1);
+            BLIK_CONSTRUCTOR(NewBuffer, 0, TouchRect, uiname, l, t, r, b, zoom, cb, hoverpass);
+            return NewBuffer;
+        }
+
+    public:
+        String mName;
+        float mL;
+        float mT;
+        float mR;
+        float mB;
+        float mZoom;
+        ViewPanel::SubGestureCB mCB;
+        bool mHoverPass;
+    };
+    typedef Object<TouchRect> TouchRectObject;
+    typedef Array<TouchRectObject> TouchRectObjects;
+
+    class TouchCollector
+    {
+    public:
+        TouchCollector()
+        {
+            mWidth = 0;
+            mHeight = 0;
+            mRefTouch = nullptr;
+            mDirty = true;
+        }
+        ~TouchCollector() {}
+
+    public:
+        static TouchCollector* ST(chars name)
+        {return &(*BLIK_STORAGE_SYS(Map<TouchCollector>))(name);}
+
+    public:
+        float mWidth;
+        float mHeight;
+        void* mRefTouch;
+        bool mDirty;
+        TouchRectObjects mTouchRects;
+    };
+
     ViewClass::ViewClass()
     {
         m_resource = nullptr;
@@ -46,6 +111,18 @@ namespace BLIK
         BLIK_ASSERT("Updater가 없습니다", m_updater);
         if(m_updater && 0 < count)
             m_updater(m_updater_data, count);
+    }
+
+    void ViewClass::invalidate(chars uigroup) const
+    {
+        if(uigroup)
+            TouchCollector::ST(uigroup)->mDirty = true;
+        invalidate();
+    }
+
+    void ViewClass::invalidator(payload data, chars uigroup)
+    {
+        ((const ViewClass*) data)->invalidate(uigroup);
     }
 
     ViewClass* ViewClass::next(chars viewclass)
@@ -130,27 +207,84 @@ namespace BLIK
     ViewPanel::ViewPanel(float width, float height, const buffer touch)
         : m_width(width), m_height(height)
     {
+        m_dirty = false;
+        m_ref_surface = nullptr;
         m_ref_touch = touch;
-        ((ViewManager::Touch*) m_ref_touch)->ready((sint32) width, (sint32) height);
-        m_stack_clip.AtAdding() = Clip(0, 0, width, height, true);
-        m_stack_scissor.AtAdding() = Rect(0, 0, width, height);
+        m_ref_touch_collector = nullptr;
+        ((ViewManager::Touch*) m_ref_touch)->ready((sint32) m_width, (sint32) m_height);
+
+        m_stack_clip.AtAdding() = Clip(0, 0, m_width, m_height, true);
+        m_stack_scissor.AtAdding() = Rect(0, 0, m_width, m_height);
         m_stack_color.AtAdding() = Color(Color::ColoringDefault);
         m_stack_font.AtAdding() = Font("Arial", 10);
         m_stack_zoom.AtAdding() = 1;
 
-        m_clipped_width = width;
-        m_clipped_height = height;
+        m_clipped_width = m_width;
+        m_clipped_height = m_height;
         m_child_image = nullptr;
-        m_child_guide = Rect(0, 0, width, height);
+        m_child_guide = Rect(0, 0, m_width, m_height);
         m_test_scissor = true;
 
-        Platform::Graphics::SetScissor(0, 0, width, height);
+        Platform::Graphics::SetScissor(0, 0, m_width, m_height);
         Platform::Graphics::SetColor(0xFF, 0xFF, 0xFF, 0xFF);
         Platform::Graphics::SetFont("Arial", 10);
+        Platform::Graphics::SetZoom(1);
+    }
+
+    ViewPanel::ViewPanel(id_surface surface, float width, float height, chars uigroup)
+        : m_width(width), m_height(height)
+    {
+        BLIK_ASSERT("surface가 nullptr입니다", surface);
+
+        if(uigroup)
+        {
+            m_dirty = TouchCollector::ST(uigroup)->mDirty;
+            TouchCollector::ST(uigroup)->mDirty = false;
+        }
+        else m_dirty = true;
+
+        if(m_dirty)
+        {
+            m_ref_surface = surface;
+            m_ref_touch = (uigroup)? TouchCollector::ST(uigroup)->mRefTouch : nullptr;
+            m_ref_touch_collector = (uigroup)? TouchCollector::ST(uigroup) : nullptr;
+            Platform::Graphics::BindSurface(m_ref_surface);
+            if(m_ref_touch_collector)
+            {
+                ((TouchCollector*) m_ref_touch_collector)->mWidth = m_width;
+                ((TouchCollector*) m_ref_touch_collector)->mHeight = m_height;
+                ((TouchCollector*) m_ref_touch_collector)->mTouchRects.SubtractionAll();
+            }
+
+            m_stack_clip.AtAdding() = Clip(0, 0, m_width, m_height, true);
+            m_stack_scissor.AtAdding() = Rect(0, 0, m_width, m_height);
+            m_stack_color.AtAdding() = Color(Color::ColoringDefault);
+            m_stack_font.AtAdding() = Font("Arial", 10);
+            m_stack_zoom.AtAdding() = 1;
+
+            m_clipped_width = m_width;
+            m_clipped_height = m_height;
+            m_child_image = nullptr;
+            m_child_guide = Rect(0, 0, m_width, m_height);
+            m_test_scissor = true;
+
+            Platform::Graphics::SetScissor(0, 0, m_width, m_height);
+            Platform::Graphics::SetColor(0xFF, 0xFF, 0xFF, 0xFF);
+            Platform::Graphics::SetFont("Arial", 10);
+            Platform::Graphics::SetZoom(1);
+        }
+        else m_ref_surface = nullptr;
     }
 
     ViewPanel::~ViewPanel()
     {
+        Platform::Graphics::UnbindSurface(m_ref_surface);
+    }
+
+    void ViewPanel::erase() const
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        Platform::Graphics::EraseRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
     void ViewPanel::fill() const
@@ -322,7 +456,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::stretchNatived(id_image_read image)
+    haschild ViewPanel::stretchNatived(id_image_read image) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
@@ -469,28 +603,38 @@ namespace BLIK
         Platform::Graphics::DrawString(CalcRect.l, CalcRect.t, CalcRect.Width(), CalcRect.Height(), string, UIFA_LeftTop);
     }
 
+    void ViewPanel::sub(chars uigroup, id_surface surface) const
+    {
+        auto CurCollector = TouchCollector::ST(uigroup);
+        bool DirtyTest = CurCollector->mDirty;
+        if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+        {
+            const Clip& LastClip = m_stack_clip[-1];
+            const float HRate = LastClip.Width() / CurCollector->mWidth;
+            const float VRate = LastClip.Height() / CurCollector->mHeight;
+            for(sint32 i = 0, iend = CurCollector->mTouchRects.Count(); i < iend; ++i)
+            {
+                const TouchRect& CurTouchRect = CurCollector->mTouchRects[i].ConstValue();
+                CurTouch->update(CurTouchRect.mName,
+                    LastClip.l + CurTouchRect.mL * HRate,
+                    LastClip.t + CurTouchRect.mT * VRate,
+                    LastClip.l + CurTouchRect.mR * HRate,
+                    LastClip.t + CurTouchRect.mB * VRate,
+                    CurTouchRect.mZoom, CurTouchRect.mCB, CurTouchRect.mHoverPass, &DirtyTest);
+            }
+        }
+        CurCollector->mRefTouch = m_ref_touch;
+        CurCollector->mDirty = DirtyTest;
+
+        stretchNatived(Platform::Graphics::GetImageFromSurface(surface));
+    }
+
     PanelState ViewPanel::state(chars uiname) const
     {
-        PanelState Result = PS_Null;
-        auto CurTouch = (const ViewManager::Touch*) m_ref_touch;
+        if(auto CurTouch = (const ViewManager::Touch*) m_ref_touch)
         if(auto CurElement = CurTouch->get(uiname, 1))
-        {
-            if(CurTouch->ishovered(CurElement->m_hoverid))
-                Result = Result | PS_Hovered;
-            if(CurTouch->getfocus() == CurElement)
-            {
-                Result = Result | PS_Focused;
-                if(CurTouch->getpress())
-                {
-                    if(CurTouch->getpress() == CurElement)
-                        Result = Result | PS_Pressed;
-                    else Result = Result | PS_Dropping;
-                }
-            }
-            if(CurTouch->getpress() == CurElement)
-                Result = Result | PS_Dragging;
-        }
-        return Result;
+            return CurElement->GetState(m_ref_touch);
+        return PS_Null;
     }
 
     Point ViewPanel::toview(float x, float y) const
@@ -525,13 +669,23 @@ namespace BLIK
         return didstack_ok;
     }
 
-    didstack ViewPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubPanelCB cb, bool hoverpass)
+    didstack ViewPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         if(_push_clip(l, t, r, b, doScissor))
         {
-            const Clip& LastClip = m_stack_clip[-1];
-            const float& LastZoom = m_stack_zoom[-1];
-            ((ViewManager::Touch*) m_ref_touch)->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
+            {
+                const Clip& LastClip = m_stack_clip[-1];
+                const float& LastZoom = m_stack_zoom[-1];
+                CurCollector->mTouchRects.AtAdding() =
+                    TouchRect::Create(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            }
+            else if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+            {
+                const Clip& LastClip = m_stack_clip[-1];
+                const float& LastZoom = m_stack_zoom[-1];
+                CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            }
             return didstack_ok;
         }
         return didstack_null;
@@ -542,7 +696,7 @@ namespace BLIK
         return _push_clip(r.l, r.t, r.r, r.b, doScissor);
     }
 
-    didstack ViewPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubPanelCB cb, bool hoverpass)
+    didstack ViewPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         return _push_clip_ui(r.l, r.t, r.r, r.b, doScissor, uiname, cb, hoverpass);
     }
@@ -561,13 +715,23 @@ namespace BLIK
         return _push_clip(l, t, r, b, doScissor);
     }
 
-    didstack ViewPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubPanelCB cb, bool hoverpass)
+    didstack ViewPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         if(_push_clip_by_child(ix, iy, xcount, ycount, doScissor))
         {
-            const Clip& LastClip = m_stack_clip[-1];
-            const float& LastZoom = m_stack_zoom[-1];
-            ((ViewManager::Touch*) m_ref_touch)->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
+            {
+                const Clip& LastClip = m_stack_clip[-1];
+                const float& LastZoom = m_stack_zoom[-1];
+                CurCollector->mTouchRects.AtAdding() =
+                    TouchRect::Create(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            }
+            else if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+            {
+                const Clip& LastClip = m_stack_clip[-1];
+                const float& LastZoom = m_stack_zoom[-1];
+                CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
+            }
             return didstack_ok;
         }
         return didstack_null;
@@ -792,14 +956,12 @@ namespace BLIK
         void nextFrame()
         {
             m_frame_counter++;
-            if(m_frame_updater.Flush())
-                invalidate();
+            m_frame_updater.Flush(ViewClass::invalidator, this);
         }
 
         void wakeUpCheck()
         {
-            if(m_frame_updater.NeedWakeUp())
-                invalidate();
+            m_frame_updater.WakeUp(ViewClass::invalidator, this);
         }
 
         void setCallback(ViewClass::FinderCB fcb, void* fdata, ViewClass::UpdaterCB icb, void* idata)
@@ -820,10 +982,10 @@ namespace BLIK
         ((ViewController*) m_class)->wakeUpCheck();
     }
 
-    void ViewManager::_panel(GestureType type, sint32 x, sint32 y)
+    void ViewManager::_gesture(GestureType type, sint32 x, sint32 y)
     {
         m_ref_func->m_bind(m_class);
-        m_ref_func->m_panel(type, x, y);
+        m_ref_func->m_gesture(type, x, y);
         m_ref_func->m_bind(nullptr);
     }
 
@@ -947,7 +1109,7 @@ namespace BLIK
     }
 
     autorun ViewManager::_makefunc(bool isnative, chars viewclass,
-        ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::PanelCB p, ViewPanel::RenderCB r,
+        ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::GestureCB g, ViewPanel::RenderCB r,
         ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f)
     {
         BLIK_ASSERT("중복된 이름의 뷰가 존재합니다", !_accessfunc(viewclass, false));
@@ -956,7 +1118,7 @@ namespace BLIK
         NewFunction->m_viewclass = viewclass;
         NewFunction->m_command = c;
         NewFunction->m_notify = n;
-        NewFunction->m_panel = p;
+        NewFunction->m_gesture = g;
         NewFunction->m_render = r;
         NewFunction->m_bind = b;
         NewFunction->m_alloc = a;
@@ -1021,6 +1183,83 @@ namespace BLIK
         return CurTouch->get(uiname, 0);
     }
 
+    ViewManager::Element::Element()
+    {
+        m_updateid = -1;
+        m_rect.l = 0;
+        m_rect.t = 0;
+        m_rect.r = 0;
+        m_rect.b = 0;
+        m_zoom = 1;
+        m_cb = nullptr;
+        m_subcb = nullptr;
+        m_hoverpass = false;
+        m_hoverid = -1;
+        m_saved_xy.x = 0;
+        m_saved_xy.y = 0;
+        m_saved_updateid_for_state = -1;
+        m_saved_state = PS_Null;
+        m_saved_state_old = PS_Null;
+    }
+
+    ViewManager::Element::~Element()
+    {
+    }
+
+    ViewManager::Element& ViewManager::Element::operator=(const Element& rhs)
+    {
+        m_updateid = rhs.m_updateid;
+        m_name = rhs.m_name;
+        m_rect.l = rhs.m_rect.l;
+        m_rect.t = rhs.m_rect.t;
+        m_rect.r = rhs.m_rect.r;
+        m_rect.b = rhs.m_rect.b;
+        m_zoom = rhs.m_zoom;
+        m_cb = rhs.m_cb;
+        m_subcb = rhs.m_subcb;
+        m_hoverpass = rhs.m_hoverpass;
+        m_hoverid = rhs.m_hoverid;
+        m_saved_xy.x = rhs.m_saved_xy.x;
+        m_saved_xy.y = rhs.m_saved_xy.y;
+        m_saved_updateid_for_state = rhs.m_saved_updateid_for_state;
+        m_saved_state = rhs.m_saved_state;
+        m_saved_state_old = rhs.m_saved_state_old;
+        return *this;
+    }
+
+    PanelState ViewManager::Element::GetState(void* touch) const
+    {
+        if(m_updateid != m_saved_updateid_for_state)
+        {
+            PanelState StateCollector = PS_Null;
+            auto CurTouch = (const ViewManager::Touch*) touch;
+            if(CurTouch->ishovered(m_hoverid))
+                StateCollector = StateCollector | PS_Hovered;
+            if(CurTouch->getfocus() == this)
+            {
+                StateCollector = StateCollector | PS_Focused;
+                if(CurTouch->getpress())
+                {
+                    if(CurTouch->getpress() == this)
+                        StateCollector = StateCollector | PS_Pressed;
+                    else StateCollector = StateCollector | PS_Dropping;
+                }
+            }
+            if(CurTouch->getpress() == this)
+                StateCollector = StateCollector | PS_Dragging;
+            // 처리결과를 캐시에 저장
+            m_saved_updateid_for_state = m_updateid;
+            m_saved_state_old = m_saved_state;
+            m_saved_state = StateCollector;
+        }
+        return m_saved_state;
+    }
+
+    bool ViewManager::Element::IsStateChanged(void* touch) const
+    {
+        return (GetState(touch) != m_saved_state_old);
+    }
+
     ViewManager::Touch::Touch()
     {
         m_updateid = 0;
@@ -1066,10 +1305,11 @@ namespace BLIK
         m_element.m_rect.t = 0;
         m_element.m_rect.r = width;
         m_element.m_rect.b = height;
-        m_element.m_cb = OnPanel;
+        m_element.m_cb = OnGesture;
     }
 
-    void ViewManager::Touch::update(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubPanelCB cb, bool hoverpass)
+    void ViewManager::Touch::update(chars uiname, float l, float t, float r, float b,
+        float zoom, ViewPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest)
     {
         if(uiname == nullptr || uiname[0] == '\0' || r <= l || b <= t)
             return;
@@ -1083,7 +1323,7 @@ namespace BLIK
         CurElement.m_rect.r = (sint32) (r * zoom);
         CurElement.m_rect.b = (sint32) (b * zoom);
         CurElement.m_zoom = zoom;
-        CurElement.m_cb = OnSubPanel;
+        CurElement.m_cb = OnSubGesture;
         CurElement.m_subcb = cb;
         CurElement.m_hoverpass = hoverpass;
 
@@ -1102,6 +1342,9 @@ namespace BLIK
             }
             CurCell.m_elements.AtWherever(CurCell.m_validlength++) = &CurElement;
         }
+
+        if(dirtytest && !*dirtytest)
+            *dirtytest = CurElement.IsStateChanged(this);
     }
 
     const ViewManager::Element* ViewManager::Touch::get() const
@@ -1215,14 +1458,14 @@ namespace BLIK
         return nullptr;
     }
 
-    void ViewManager::Touch::OnPanel(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
+    void ViewManager::Touch::OnGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
     {
-        manager->_panel(type, x, y);
+        manager->_gesture(type, x, y);
         data->m_saved_xy.x = x;
         data->m_saved_xy.y = y;
     }
 
-    void ViewManager::Touch::OnSubPanel(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
+    void ViewManager::Touch::OnSubGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
     {
         if(data->m_subcb)
         {
@@ -1237,7 +1480,7 @@ namespace BLIK
         m_isnative = false;
         m_command = nullptr;
         m_notify = nullptr;
-        m_panel = nullptr;
+        m_gesture = nullptr;
         m_render = nullptr;
         m_bind = nullptr;
         m_alloc = nullptr;

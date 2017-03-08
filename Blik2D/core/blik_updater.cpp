@@ -4,6 +4,18 @@
 namespace BLIK
 {
     Updater::Updater(Updater* neighbor, bool atprev)
+        : m_uigroup(nullptr)
+    {
+        if(neighbor)
+        {
+            if(atprev) BindAtPrev(neighbor);
+            else BindAtNext(neighbor);
+        }
+        else Init();
+    }
+
+    Updater::Updater(chars uigroup_literal, Updater* neighbor, bool atprev)
+        : m_uigroup(uigroup_literal)
     {
         if(neighbor)
         {
@@ -14,6 +26,7 @@ namespace BLIK
     }
 
     Updater::Updater(const Updater& rhs)
+        : m_uigroup(rhs.m_uigroup)
     {
         operator=(rhs);
     }
@@ -117,30 +130,28 @@ namespace BLIK
         return *this;
     }
 
-    bool FrameUpdater::Flush()
+    void FrameUpdater::Flush(void (*invalidator)(payload, chars), payload data)
     {
-        bool NeedInvalidate = false;
         Updater* CurUpdater = GetNext();
         while(CurUpdater != this)
         {
             Updater* NextUpdater = CurUpdater->GetNext();
-            NeedInvalidate |= CurUpdater->UpdateForRender();
+            if(CurUpdater->UpdateForRender())
+                invalidator(data, CurUpdater->m_uigroup);
             CurUpdater = NextUpdater;
         }
-        return NeedInvalidate;
     }
 
-    bool FrameUpdater::NeedWakeUp()
+    void FrameUpdater::WakeUp(void (*invalidator)(payload, chars), payload data)
     {
-        bool NeedWakeUp = false;
         Updater* CurUpdater = GetNext();
         while(CurUpdater != this)
         {
             Updater* NextUpdater = CurUpdater->GetNext();
-            NeedWakeUp |= CurUpdater->UpdateForTick();
+            if(CurUpdater->UpdateForTick())
+                invalidator(data, CurUpdater->m_uigroup);
             CurUpdater = NextUpdater;
         }
-        return NeedWakeUp;
     }
 
     ////////////////////////////////////////////////////////////////////////////////

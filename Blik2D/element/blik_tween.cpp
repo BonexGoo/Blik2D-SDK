@@ -5,7 +5,16 @@
 
 namespace BLIK
 {
-    Tween1D::Tween1D(Updater* neighbor, float value, TweenUpdateCB cb) : Updater(neighbor)
+    Tween1D::Tween1D(Updater* neighbor, float value, TweenUpdateCB cb)
+        : Updater(neighbor)
+    {
+        Reset(value);
+        m_updateCB = cb;
+        m_needWakeUp = false;
+    }
+
+    Tween1D::Tween1D(chars uigroup_literal, Updater* neighbor, float value, TweenUpdateCB cb)
+        : Updater(uigroup_literal, neighbor)
     {
         Reset(value);
         m_updateCB = cb;
@@ -75,12 +84,19 @@ namespace BLIK
 
     bool Tween1D::UpdateForTick()
     {
-        const bool NeedUpdate = m_needWakeUp;
+        const bool Result = m_needWakeUp;
         m_needWakeUp = false;
-        return NeedUpdate;
+        return Result;
     }
 
-    Tween2D::Tween2D(Updater* neighbor) : Updater(neighbor)
+    Tween2D::Tween2D(Updater* neighbor)
+        : Updater(neighbor)
+    {
+        m_curpath = nullptr;
+    }
+
+    Tween2D::Tween2D(chars uigroup_literal, Updater* neighbor)
+        : Updater(uigroup_literal, neighbor)
     {
         m_curpath = nullptr;
     }

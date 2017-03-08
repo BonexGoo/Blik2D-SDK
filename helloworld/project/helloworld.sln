@@ -5,10 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "helloworld", "helloworld.vcxproj", "{818981C0-B21E-4B29-A9DB-524C242226A6}"
 	ProjectSection(ProjectDependencies) = postProject
-		{B12702AD-ABFB-343A-A199-8E24837244A3} = {B12702AD-ABFB-343A-A199-8E24837244A3}
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C} = {64B9A321-85F9-49FE-8F41-C4DE8136050C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blik2d", "..\..\Blik2D\project\blik2d.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blik2d", "..\..\Blik2D\project\blik2d.vcxproj", "{64B9A321-85F9-49FE-8F41-C4DE8136050C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,14 +26,14 @@ Global
 		{818981C0-B21E-4B29-A9DB-524C242226A6}.Release|Win32.Build.0 = Release|Win32
 		{818981C0-B21E-4B29-A9DB-524C242226A6}.Release|x64.ActiveCfg = Release|x64
 		{818981C0-B21E-4B29-A9DB-524C242226A6}.Release|x64.Build.0 = Release|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|Win32.Build.0 = Debug|Win32
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|Win32.ActiveCfg = Release|Win32
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|Win32.Build.0 = Release|Win32
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Debug|Win32.Build.0 = Debug|Win32
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Debug|x64.ActiveCfg = Debug|x64
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Debug|x64.Build.0 = Debug|x64
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Release|Win32.ActiveCfg = Release|Win32
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Release|Win32.Build.0 = Release|Win32
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Release|x64.ActiveCfg = Release|x64
+		{64B9A321-85F9-49FE-8F41-C4DE8136050C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

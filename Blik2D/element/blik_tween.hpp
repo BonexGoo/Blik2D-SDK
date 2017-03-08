@@ -13,6 +13,8 @@ namespace BLIK
     public:
         Tween1D(Updater* neighbor, float value = 0,
             TweenUpdateCB cb = [](bool needRedraw){return needRedraw;});
+        Tween1D(chars uigroup_literal, Updater* neighbor, float value = 0,
+            TweenUpdateCB cb = [](bool needRedraw){return needRedraw;});
         Tween1D(const Tween1D& rhs);
         virtual ~Tween1D() override;
 
@@ -45,6 +47,7 @@ namespace BLIK
     {
     public:
         Tween2D(Updater* neighbor);
+        Tween2D(chars uigroup_literal, Updater* neighbor);
         Tween2D(const Tween2D& rhs);
         virtual ~Tween2D() override;
 

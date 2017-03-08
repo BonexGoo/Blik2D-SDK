@@ -27,7 +27,7 @@ BLIK_VIEW_API OnNotify(chars sender, chars topic, id_share in, id_cloned_share* 
 {
 }
 
-BLIK_VIEW_API OnPanel(GestureType type, sint32 x, sint32 y)
+BLIK_VIEW_API OnGesture(GestureType type, sint32 x, sint32 y)
 {
 }
 
