@@ -1276,20 +1276,15 @@
     public:
         void Bind()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
             BLIK_ASSERT("Unbind되지 않은 Bind입니다", !mSavedCanvas);
-
             mFBO.bind();
             mSavedCanvas = ViewAPI::CurCanvas();
             ViewAPI::CurCanvas() = &mCanvas;
         }
         void Unbind()
         {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
-            BLIK_ASSERT("Bind시켰던 값과 일치하지 않습니다\n(다수의 Surface를 Bind하면 Unbind의 순서는 역순이어야 합니다)",
-                ViewAPI::CurCanvas() == &mCanvas);
-            BLIK_ASSERT("Bind되지 않은 Unbind입니다", mSavedCanvas);
-
+            BLIK_ASSERT("Bind시켰던 값과 일치하지 않습니다\n"
+                "(다수의 Surface를 Bind하면 Unbind의 순서는 역순이어야 합니다)", ViewAPI::CurCanvas() == &mCanvas);
             ViewAPI::CurCanvas() = mSavedCanvas;
             mSavedCanvas = nullptr;
             mLastImage = mFBO.toImage();

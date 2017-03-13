@@ -1057,6 +1057,7 @@
         void Platform::Graphics::DrawImage(id_image_read image, float ix, float iy, float iw, float ih, float x, float y, float w, float h)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurCanvas());
+            BLIK_ASSERT("image파라미터가 nullptr입니다", image);
             if(w == iw && h == ih)
                 ViewAPI::CurCanvas()->mPainter.drawPixmap(QPoint((sint32) x, (sint32) y), *((const QPixmap*) image),
                     QRect((sint32) ix, (sint32) iy, (sint32) iw, (sint32) ih));
