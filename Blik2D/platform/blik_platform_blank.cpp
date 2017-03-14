@@ -1252,6 +1252,20 @@
         }
 
         ////////////////////////////////////////////////////////////////////////////////
+        // WEB
+        ////////////////////////////////////////////////////////////////////////////////
+        id_web Platform::Web::Create(chars url)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        void Platform::Web::Release(id_web web)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
         // SERIAL
         ////////////////////////////////////////////////////////////////////////////////
         Strings Platform::Serial::GetAllNames(String* spec)

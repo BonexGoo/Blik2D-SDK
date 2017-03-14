@@ -240,16 +240,16 @@
         id_image_read Platform::GetScreenshotImage(const rect128& rect)
         {
             static QPixmap ScreenshotPixmap;
-            ScreenshotPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(),
-                rect.l, rect.t, rect.r - rect.l, rect.b - rect.t);
+            ScreenshotPixmap = QGuiApplication::primaryScreen()->grabWindow(
+                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t);
             return (id_image_read) &ScreenshotPixmap;
         }
 
         id_bitmap_read Platform::GetScreenshotBitmap(const rect128& rect, bool vflip)
         {
             static Image ScreenshotImage;
-            QImage CurImage = QPixmap::grabWindow(QApplication::desktop()->winId(),
-                rect.l, rect.t, rect.r - rect.l, rect.b - rect.t).toImage();
+            QImage CurImage = QGuiApplication::primaryScreen()->grabWindow(
+                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t).toImage();
             CurImage = CurImage.convertToFormat(QImage::Format::Format_ARGB32);
             ScreenshotImage.LoadBitmapFromBits(CurImage.constBits(), CurImage.width(), CurImage.height(),
                 CurImage.bitPlaneCount(), vflip);
@@ -2086,6 +2086,20 @@
             if(TCPAgent* CurAgent = (TCPAgent*) server)
                 return CurAgent->SendPacket(peerid, buffer, buffersize);
             return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // WEB
+        ////////////////////////////////////////////////////////////////////////////////
+        id_web Platform::Web::Create(chars url)
+        {
+            BLIK_ASSERT("제작중!", false);
+            return nullptr;
+        }
+
+        void Platform::Web::Release(id_web web)
+        {
+            BLIK_ASSERT("제작중!", false);
         }
 
         ////////////////////////////////////////////////////////////////////////////////

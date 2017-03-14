@@ -240,6 +240,7 @@ namespace BLIK
     BLIK_DECLARE_ID(id_file);
     BLIK_DECLARE_ID(id_socket);
     BLIK_DECLARE_ID(id_server);
+    BLIK_DECLARE_ID(id_web);
     BLIK_DECLARE_ID(id_serial);
     BLIK_DECLARE_ID(id_bitmap);
     BLIK_DECLARE_ID(id_image);

@@ -32,6 +32,8 @@
     #include <QAudioRecorder>
     #include <QAudioProbe>
     #include <QAudioDeviceInfo>
+    
+    #include <QWebEnginePage>
 
     #if BLIK_ANDROID
         #include <QtAndroidExtras/QAndroidJniObject>

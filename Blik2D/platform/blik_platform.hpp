@@ -1237,6 +1237,26 @@ namespace BLIK
             static bool SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize);
         };
 
+        //! \brief 웹지원
+        class Web
+        {
+        public:
+            /*!
+            \brief 웹ID 할당
+            \param url : 웹주소
+            \return 웹ID(nullptr은 실패)
+            \see Release
+            */
+            static id_web Create(chars url);
+
+            /*!
+            \brief 웹ID 반환
+            \param web : 웹ID
+            \see Create
+            */
+            static void Release(id_web web);
+        };
+
         //! \brief 시리얼통신지원
         class Serial
         {
