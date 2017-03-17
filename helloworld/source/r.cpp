@@ -61,21 +61,21 @@ namespace BLIK
         else gAtlasDir = String::Format("%s/", dirname);
     }
 
-    void R::AddAtlas(chars key_filename, chars map_filename, const Property& prop)
+    void R::AddAtlas(chars key_filename, chars map_filename, const Context& ctx)
     {
         gAtlasSets.AtAdding();
         gAtlasSets.At(-1).KeyFilename = key_filename;
         gAtlasSets.At(-1).MapFilename = map_filename;
-        gAtlasSets.At(-1).FileSize = prop(map_filename)("filesize").GetInt(0);
-        gAtlasSets.At(-1).ModifyTime = prop(map_filename)("modifytime").GetInt(0);
+        gAtlasSets.At(-1).FileSize = ctx(map_filename)("filesize").GetInt(0);
+        gAtlasSets.At(-1).ModifyTime = ctx(map_filename)("modifytime").GetInt(0);
     }
 
-    void R::SaveAtlas(Property& prop)
+    void R::SaveAtlas(Context& ctx)
     {
         for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
         {
-            prop.At(gAtlasSets[i].MapFilename).At("filesize").Set(String::FromInteger(gAtlasSets[i].FileSize));
-            prop.At(gAtlasSets[i].MapFilename).At("modifytime").Set(String::FromInteger(gAtlasSets[i].ModifyTime));
+            ctx.At(gAtlasSets[i].MapFilename).At("filesize").Set(String::FromInteger(gAtlasSets[i].FileSize));
+            ctx.At(gAtlasSets[i].MapFilename).At("modifytime").Set(String::FromInteger(gAtlasSets[i].ModifyTime));
         }
     }
 

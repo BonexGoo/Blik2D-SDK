@@ -255,6 +255,7 @@ namespace BLIK
     #include <blik_array.hpp>
     #include <blik_asset.hpp>
     #include <blik_buffer.hpp>
+    #include <blik_context.hpp>
     #include <blik_counter.hpp>
     #include <blik_library.hpp>
     #include <blik_map.hpp>
@@ -264,7 +265,6 @@ namespace BLIK
     #include <blik_object.hpp>
     #include <blik_parser.hpp>
     #include <blik_profile.hpp>
-    #include <blik_property.hpp>
     #include <blik_queue.hpp>
     #include <blik_remote.hpp>
     #include <blik_share.hpp>

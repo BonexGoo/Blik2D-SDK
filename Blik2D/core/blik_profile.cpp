@@ -6,7 +6,7 @@
 class ProfileClass
 {
 public:
-    Property Laps;
+    Context Laps;
 
 public:
     static ProfileClass& ST() {return *BLIK_STORAGE(ProfileClass);}
@@ -15,8 +15,8 @@ private:
     class Stack
     {
     public:
-        Property* GroupLap;
-        Property* LastLap;
+        Context* GroupLap;
+        Context* LastLap;
         id_clock FirstLapClock;
         id_clock LastLapClock;
         sint32 DisableLevel;
@@ -48,7 +48,7 @@ public:
     {
         if(enable || Stacks.Count() == 0)
         {
-            Property* Parent = &Laps;
+            Context* Parent = &Laps;
             if(0 < Stacks.Count())
             {
                 if(Stacks[-1].LastLap)

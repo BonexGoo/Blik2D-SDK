@@ -1,9 +1,9 @@
 ﻿#include <blik.hpp>
-#include "blik_property.hpp"
+#include "blik_context.hpp"
 
 namespace BLIK
 {
-    void Property::Set(chars value, sint32 length)
+    void Context::Set(chars value, sint32 length)
     {
         Buffer::Free(m_parsedString);
         delete m_parsedInt;
@@ -24,7 +24,7 @@ namespace BLIK
         m_valueLength = Length;
     }
 
-    void Property::Clear()
+    void Context::Clear()
     {
         m_source.Clear();
         m_namableChild.Reset();
@@ -32,7 +32,7 @@ namespace BLIK
         Set(nullptr);
     }
 
-    bool Property::LoadBin(bytes src)
+    bool Context::LoadBin(bytes src)
     {
         if(GetBinHeader().Compare((chars) src))
             return false;
@@ -45,7 +45,7 @@ namespace BLIK
         return true;
     }
 
-    uint08s Property::SaveBin(uint08s dst) const
+    uint08s Context::SaveBin(uint08s dst) const
     {
         Memory::Copy(dst.AtDumping(dst.Count(), GetBinHeader().Length() + 1),
             (chars) GetBinHeader(), GetBinHeader().Length() + 1);
@@ -53,7 +53,7 @@ namespace BLIK
         return dst;
     }
 
-    bool Property::LoadJson(buffer src)
+    bool Context::LoadJson(buffer src)
     {
         m_source.SharedValue().CertifyLast();
         StringSource* LastSource = m_source.SharedValue().Last();
@@ -61,7 +61,7 @@ namespace BLIK
         return LoadJsonCore(LastSource->GetString());
     }
 
-    bool Property::LoadJson(ScriptOption option, chars src, sint32 length)
+    bool Context::LoadJson(ScriptOption option, chars src, sint32 length)
     {
         m_source.SharedValue().CertifyLast();
         StringSource* LastSource = m_source.SharedValue().Last();
@@ -69,7 +69,7 @@ namespace BLIK
         return LoadJsonCore(LastSource->GetString());
     }
 
-    String Property::SaveJson(String dst) const
+    String Context::SaveJson(String dst) const
     {
         const sint32 tab = 0;
         if(0 < m_namableChild.Count())
@@ -91,7 +91,7 @@ namespace BLIK
         return dst;
     }
 
-    bool Property::LoadXml(buffer src)
+    bool Context::LoadXml(buffer src)
     {
         m_source.SharedValue().CertifyLast();
         StringSource* LastSource = m_source.SharedValue().Last();
@@ -99,7 +99,7 @@ namespace BLIK
         return LoadXmlCore(LastSource->GetString());
     }
 
-    bool Property::LoadXml(ScriptOption option, chars src, sint32 length)
+    bool Context::LoadXml(ScriptOption option, chars src, sint32 length)
     {
         m_source.SharedValue().CertifyLast();
         StringSource* LastSource = m_source.SharedValue().Last();
@@ -107,35 +107,35 @@ namespace BLIK
         return LoadXmlCore(LastSource->GetString());
     }
 
-    String Property::SaveXml(String dst) const
+    String Context::SaveXml(String dst) const
     {
         for(sint32 i = 0, iend = m_indexableChild.Count(); i < iend; ++i)
             m_indexableChild[i].SaveXmlCore(0, String::FromInteger(i), dst);
         return dst;
     }
 
-    CollectedProperties Property::CollectByMatch(chars key, chars value, CollectOption option) const
+    CollectedContexts Context::CollectByMatch(chars key, chars value, CollectOption option) const
     {
-        CollectedProperties Result;
+        CollectedContexts Result;
         sint32 ValueLength = blik_strlen(value);
         CollectCore(nullptr, key, value, ValueLength, &Result, option);
         return Result;
     }
 
-    void Property::DebugPrint() const
+    void Context::DebugPrint() const
     {
         #if !BLIK_NDEBUG | BLIK_NEED_RELEASE_TRACE
             BLIK_TRACE("");
-            BLIK_TRACE("==================== Property ====================");
+            BLIK_TRACE("==================== Context ====================");
             sint32 tab = -1;
             m_namableChild.AccessByCallback(DebugPrintCoreCB, &tab);
             for(sint32 i = 0, iend = m_indexableChild.Count(); i < iend; ++i)
                 m_indexableChild[i].DebugPrintCore(0, String::FromInteger(i), true);
-            BLIK_TRACE("==================================================");
+            BLIK_TRACE("=================================================");
         #endif
     }
 
-    Property::Property() : m_indexableChild(Array<Property, datatype_class_nomemcpy, 0>::Null())
+    Context::Context() : m_indexableChild(Array<Context, datatype_class_nomemcpy, 0>::Null())
     {
         m_valueOffset = nullptr;
         m_valueLength = 0;
@@ -144,7 +144,7 @@ namespace BLIK
         m_parsedFloat = nullptr;
     }
 
-    Property::Property(const Property& rhs) :
+    Context::Context(const Context& rhs) :
         m_source(rhs.m_source),
         m_namableChild(rhs.m_namableChild),
         m_indexableChild(rhs.m_indexableChild)
@@ -158,7 +158,7 @@ namespace BLIK
             m_valueOffset = (chars) m_parsedString;
     }
 
-    Property::Property(bytes src) : m_indexableChild(Array<Property, datatype_class_nomemcpy, 0>::Null())
+    Context::Context(bytes src) : m_indexableChild(Array<Context, datatype_class_nomemcpy, 0>::Null())
     {
         m_valueOffset = nullptr;
         m_valueLength = 0;
@@ -169,7 +169,7 @@ namespace BLIK
         LoadBin(src);
     }
 
-    Property::Property(ScriptType type, buffer src) : m_indexableChild(Array<Property, datatype_class_nomemcpy, 0>::Null())
+    Context::Context(ScriptType type, buffer src) : m_indexableChild(Array<Context, datatype_class_nomemcpy, 0>::Null())
     {
         m_valueOffset = nullptr;
         m_valueLength = 0;
@@ -184,7 +184,7 @@ namespace BLIK
         }
     }
 
-    Property::Property(ScriptType type, ScriptOption option, chars src, sint32 length) : m_indexableChild(Array<Property, datatype_class_nomemcpy, 0>::Null())
+    Context::Context(ScriptType type, ScriptOption option, chars src, sint32 length) : m_indexableChild(Array<Context, datatype_class_nomemcpy, 0>::Null())
     {
         m_valueOffset = nullptr;
         m_valueLength = 0;
@@ -199,14 +199,14 @@ namespace BLIK
         }
     }
 
-    Property::~Property()
+    Context::~Context()
     {
         Buffer::Free(m_parsedString);
         delete m_parsedInt;
         delete m_parsedFloat;
     }
 
-    Property& Property::operator=(const Property& rhs)
+    Context& Context::operator=(const Context& rhs)
     {
         m_source = rhs.m_source;
         m_namableChild = rhs.m_namableChild;
@@ -221,7 +221,7 @@ namespace BLIK
         return *this;
     }
 
-    void Property::SetValue(chars value, sint32 length)
+    void Context::SetValue(chars value, sint32 length)
     {
         if(m_valueOffset)
         {
@@ -237,37 +237,37 @@ namespace BLIK
         m_valueLength = length;
     }
 
-    chars Property::FindMark(chars value, const char mark)
+    chars Context::FindMark(chars value, const char mark)
     {
         chars V = value;
         while(*V && *V != mark) V++;
         return V;
     }
 
-    chars Property::SkipBlank(chars value, bool exclude_nullzero)
+    chars Context::SkipBlank(chars value, bool exclude_nullzero)
     {
         chars V = value;
         while(*V && (*V == ' ' || *V == '\t' || *V == '\r' || *V == '\n')) V++;
         return V - (exclude_nullzero && *V == '\0');
     }
 
-    chars Property::SkipBlankReverse(chars value)
+    chars Context::SkipBlankReverse(chars value)
     {
         chars V = value - 1;
         while(*V == ' ' || *V == '\t' || *V == '\r' || *V == '\n') V--;
         return V + 1;
     }
 
-    Property* Property::InitSource(Property* anyparent)
+    Context* Context::InitSource(Context* anyparent)
     {
         m_source = anyparent->m_source;
         return this;
     }
 
-    const String& Property::GetBinHeader()
+    const String& Context::GetBinHeader()
     {static const String _ = String::Format("bin{%s %s}", __TIME__, __DATE__); return _;}
 
-    bytes Property::LoadBinCore(bytes src)
+    bytes Context::LoadBinCore(bytes src)
     {
         // 데이터(원본)
         sint32 ValueLength = src[0];
@@ -301,7 +301,7 @@ namespace BLIK
             src += NameLength + 1;
 
             // 자식루프
-            Property& NewChild = m_namableChild(Name);
+            Context& NewChild = m_namableChild(Name);
             src = NewChild.LoadBinCore(src);
         }
 
@@ -315,14 +315,14 @@ namespace BLIK
                 src += sizeof(sint32) + 1;
 
                 // 자식루프
-                Property& NewChild = m_indexableChild.At(i);
+                Context& NewChild = m_indexableChild.At(i);
                 src = NewChild.LoadBinCore(src);
             }
         }
         return src;
     }
 
-    void Property::SaveBinCore(uint08s& dst, const String& name) const
+    void Context::SaveBinCore(uint08s& dst, const String& name) const
     {
         // 자기명칭
         const sint32 NameLength = name.Length();
@@ -351,19 +351,19 @@ namespace BLIK
         for(sint32 i = 0; i < NChildCount; ++i)
         {
             chararray GetName;
-            const Property* CurChild = m_namableChild.AccessByOrder(i, &GetName);
+            const Context* CurChild = m_namableChild.AccessByOrder(i, &GetName);
             CurChild->SaveBinCore(dst, GetName);
         }
 
         // 배열식 자식
         for(sint32 i = 0; i < IChildCount; ++i)
         {
-            const Property& CurChild = m_indexableChild[i];
+            const Context& CurChild = m_indexableChild[i];
             CurChild.SaveBinCore(dst);
         }
     }
 
-    bool Property::LoadJsonCore(chars src)
+    bool Context::LoadJsonCore(chars src)
     {
         if(*src == '\0') return true;
         while(*src != '{' && *src != '[')
@@ -376,7 +376,7 @@ namespace BLIK
             ParseStack() : Object(nullptr), ChildIsIndexable(false) {}
             ~ParseStack() {}
         public:
-            Property* Object;
+            Context* Object;
             bool ChildIsIndexable;
         };
         Array<ParseStack> CurStack;
@@ -392,7 +392,7 @@ namespace BLIK
         case ':':
             if(0 < LastLength)
             {
-                Property* NewChild = nullptr;
+                Context* NewChild = nullptr;
                 if(LastLength == 3 && LastOffset[0] == '~' && LastOffset[1] == '[' && LastOffset[2] == ']')
                     NewChild = CurStack[-1].Object->m_indexableChild.AtAdding().InitSource(this);
                 else NewChild = CurStack[-1].Object->m_namableChild(LastOffset, LastLength).InitSource(this);
@@ -417,7 +417,7 @@ namespace BLIK
                     if(EndMark == ']')
                     {
                         CurStack.At(-1).ChildIsIndexable = true;
-                        Property* NewChild = CurStack[-1].Object->m_indexableChild.AtAdding().InitSource(this);
+                        Context* NewChild = CurStack[-1].Object->m_indexableChild.AtAdding().InitSource(this);
                         CurStack.AtAdding().Object = NewChild;
                     }
                 }
@@ -446,7 +446,7 @@ namespace BLIK
             CurStack.SubtractionOne();
             if(*src == ',' && CurStack[-1].ChildIsIndexable)
             {
-                Property* NewChild = CurStack[-1].Object->m_indexableChild.AtAdding().InitSource(this);
+                Context* NewChild = CurStack[-1].Object->m_indexableChild.AtAdding().InitSource(this);
                 CurStack.AtAdding().Object = NewChild;
             }
             else if((*src == '}' || *src == ']') && CurStack.Count() == 2)
@@ -494,7 +494,7 @@ namespace BLIK
         return false;
     }
 
-    void Property::SaveJsonCore(sint32 tab, String name, String& dst, bool indexable, bool lastchild) const
+    void Context::SaveJsonCore(sint32 tab, String name, String& dst, bool indexable, bool lastchild) const
     {
         if(!indexable)
         {
@@ -554,7 +554,7 @@ namespace BLIK
         }
     }
 
-    void Property::SaveJsonCoreCB(const MapPath* path, const Property* data, payload param)
+    void Context::SaveJsonCoreCB(const MapPath* path, const Context* data, payload param)
     {
         const sint32 tab = *((sint32*) ((void**) param)[0]);
         String& dst = *((String*) ((void**) param)[1]);
@@ -562,17 +562,17 @@ namespace BLIK
         data->SaveJsonCore(tab + 1, path->GetPath(), dst, false, --count == 0);
     }
 
-    bool Property::LoadXmlCore(chars src)
+    bool Context::LoadXmlCore(chars src)
     {
         while(*src != '<')
             if(*(++src) == '\0')
                 return true;
 
-        Array<Property*, datatype_pod_canmemcpy> CurStack;
+        Array<Context*, datatype_pod_canmemcpy> CurStack;
         CurStack.AtAdding() = nullptr;
         CurStack.AtAdding() = this;
 
-        auto StackPop = [this](Array<Property*, datatype_pod_canmemcpy>& stack, chars value, sint32 offset)->bool
+        auto StackPop = [this](Array<Context*, datatype_pod_canmemcpy>& stack, chars value, sint32 offset)->bool
         {
             if(stack.Count() <= 2) return false;
             else if(stack[-1]->LengthOfIndexable() == 0)
@@ -600,7 +600,7 @@ namespace BLIK
             {
                 if(src[+1] == '/')
                 {
-                    const Property* SavedProperty = (CurStack.Count() < 2)? nullptr : CurStack[-2];
+                    const Context* SavedContext = (CurStack.Count() < 2)? nullptr : CurStack[-2];
                     if(!StackPop(CurStack, LastSrc + 1, src - (LastSrc + 1)))
                         return AssertError("엘리먼트를 팝하는 과정에서 잔여스택이 부족합니다");
                     chars NameBegin = src += 2;
@@ -610,14 +610,14 @@ namespace BLIK
                     else
                     {
                         sint32 SavedNameLength = 0;
-                        chars_endless SavedName = (*SavedProperty)("@name").GetStringFast(&SavedNameLength);
+                        chars_endless SavedName = (*SavedContext)("@name").GetStringFast(&SavedNameLength);
                         if(src - NameBegin != SavedNameLength || Memory::Compare(NameBegin, SavedName, SavedNameLength))
                             return AssertError("엘리먼트를 팝하는 과정에서 네임매칭에 실패하였습니다");
                     }
                 }
                 else
                 {
-                    Property* NewChild = CurStack[-1]->m_indexableChild.AtAdding().InitSource(this);
+                    Context* NewChild = CurStack[-1]->m_indexableChild.AtAdding().InitSource(this);
                     if(src[+1] == '!' && src[+2] == '-' && src[+3] == '-')
                     {
                         NewChild->At("@name").InitSource(this)->SetValue(src + 1, 3);
@@ -671,7 +671,7 @@ namespace BLIK
             if(ElementMode)
             {
                 chars KeyEnd = SkipBlankReverse(src);
-                Property* NewChild = CurStack[-2]->At(LastSrc, KeyEnd - LastSrc).InitSource(this);
+                Context* NewChild = CurStack[-2]->At(LastSrc, KeyEnd - LastSrc).InitSource(this);
 
                 chars NameBegin = (src = SkipBlank(src + 1, false));
                 const bool IsQuotes = (*NameBegin == '\"' || *NameBegin == '\'');
@@ -697,7 +697,7 @@ namespace BLIK
         return true;
     }
 
-    void Property::SaveXmlCore(sint32 tab, String name, String& dst) const
+    void Context::SaveXmlCore(sint32 tab, String name, String& dst) const
     {
         String TabString;
         for(sint32 i = 0; i < tab; ++i)
@@ -707,7 +707,7 @@ namespace BLIK
 
         // 자기 엘리먼트(@name)
         String Name;
-        if(Property* NameOption = m_namableChild.Access("@name"))
+        if(Context* NameOption = m_namableChild.Access("@name"))
         {
             sint32 ValueLength = 0;
             chars_endless Value = NameOption->GetStringFast(&ValueLength);
@@ -722,7 +722,7 @@ namespace BLIK
         bool HasChild = false;
 
         // 자기 스트링(~value)
-        if(Property* ValueOption = m_namableChild.Access("~value"))
+        if(Context* ValueOption = m_namableChild.Access("~value"))
         {
             if(!IsComment) 
             {
@@ -734,7 +734,7 @@ namespace BLIK
             dst.Add(Value, ValueLength);
         }
         // 자식 엘리먼트(~tree)
-        if(Property* TreeOption = m_namableChild.Access("~tree"))
+        if(Context* TreeOption = m_namableChild.Access("~tree"))
         {
             if(!HasChild)
             {
@@ -760,7 +760,7 @@ namespace BLIK
         else dst += "/>\r\n";
     }
 
-    void Property::SaveXmlCoreCB(const MapPath* path, const Property* data, payload param)
+    void Context::SaveXmlCoreCB(const MapPath* path, const Context* data, payload param)
     {
         String& dst = *((String*) param);
         const String Name = path->GetPath();
@@ -776,9 +776,9 @@ namespace BLIK
         }
     }
 
-    void Property::CollectCore(const Property* parent, chars key, chars value, sint32 length, CollectedProperties* result, CollectOption option) const
+    void Context::CollectCore(const Context* parent, chars key, chars value, sint32 length, CollectedContexts* result, CollectOption option) const
     {
-        if(const Property* CurChild = m_namableChild.Access(key))
+        if(const Context* CurChild = m_namableChild.Access(key))
         {
             sint32 GetLength = 0;
             chars_endless GetValue = CurChild->GetStringFast(&GetLength);
@@ -796,18 +796,18 @@ namespace BLIK
             m_indexableChild[i].CollectCore(this, key, value, length, result, option);
     }
 
-    void Property::CollectCoreCB(const MapPath* path, const Property* data, payload param)
+    void Context::CollectCoreCB(const MapPath* path, const Context* data, payload param)
     {
-        const Property* parent = (const Property*) ((void**) param)[0];
+        const Context* parent = (const Context*) ((void**) param)[0];
         chars key = (chars) ((void**) param)[1];
         chars value = (chars) ((void**) param)[2];
         sint32 length = *((sint32*) ((void**) param)[3]);
-        CollectedProperties* result = (CollectedProperties*) ((void**) param)[4];
+        CollectedContexts* result = (CollectedContexts*) ((void**) param)[4];
         CollectOption option = *((CollectOption*) ((void**) param)[5]);
         data->CollectCore(parent, key, value, length, result, option);
     }
 
-    void Property::DebugPrintCore(sint32 tab, String name, bool indexable) const
+    void Context::DebugPrintCore(sint32 tab, String name, bool indexable) const
     {
         #if !BLIK_NDEBUG | BLIK_NEED_RELEASE_TRACE
             char* TabString = new char[4 * tab + 1];
@@ -823,6 +823,6 @@ namespace BLIK
         #endif
     }
 
-    void Property::DebugPrintCoreCB(const MapPath* path, const Property* data, payload param)
+    void Context::DebugPrintCoreCB(const MapPath* path, const Context* data, payload param)
     {data->DebugPrintCore(*((sint32*) param) + 1, path->GetPath(), false);}
 }

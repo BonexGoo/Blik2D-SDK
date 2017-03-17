@@ -11,8 +11,8 @@ namespace BLIK
 
     public:
         static void SetAtlasDir(chars dirname);
-        static void AddAtlas(chars key_filename, chars map_filename, const Property& prop);
-        static void SaveAtlas(Property& prop);
+        static void AddAtlas(chars key_filename, chars map_filename, const Context& ctx);
+        static void SaveAtlas(Context& ctx);
         static bool IsAtlasUpdated();
         static void RebuildAll();
 

@@ -401,7 +401,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::iconNatived(id_image_read image, UIAlign align)
+    haschild ViewPanel::iconNative(id_image_read image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -416,7 +416,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::iconNatived(float x, float y, id_image_read image, UIAlign align)
+    haschild ViewPanel::iconNative(float x, float y, id_image_read image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -456,7 +456,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::stretchNatived(id_image_read image) const
+    haschild ViewPanel::stretchNative(id_image_read image) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
@@ -626,7 +626,7 @@ namespace BLIK
         CurCollector->mRefTouch = m_ref_touch;
         CurCollector->mDirty = DirtyTest;
 
-        stretchNatived(Platform::Graphics::GetImageFromSurface(surface));
+        stretchNative(Platform::Graphics::GetImageFromSurface(surface));
     }
 
     PanelState ViewPanel::state(chars uiname) const

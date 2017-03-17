@@ -32,8 +32,8 @@
     #include <QAudioRecorder>
     #include <QAudioProbe>
     #include <QAudioDeviceInfo>
-    
-    #include <QWebEnginePage>
+
+    #include <QWebEngineView>
 
     #if BLIK_ANDROID
         #include <QtAndroidExtras/QAndroidJniObject>
@@ -70,10 +70,17 @@
     class CanvasClass
     {
     public:
-        CanvasClass();
-        CanvasClass(QPaintDevice* paint);
+        CanvasClass(QPaintDevice* device);
         ~CanvasClass();
     public:
+        void Pause();
+        void Resume();
+    public:
+        inline QPainter& painter() {return mPainter;}
+        inline const QColor& color() const {return mColor;}
+        inline void SetColor(uint08 r, uint08 g, uint08 b, uint08 a)
+        {mColor.setRgb(r, g, b, a);}
+    private:
         QPainter mPainter;
         QColor mColor;
     };
@@ -1249,14 +1256,12 @@
         SurfaceClass(sint32 width, sint32 height, QOpenGLFramebufferObjectFormat* format)
             : mFBO(width, height, *format), mDevice(width, height)
         {
-            mCanvas.mPainter.begin(&mDevice);
-            mCanvas.mPainter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+            mCurrentCanvas = nullptr;
             mSavedCanvas = nullptr;
         }
         ~SurfaceClass()
         {
-            BLIK_ASSERT("ViewAPI::CurPainter()를 반환하지 않았습니다", !mSavedCanvas);
-            mCanvas.mPainter.end();
+            BLIK_ASSERT("UnbindGraphics되지 않았습니다", !mCurrentCanvas && !mSavedCanvas);
             mFBO.release();
         }
 
@@ -1274,28 +1279,39 @@
     public:
         inline sint32 width() const {return mFBO.width();}
         inline sint32 height() const {return mFBO.height();}
+        inline const QPainter* painter() const
+        {
+            BLIK_ASSERT("BindGraphics가 필요합니다", mCurrentCanvas);
+            return &mCurrentCanvas->painter();
+        }
 
     public:
-        void Bind()
+        void BindGraphics()
         {
-            BLIK_ASSERT("Unbind되지 않은 Bind입니다", !mSavedCanvas);
+            BLIK_ASSERT("UnbindGraphics되지 않은 BindGraphics입니다", !mCurrentCanvas && !mSavedCanvas);
+            if(mSavedCanvas = ViewAPI::CurCanvas())
+                mSavedCanvas->Pause();
+            mCurrentCanvas = new CanvasClass(&mDevice);
+            ViewAPI::CurCanvas() = mCurrentCanvas;
             mFBO.bind();
-            mSavedCanvas = ViewAPI::CurCanvas();
-            ViewAPI::CurCanvas() = &mCanvas;
         }
-        void Unbind()
+        void UnbindGraphics()
         {
-            BLIK_ASSERT("Bind시켰던 값과 일치하지 않습니다\n"
-                "(다수의 Surface를 Bind하면 Unbind의 순서는 역순이어야 합니다)", ViewAPI::CurCanvas() == &mCanvas);
-            ViewAPI::CurCanvas() = mSavedCanvas;
-            mSavedCanvas = nullptr;
+            BLIK_ASSERT("BindGraphics되지 않은 UnbindGraphics입니다", mCurrentCanvas);
+            BLIK_ASSERT("BindGraphics시켰던 값과 일치하지 않습니다\n"
+                "(다수의 Surface를 BindGraphics하면 UnbindGraphics의 순서는 역순이어야 합니다)", ViewAPI::CurCanvas() == mCurrentCanvas);
             mLastImage = mFBO.toImage();
+            delete mCurrentCanvas;
+            mCurrentCanvas = nullptr;
+            if(ViewAPI::CurCanvas() = mSavedCanvas)
+                mSavedCanvas->Resume();
+            mSavedCanvas = nullptr;
         }
 
     private:
         QOpenGLFramebufferObject mFBO;
         QOpenGLPaintDevice mDevice;
-        CanvasClass mCanvas;
+        CanvasClass* mCurrentCanvas;
         CanvasClass* mSavedCanvas;
 
     public:
@@ -1572,6 +1588,60 @@
             }
             return (Peer->write((chars) buffer, buffersize) == buffersize);
         }
+    };
+
+    class WebClass
+    {
+    public:
+        WebClass() {}
+        ~WebClass() {}
+
+    public:
+        WebClass(const WebClass& rhs) {operator=(rhs);}
+        WebClass& operator=(const WebClass&)
+        {
+            BLIK_ASSERT("호출불가", false);
+            return *this;
+        }
+
+    public:
+        void Reload(chars url)
+        {
+            mView.load(QUrl(QString(url)));
+        }
+        void Resize(sint32 width, sint32 height)
+        {
+            mView.resize(width, height);
+            mLastImage = QImage(width, height, QImage::Format_ARGB32);
+        }
+        const QPixmap GetPixmap()
+        {
+            return QPixmap::fromImage(GetImage());
+        }
+        const QImage& GetImage()
+        {
+            if(ViewAPI::CurCanvas())
+                ViewAPI::CurCanvas()->Pause();
+            if(CanvasClass* NewCanvas = new CanvasClass(&mLastImage))
+            {
+                const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
+                //NewCanvas->painter().fillRect(CurRect, QColor(255, 0, 0, 255));/////////////////////////////////
+                //NewCanvas->Pause();
+                mView.page()->view()->render(&NewCanvas->painter(), QPoint(0, 0), QRegion(CurRect));
+                //mView.page()->view()->render(&mLastImage, QPoint(0, 0), QRegion(CurRect));
+                //mView.repaint();
+                //NewCanvas->Resume();
+                delete NewCanvas;
+                mLastImage.save("C:/Users/slacealic/Desktop/BlikProject/dreamstudio/assets-rem/test.png", "PNG");
+            }
+            if(ViewAPI::CurCanvas())
+                ViewAPI::CurCanvas()->Resume();
+            return mLastImage;
+        }
+
+    private:
+        QWebEngineView mView;
+        QImage mLastImage;
     };
 
     #if BLIK_ANDROID
@@ -1908,7 +1978,7 @@
         static Strings GetList(String* spec)
         {
             Strings Result;
-            Property SpecCollector;
+            Context SpecCollector;
             const QList<QSerialPortInfo>& AllPorts = QSerialPortInfo::availablePorts();
             foreach(const auto& CurPort, AllPorts)
             {
@@ -1918,7 +1988,7 @@
                 Result.AtAdding() = CurName;
                 if(spec)
                 {
-                    Property& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
+                    Context& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
                     NewChild.At("portname").Set(CurPort.portName().toUtf8().constData());
                     NewChild.At("description").Set(CurPort.description().toUtf8().constData());
                     NewChild.At("systemlocation").Set(CurPort.systemLocation().toUtf8().constData());
@@ -2814,7 +2884,7 @@
         static Strings GetList(String* spec)
         {
             Strings Result;
-            Property SpecCollector;
+            Context SpecCollector;
             const QList<QCameraInfo>& AllCameras = QCameraInfo::availableCameras();
             foreach(const auto& CurCamera, AllCameras)
             {
@@ -2824,7 +2894,7 @@
                 Result.AtAdding() = CurName;
                 if(spec)
                 {
-                    Property& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
+                    Context& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
                     NewChild.At("description").Set(CurCamera.description().toUtf8().constData());
                     NewChild.At("devicename").Set(CurCamera.deviceName().toUtf8().constData());
                     NewChild.At("position").Set(String::FromInteger(CurCamera.position()));
@@ -2996,7 +3066,7 @@
         static Strings GetList(String* spec)
         {
             Strings Result;
-            Property SpecCollector;
+            Context SpecCollector;
             const QList<QAudioDeviceInfo>& AllMicrophones = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
             foreach(const auto& CurMicrophone, AllMicrophones)
             {
@@ -3004,43 +3074,43 @@
                 Result.AtAdding() = CurName;
                 if(spec)
                 {
-                    Property& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
+                    Context& NewChild = SpecCollector.At(SpecCollector.LengthOfIndexable());
                     NewChild.At("devicename").Set(CurName);
                     const auto& AllByteOrders = CurMicrophone.supportedByteOrders();
                     foreach(const auto& CurByteOrder, AllByteOrders)
                     {
-                        Property& NewChild2 = NewChild.At("byteorders").At(NewChild.At("byteorders").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("byteorders").At(NewChild.At("byteorders").LengthOfIndexable());
                         if(CurByteOrder == QAudioFormat::BigEndian) NewChild2.Set("BigEndian");
                         else if(CurByteOrder == QAudioFormat::LittleEndian) NewChild2.Set("LittleEndian");
                     }
                     const auto& AllChannelCounts = CurMicrophone.supportedChannelCounts();
                     foreach(const auto& CurChannelCount, AllChannelCounts)
                     {
-                        Property& NewChild2 = NewChild.At("channelcounts").At(NewChild.At("channelcounts").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("channelcounts").At(NewChild.At("channelcounts").LengthOfIndexable());
                         NewChild2.Set(String::FromInteger(CurChannelCount));
                     }
                     const auto& AllCodecs = CurMicrophone.supportedCodecs();
                     foreach(const auto& CurCodec, AllCodecs)
                     {
-                        Property& NewChild2 = NewChild.At("codecs").At(NewChild.At("codecs").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("codecs").At(NewChild.At("codecs").LengthOfIndexable());
                         NewChild2.Set(CurCodec.toUtf8().constData());
                     }
                     const auto& AllSampleRates = CurMicrophone.supportedSampleRates();
                     foreach(const auto& CurSampleRate, AllSampleRates)
                     {
-                        Property& NewChild2 = NewChild.At("samplerates").At(NewChild.At("samplerates").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("samplerates").At(NewChild.At("samplerates").LengthOfIndexable());
                         NewChild2.Set(String::FromInteger(CurSampleRate));
                     }
                     const auto& AllSampleSizes = CurMicrophone.supportedSampleSizes();
                     foreach(const auto& CurSampleSize, AllSampleSizes)
                     {
-                        Property& NewChild2 = NewChild.At("samplesizes").At(NewChild.At("samplesizes").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("samplesizes").At(NewChild.At("samplesizes").LengthOfIndexable());
                         NewChild2.Set(String::FromInteger(CurSampleSize));
                     }
                     const auto& AllSampleTypes = CurMicrophone.supportedSampleTypes();
                     foreach(const auto& CurSampleType, AllSampleTypes)
                     {
-                        Property& NewChild2 = NewChild.At("sampletypes").At(NewChild.At("sampletypes").LengthOfIndexable());
+                        Context& NewChild2 = NewChild.At("sampletypes").At(NewChild.At("sampletypes").LengthOfIndexable());
                         if(CurSampleType == QAudioFormat::Unknown) NewChild2.Set("Unknown");
                         else if(CurSampleType == QAudioFormat::SignedInt) NewChild2.Set("SignedInt");
                         else if(CurSampleType == QAudioFormat::UnSignedInt) NewChild2.Set("UnSignedInt");

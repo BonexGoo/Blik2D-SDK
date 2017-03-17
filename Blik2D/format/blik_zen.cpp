@@ -140,7 +140,7 @@ namespace BLIK
         return (Success)? Zen(source, HeaderCount) : NullChild();
     }
 
-    sint32s Zen::Build(const Property& data)
+    sint32s Zen::Build(const Context& data)
     {
         const String& Header = BuildHeader();
         const sint32 HeaderSize = Header.Length();
@@ -166,7 +166,7 @@ namespace BLIK
         return _;
     }
 
-    jumper Zen::BuildCore(const Property& data, sint32s& col, Map<sint32>& map)
+    jumper Zen::BuildCore(const Context& data, sint32s& col, Map<sint32>& map)
     {
         // Zen영역 우선확보
         const sint32 ZenPos = col.Count();

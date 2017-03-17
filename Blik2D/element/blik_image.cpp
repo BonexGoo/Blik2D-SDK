@@ -86,7 +86,7 @@ namespace BLIK
         Asset::Close(BmpAsset);
 
         // Data
-        Property Json;
+        Context Json;
         Json.At("valid_rect").At("l").Set(String::FromInteger(m_valid_rect.l));
         Json.At("valid_rect").At("t").Set(String::FromInteger(m_valid_rect.t));
         Json.At("valid_rect").At("r").Set(String::FromInteger(m_valid_rect.r));
@@ -174,7 +174,7 @@ namespace BLIK
             ((char*) JsonBuffer)[JsonSize] = '\0';
             Asset::Close(JsonAsset);
 
-            Property Json;
+            Context Json;
             Json.LoadJson(JsonBuffer);
 
             BLIK_ASSERT("valid_rect이 없습니다", Json("valid_rect").IsValid());

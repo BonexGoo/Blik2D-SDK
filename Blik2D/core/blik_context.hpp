@@ -1,34 +1,36 @@
 ﻿#pragma once
 #include <blik_map.hpp>
+#include <blik_object.hpp>
+#include <blik_parser.hpp>
 #include <blik_string.hpp>
 
 namespace BLIK
 {
-    class Property;
-    typedef Array<const Property*, datatype_pod_canmemcpy> CollectedProperties;
+    class Context;
+    typedef Array<const Context*, datatype_pod_canmemcpy> CollectedContexts;
     enum CollectOption {CO_Null, CO_GetParent};
     enum ScriptType {ST_Json, ST_Xml};
     enum ScriptOption {SO_OnlyReference, SO_NeedCopy};
 
-    //! \brief 트리형 프로퍼티지원
-    class Property
+    //! \brief 트리형 콘텍스트지원
+    class Context
     {
     public:
         /*!
-        \brief 자식프로퍼티를 생성하며 접근(키워드식)
-        \param key : 자식프로퍼티의 이름
+        \brief 자식콘텍스트를 생성하며 접근(키워드식)
+        \param key : 자식콘텍스트의 이름
         \param length : 이름의 길이(-1이면 자동설정)
-        \return 해당 자식프로퍼티의 인스턴스
+        \return 해당 자식콘텍스트의 인스턴스
         */
-        inline Property& At(chars key, sint32 length = -1)
+        inline Context& At(chars key, sint32 length = -1)
         {return m_namableChild(key, length);}
 
         /*!
-        \brief 자식프로퍼티를 생성하며 접근(배열식)
-        \param index : 자식프로퍼티의 순번
-        \return 해당 자식프로퍼티의 인스턴스
+        \brief 자식콘텍스트를 생성하며 접근(배열식)
+        \param index : 자식콘텍스트의 순번
+        \return 해당 자식콘텍스트의 인스턴스
         */
-        inline Property& At(sint32 index)
+        inline Context& At(sint32 index)
         {return m_indexableChild.AtWherever(index);}
 
         /*!
@@ -105,42 +107,42 @@ namespace BLIK
 
         /*!
         \brief 키-밸류 매칭에 의한 수집
-        \param key : 자식프로퍼티의 이름
+        \param key : 자식콘텍스트의 이름
         \param value : 매칭할 문자열값
-        \return 수집된 프로퍼티들
+        \return 수집된 콘텍스트들
         */
-        CollectedProperties CollectByMatch(chars key, chars value, CollectOption option = CO_Null) const;
+        CollectedContexts CollectByMatch(chars key, chars value, CollectOption option = CO_Null) const;
 
     public:
         /*!
-        \brief 자식프로퍼티로 접근(키워드식)
-        \param key : 자식프로퍼티의 이름
-        \return 해당 자식프로퍼티의 인스턴스
+        \brief 자식콘텍스트로 접근(키워드식)
+        \param key : 자식콘텍스트의 이름
+        \return 해당 자식콘텍스트의 인스턴스
         */
-        inline const Property& operator()(chars key) const
+        inline const Context& operator()(chars key) const
         {
-            Property* CurChild = m_namableChild.Access(key);
+            Context* CurChild = m_namableChild.Access(key);
             return (CurChild)? *CurChild : NullChild();
         }
 
         /*!
-        \brief 자식프로퍼티로 접근(키워드식/순번방식)
-        \param order : 자식프로퍼티의 순번
-        \param getname : 자식프로퍼티의 이름얻기
-        \return 해당 자식프로퍼티의 인스턴스
+        \brief 자식콘텍스트로 접근(키워드식/순번방식)
+        \param order : 자식콘텍스트의 순번
+        \param getname : 자식콘텍스트의 이름얻기
+        \return 해당 자식콘텍스트의 인스턴스
         */
-        inline const Property& operator()(sint32 order, chararray* getname = nullptr) const
+        inline const Context& operator()(sint32 order, chararray* getname = nullptr) const
         {
-            Property* CurChild = m_namableChild.AccessByOrder(order, getname);
+            Context* CurChild = m_namableChild.AccessByOrder(order, getname);
             return (CurChild)? *CurChild : NullChild();
         }
 
         /*!
-        \brief 자식프로퍼티로 접근(배열식)
-        \param index : 자식프로퍼티의 순번
-        \return 해당 자식프로퍼티의 인스턴스
+        \brief 자식콘텍스트로 접근(배열식)
+        \param index : 자식콘텍스트의 순번
+        \return 해당 자식콘텍스트의 인스턴스
         */
-        inline const Property& operator[](sint32 index) const
+        inline const Context& operator[](sint32 index) const
         {
             if(0 <= index && index < m_indexableChild.Count())
                 return m_indexableChild[index];
@@ -148,14 +150,14 @@ namespace BLIK
         }
 
         /*!
-        \brief 자식프로퍼티의 수량얻기(키워드식)
+        \brief 자식콘텍스트의 수량얻기(키워드식)
         \return 수량값
         */
         inline sint32 LengthOfNamable() const
         {return m_namableChild.Count();}
 
         /*!
-        \brief 자식프로퍼티의 수량얻기(배열식)
+        \brief 자식콘텍스트의 수량얻기(배열식)
         \return 수량값
         */
         inline sint32 LengthOfIndexable() const
@@ -247,7 +249,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 자식프로퍼티 현황보고
+        \brief 자식콘텍스트 현황보고
         */
         void DebugPrint() const;
 
@@ -255,26 +257,26 @@ namespace BLIK
         /*!
         \brief 생성자
         */
-        Property();
+        Context();
 
         /*!
         \brief 복사생성자
         \param rhs : 복사할 인스턴스
         */
-        Property(const Property& rhs);
+        Context(const Context& rhs);
 
         /*!
         \brief 생성자(Bin바이너리를 로드)
         \param src : Bin바이너리
         */
-        Property(bytes src);
+        Context(bytes src);
 
         /*!
         \brief 생성자(스크립트를 파싱)
         \param type : 스크립트종류
         \param src : 스크립트소스
         */
-        Property(ScriptType type, buffer src);
+        Context(ScriptType type, buffer src);
 
         /*!
         \brief 생성자(스크립트를 파싱)
@@ -283,23 +285,23 @@ namespace BLIK
         \param src : 스크립트소스
         \param length : src의 길이(-1이면 자동설정)
         */
-        Property(ScriptType type, ScriptOption option, chars src, sint32 length = -1);
+        Context(ScriptType type, ScriptOption option, chars src, sint32 length = -1);
 
         /*!
         \brief 소멸자
         */
-        ~Property();
+        ~Context();
 
         /*!
         \brief 복사
         \param rhs : 복사할 인스턴스
         \return 자기 객체
         */
-        Property& operator=(const Property& rhs);
+        Context& operator=(const Context& rhs);
 
     private:
-        static inline const Property& NullChild()
-        {static const Property _; return _;}
+        static inline const Context& NullChild()
+        {static const Context _; return _;}
 
     private:
         void SetValue(chars value, sint32 length);
@@ -308,7 +310,7 @@ namespace BLIK
         static chars SkipBlankReverse(chars value);
 
     private:
-        Property* InitSource(Property* anyparent);
+        Context* InitSource(Context* anyparent);
         // Bin
         static const String& GetBinHeader();
         bytes LoadBinCore(bytes src);
@@ -316,17 +318,17 @@ namespace BLIK
         // Json
         bool LoadJsonCore(chars src);
         void SaveJsonCore(sint32 tab, String name, String& dst, bool indexable, bool lastchild) const;
-        static void SaveJsonCoreCB(const MapPath* path, const Property* data, payload param);
+        static void SaveJsonCoreCB(const MapPath* path, const Context* data, payload param);
         // Xml
         bool LoadXmlCore(chars src);
         void SaveXmlCore(sint32 tab, String name, String& dst) const;
-        static void SaveXmlCoreCB(const MapPath* path, const Property* data, payload param);
+        static void SaveXmlCoreCB(const MapPath* path, const Context* data, payload param);
         // Collect
-        void CollectCore(const Property* parent, chars key, chars value, const sint32 length, CollectedProperties* result, CollectOption option) const;
-        static void CollectCoreCB(const MapPath* path, const Property* data, payload param);
+        void CollectCore(const Context* parent, chars key, chars value, const sint32 length, CollectedContexts* result, CollectOption option) const;
+        static void CollectCoreCB(const MapPath* path, const Context* data, payload param);
         // Debug
         void DebugPrintCore(sint32 tab, String name, bool indexable) const;
-        static void DebugPrintCoreCB(const MapPath* path, const Property* data, payload param);
+        static void DebugPrintCoreCB(const MapPath* path, const Context* data, payload param);
 
     private:
         class StringSource
@@ -398,8 +400,8 @@ namespace BLIK
         Object<StringSource> m_source;
 
         // 자식연결
-        Map<Property> m_namableChild;
-        Array<Property, datatype_class_nomemcpy, 0> m_indexableChild;
+        Map<Context> m_namableChild;
+        Array<Context, datatype_class_nomemcpy, 0> m_indexableChild;
 
         // 자기데이터
         chars m_valueOffset;
@@ -408,5 +410,5 @@ namespace BLIK
         mutable sint32* m_parsedInt;
         mutable float* m_parsedFloat;
     };
-    typedef Array<Property> Properties;
+    typedef Array<Context> Contexts;
 }

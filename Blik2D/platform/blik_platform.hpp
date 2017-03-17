@@ -90,7 +90,7 @@ namespace BLIK
         \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
         \return 스크린샷 비트맵(nullptr은 실패)
         */
-        static id_bitmap_read GetScreenshotBitmap(const rect128& rect, bool vflip);
+        static id_bitmap_read GetScreenshotBitmap(const rect128& rect, bool vflip = true);
 
         /*!
         \brief 윈도우뷰 설정
@@ -749,7 +749,7 @@ namespace BLIK
             \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
             \return 서피스 비트맵(nullptr은 실패)
             */
-            static id_bitmap_read GetBitmapFromSurface(id_surface_read surface, bool vflip);
+            static id_bitmap_read GetBitmapFromSurface(id_surface_read surface, bool vflip = true);
         };
 
         //! \brief 파일지원
@@ -1243,11 +1243,13 @@ namespace BLIK
         public:
             /*!
             \brief 웹ID 할당
-            \param url : 웹주소
+            \param url : 로드할 웹주소
+            \param width : 웹페이지 가로길이(px)
+            \param height : 웹페이지 세로길이(px)
             \return 웹ID(nullptr은 실패)
             \see Release
             */
-            static id_web Create(chars url);
+            static id_web Create(chars url, sint32 width, sint32 height);
 
             /*!
             \brief 웹ID 반환
@@ -1255,6 +1257,36 @@ namespace BLIK
             \see Create
             */
             static void Release(id_web web);
+
+            /*!
+            \brief 웹페이지 리로드
+            \param web : 해당 웹ID
+            \param url : 로드할 웹주소
+            */
+            static void Reload(id_web web, chars url);
+
+            /*!
+            \brief 웹페이지 리로드
+            \param web : 해당 웹ID
+            \param width : 웹페이지 가로길이(px)
+            \param height : 웹페이지 세로길이(px)
+            */
+            static void Resize(id_web web, sint32 width, sint32 height);
+
+            /*!
+            \brief 웹페이지 스크린샷 이미지 얻기
+            \param web : 해당 웹ID
+            \return 스크린샷 이미지(nullptr은 실패)
+            */
+            static id_image_read GetScreenshotImage(id_web web);
+
+            /*!
+            \brief 웹페이지 스크린샷 비트맵 얻기
+            \param web : 해당 웹ID
+            \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
+            \return 스크린샷 비트맵(nullptr은 실패)
+            */
+            static id_bitmap_read GetScreenshotBitmap(id_web web, bool vflip = true);
         };
 
         //! \brief 시리얼통신지원

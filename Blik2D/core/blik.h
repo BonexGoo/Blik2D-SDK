@@ -4,7 +4,7 @@
 \section information 목적
     - Qt기반 UI프레임워크
 \section advanced 소개
-    - core그룹: 기본유틸(공유자원/컨테이너/스트링/파서/프로퍼티/프로파일링/태스킹)
+    - core그룹: 기본유틸(공유자원/컨테이너/스트링/파서/콘텍스트/프로파일링/태스킹)
     - element그룹: 기본객체
     - format그룹: BMP, PNG, ZEN
     - manager그룹: 이미지빌더, 뷰운영

@@ -116,14 +116,14 @@ namespace BLIK
 
         /*!
         \brief Zen소스 제작
-        \param data : 대상 프로퍼티
+        \param data : 대상 콘텍스트
         \return Zen소스
         */
-        static sint32s Build(const Property& data);
+        static sint32s Build(const Context& data);
 
     private:
         static const String& BuildHeader();
-        static jumper BuildCore(const Property& data, sint32s& col, Map<sint32>& map);
+        static jumper BuildCore(const Context& data, sint32s& col, Map<sint32>& map);
         static inline const Zen& NullChild() {static Zen _; return _;}
 
     private:

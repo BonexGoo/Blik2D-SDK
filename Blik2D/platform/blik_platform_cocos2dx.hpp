@@ -336,7 +336,7 @@
                 chars CurChildName = child->getName().c_str();
                 if(!String::Compare("blik:", CurChildName, 4))
                 {
-                    Property Json(ST_Json, SO_OnlyReference, &CurChildName[4]);
+                    Context Json(ST_Json, SO_OnlyReference, &CurChildName[4]);
                     chars ViewClass = Json("view").GetString(nullptr);
                     h_view NewView = Platform::CreateView("", 300, 300, nullptr, ViewClass);
 

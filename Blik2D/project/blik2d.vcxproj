@@ -42,13 +42,13 @@
     <ClCompile Include="..\core\blik.cpp" />
     <ClCompile Include="..\core\blik_asset.cpp" />
     <ClCompile Include="..\core\blik_buffer.cpp" />
+    <ClCompile Include="..\core\blik_context.cpp" />
     <ClCompile Include="..\core\blik_library.cpp" />
     <ClCompile Include="..\core\blik_math.cpp" />
     <ClCompile Include="..\core\blik_memory.cpp" />
     <ClCompile Include="..\core\blik_mutex.cpp" />
     <ClCompile Include="..\core\blik_parser.cpp" />
     <ClCompile Include="..\core\blik_profile.cpp" />
-    <ClCompile Include="..\core\blik_property.cpp" />
     <ClCompile Include="..\core\blik_remote.cpp" />
     <ClCompile Include="..\core\blik_share.cpp" />
     <ClCompile Include="..\core\blik_storage.cpp" />
@@ -115,6 +115,7 @@
     <ClInclude Include="..\core\blik_array.hpp" />
     <ClInclude Include="..\core\blik_asset.hpp" />
     <ClInclude Include="..\core\blik_buffer.hpp" />
+    <ClInclude Include="..\core\blik_context.hpp" />
     <ClInclude Include="..\core\blik_counter.hpp" />
     <ClInclude Include="..\core\blik_library.hpp" />
     <ClInclude Include="..\core\blik_map.hpp" />
@@ -124,7 +125,6 @@
     <ClInclude Include="..\core\blik_object.hpp" />
     <ClInclude Include="..\core\blik_parser.hpp" />
     <ClInclude Include="..\core\blik_profile.hpp" />
-    <ClInclude Include="..\core\blik_property.hpp" />
     <ClInclude Include="..\core\blik_queue.hpp" />
     <ClInclude Include="..\core\blik_remote.hpp" />
     <ClInclude Include="..\core\blik_share.hpp" />

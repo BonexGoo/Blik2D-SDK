@@ -23,7 +23,7 @@ namespace BLIK
         sint32 FindedPos = Command.Find(0, FindKey);
         if(0 <= FindedPos)
         {
-            Property JsonCommand(ST_Json, SO_OnlyReference, ((chars) Command) + FindedPos + FindKey.Length());
+            Context JsonCommand(ST_Json, SO_OnlyReference, ((chars) Command) + FindedPos + FindKey.Length());
             if(!String::Compare(JsonCommand("type").GetString(), "include-alias"))
                 Process_IncludeAlias(Command, FindedPos, JsonCommand("prm").GetString(),
                     JsonCommand("restore-comment").GetString(nullptr));

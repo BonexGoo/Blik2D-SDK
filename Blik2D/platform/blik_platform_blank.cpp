@@ -1254,7 +1254,7 @@
         ////////////////////////////////////////////////////////////////////////////////
         // WEB
         ////////////////////////////////////////////////////////////////////////////////
-        id_web Platform::Web::Create(chars url)
+        id_web Platform::Web::Create(chars url, sint32 width, sint32 height)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
             return nullptr;
@@ -1263,6 +1263,28 @@
         void Platform::Web::Release(id_web web)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Web::Reload(id_web web, chars url)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Web::Resize(id_web web, sint32 width, sint32 height)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        id_image_read Platform::Web::GetScreenshotImage(id_web web)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        id_bitmap_read Platform::Web::GetScreenshotBitmap(id_web web, bool vflip)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
         }
 
         ////////////////////////////////////////////////////////////////////////////////

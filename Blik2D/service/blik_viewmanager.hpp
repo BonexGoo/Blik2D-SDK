@@ -270,10 +270,10 @@ namespace BLIK
         void polybezier(Points p, float thick, bool showfirst, bool showlast) const;
         haschild icon(const Image& image, UIAlign align);
         haschild icon(float x, float y, const Image& image, UIAlign align); // 중점식
-        haschild iconNatived(id_image_read image, UIAlign align);
-        haschild iconNatived(float x, float y, id_image_read image, UIAlign align); // 중점식
+        haschild iconNative(id_image_read image, UIAlign align);
+        haschild iconNative(float x, float y, id_image_read image, UIAlign align); // 중점식
         haschild stretch(const Image& image, bool rebuild);
-        haschild stretchNatived(id_image_read image) const;
+        haschild stretchNative(id_image_read image) const;
         haschild ninepatch(const Image& image);
         void pattern(const Image& image, UIAlign align, bool reversed_xorder = false, bool reversed_yorder = false) const;
         bool text(chars string, UIFontAlign align, UIFontElide elide = UIFE_None) const;

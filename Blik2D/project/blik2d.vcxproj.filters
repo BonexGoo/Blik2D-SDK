@@ -105,57 +105,6 @@
     <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp">
       <Filter>Blik2D\addon</Filter>
     </ClCompile>
-    <ClCompile Include="..\core\blik.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_asset.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_buffer.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_library.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_math.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_memory.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_mutex.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_parser.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_profile.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_property.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_remote.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_share.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_storage.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_string.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_tasking.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_updater.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\blik_wstring.cpp">
-      <Filter>Blik2D\core</Filter>
-    </ClCompile>
     <ClCompile Include="..\element\blik_clip.cpp">
       <Filter>Blik2D\element</Filter>
     </ClCompile>
@@ -234,6 +183,57 @@
     <ClCompile Include="GeneratedFiles\Release\moc_blik_platform_qt5.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\blik.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_asset.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_buffer.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_context.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_library.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_math.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_memory.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_mutex.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_parser.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_profile.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_remote.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_share.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_storage.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_string.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_tasking.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_updater.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\blik_wstring.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addon\blik_addon.hpp">
@@ -295,75 +295,6 @@
     </ClInclude>
     <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h">
       <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik.h">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_array.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_asset.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_buffer.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_counter.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_library.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_map.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_math.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_memory.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_mutex.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_object.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_parser.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_profile.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_property.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_queue.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_remote.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_share.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_storage.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_string.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_tasking.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_updater.hpp">
-      <Filter>Blik2D\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\blik_wstring.hpp">
-      <Filter>Blik2D\core</Filter>
     </ClInclude>
     <ClInclude Include="..\element\blik_clip.hpp">
       <Filter>Blik2D\element</Filter>
@@ -439,6 +370,75 @@
     </ClInclude>
     <ClInclude Include="..\platform\blik_platform_native.hpp">
       <Filter>Blik2D\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik.h">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_array.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_asset.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_buffer.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_context.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_counter.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_library.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_map.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_math.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_memory.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_mutex.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_object.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_parser.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_profile.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_queue.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_remote.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_share.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_storage.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_string.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_tasking.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_updater.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\blik_wstring.hpp">
+      <Filter>Blik2D\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
