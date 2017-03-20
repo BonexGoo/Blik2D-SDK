@@ -875,7 +875,7 @@ namespace BLIK
     }
 
     ViewManager::ViewManager(chars viewclass)
-        : m_ref_func(ViewManager::_accessfunc(viewclass, false)), m_viewclass(viewclass)
+        : m_ref_func(ViewManager::_accessfunc(viewclass, false)), m_viewclass((viewclass)? viewclass : "")
     {
         BLIK_ASSERT(String::Format("존재하지 않는 뷰(%s)를 생성하려 합니다", viewclass), m_ref_func);
         m_class = m_ref_func->m_alloc();
@@ -1137,7 +1137,7 @@ namespace BLIK
         // 시나리오에 혼선을 야기하는 결과를 초래하기 때문이다. 또한 안드로이드 디버깅의 경우,
         // main()진입전에 일어난 초기화수행의 과정은 브레이크조차 잡히지 않는다.
 
-        chars ViewName = (viewclass)? viewclass : "_defaultview_";
+        chars ViewName = (viewclass && *viewclass)? viewclass : "_defaultview_";
         return (creatable)? &AllFunctions(ViewName) : AllFunctions.Access(ViewName);
     }
 
@@ -1156,7 +1156,7 @@ namespace BLIK
 
         const uint64 CurKey = PtrToUint64(param);
         BLIK_ASSERT("사용할 수 없는 Key입니다", CurKey);
-        chars ViewName = (viewclass)? viewclass : "_defaultview_";
+        chars ViewName = (viewclass && *viewclass)? viewclass : "_defaultview_";
         switch(command)
         {
         case SC_Create:

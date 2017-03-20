@@ -70,17 +70,27 @@
     class CanvasClass
     {
     public:
+        CanvasClass();
         CanvasClass(QPaintDevice* device);
         ~CanvasClass();
     public:
-        void Pause();
-        void Resume();
+        void Bind(QPaintDevice* device);
+        void Unbind();
+    private:
+        void BindCore(QPaintDevice* device);
+        void UnbindCore();
     public:
+        static inline CanvasClass* get() {return ST();}
         inline QPainter& painter() {return mPainter;}
         inline const QColor& color() const {return mColor;}
         inline void SetColor(uint08 r, uint08 g, uint08 b, uint08 a)
         {mColor.setRgb(r, g, b, a);}
     private:
+        static inline CanvasClass*& ST() {static CanvasClass* _ = nullptr; return _;}
+    private:
+        const bool mIsTypeSurface;
+        bool mIsSurfaceBinded;
+        CanvasClass* mSavedCanvas;
         QPainter mPainter;
         QColor mColor;
     };
@@ -316,13 +326,10 @@
 
         void paint()
         {
-            // for assert dialog
-            if(CurCanvas()) return;
-
+            // for assert dialog's recursive call
+            if(CanvasClass::get()) return;
             CanvasClass Canvas(getWidgetForPaint());
-            CurCanvas() = &Canvas;
             render(m_width, m_height);
-            CurCanvas() = nullptr;
         }
 
         void nextPaint()
@@ -473,10 +480,6 @@
             touch(TT_LongPress, 0, m_longpress_x, m_longpress_y);
         }
 
-    public:
-        static inline CanvasClass*& CurCanvas()
-        {static CanvasClass* _ = nullptr; return _;}
-
     private:
         ParentType m_parent_type;
         buffer m_parent_buf;
@@ -621,6 +624,31 @@
         }
 
     public:
+        static bool CloseAllWindows()
+        {
+            QWindowList processedWindows;
+            while(auto w = QApplication::activeModalWidget())
+            {
+                if(QWindow* window = w->windowHandle())
+                {
+                    if(!window->close()) return false;
+                    processedWindows.append(window);
+                }
+            }
+            for(auto w : QApplication::topLevelWidgets())
+            {
+                if(w->windowType() == Qt::Desktop)
+                    continue;
+                if(QWindow* window = w->windowHandle())
+                {
+                    if(!window->close()) return false;
+                    processedWindows.append(window);
+                }
+            }
+            return true;
+        }
+
+    public:
         ViewAPI* m_api;
 
     private:
@@ -677,7 +705,7 @@
         void onCloseEvent(QCloseEvent* event)
         {
             closeEvent(event);
-            QApplication::closeAllWindows();
+            GenericView::CloseAllWindows();
         }
 
     protected:
@@ -781,7 +809,7 @@
         void onCloseEvent(QCloseEvent* event)
         {
             closeEvent(event);
-            QApplication::closeAllWindows();
+            GenericView::CloseAllWindows();
         }
 
     protected:
@@ -887,6 +915,11 @@
             BLIK_ASSERT("GL/MDI의 초기화가 되어있지 않습니다", m_viewGL || m_viewMDI);
             if(m_viewGL) return m_viewGL->m_api;
             return m_viewMDI->m_api;
+        }
+
+        QGLWidget* getGLWidget()
+        {
+            return m_viewGL;
         }
 
         QWidget* addWidget(GenericView* view)
@@ -1256,12 +1289,9 @@
         SurfaceClass(sint32 width, sint32 height, QOpenGLFramebufferObjectFormat* format)
             : mFBO(width, height, *format), mDevice(width, height)
         {
-            mCurrentCanvas = nullptr;
-            mSavedCanvas = nullptr;
         }
         ~SurfaceClass()
         {
-            BLIK_ASSERT("UnbindGraphics되지 않았습니다", !mCurrentCanvas && !mSavedCanvas);
             mFBO.release();
         }
 
@@ -1279,40 +1309,24 @@
     public:
         inline sint32 width() const {return mFBO.width();}
         inline sint32 height() const {return mFBO.height();}
-        inline const QPainter* painter() const
-        {
-            BLIK_ASSERT("BindGraphics가 필요합니다", mCurrentCanvas);
-            return &mCurrentCanvas->painter();
-        }
+        inline QPainter* painter() {return &mCanvas.painter();}
 
     public:
         void BindGraphics()
         {
-            BLIK_ASSERT("UnbindGraphics되지 않은 BindGraphics입니다", !mCurrentCanvas && !mSavedCanvas);
-            if(mSavedCanvas = ViewAPI::CurCanvas())
-                mSavedCanvas->Pause();
-            mCurrentCanvas = new CanvasClass(&mDevice);
-            ViewAPI::CurCanvas() = mCurrentCanvas;
+            mCanvas.Bind(&mDevice);
             mFBO.bind();
         }
         void UnbindGraphics()
         {
-            BLIK_ASSERT("BindGraphics되지 않은 UnbindGraphics입니다", mCurrentCanvas);
-            BLIK_ASSERT("BindGraphics시켰던 값과 일치하지 않습니다\n"
-                "(다수의 Surface를 BindGraphics하면 UnbindGraphics의 순서는 역순이어야 합니다)", ViewAPI::CurCanvas() == mCurrentCanvas);
             mLastImage = mFBO.toImage();
-            delete mCurrentCanvas;
-            mCurrentCanvas = nullptr;
-            if(ViewAPI::CurCanvas() = mSavedCanvas)
-                mSavedCanvas->Resume();
-            mSavedCanvas = nullptr;
+            mCanvas.Unbind();
         }
 
     private:
         QOpenGLFramebufferObject mFBO;
         QOpenGLPaintDevice mDevice;
-        CanvasClass* mCurrentCanvas;
-        CanvasClass* mSavedCanvas;
+        CanvasClass mCanvas;
 
     public:
         QImage mLastImage;
@@ -1590,21 +1604,55 @@
         }
     };
 
-    class WebClass
+    class WebViewPrivate : public QWebEngineView
     {
-    public:
-        WebClass() {}
-        ~WebClass() {}
+        Q_OBJECT
 
     public:
-        WebClass(const WebClass& rhs) {operator=(rhs);}
-        WebClass& operator=(const WebClass&)
+        WebViewPrivate(QWidget* parent = nullptr) : QWebEngineView(parent), mHandle(h_web::null())
         {
-            BLIK_ASSERT("호출불가", false);
-            return *this;
+        }
+        virtual ~WebViewPrivate()
+        {
+            mHandle.set_buf(nullptr);
         }
 
     public:
+        WebViewPrivate(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false);}
+        WebViewPrivate& operator=(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
+
+    protected:
+        void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE
+        {
+            event->accept();
+            mHandle.set_buf(nullptr);
+        }
+
+    public:
+        h_web mHandle;
+    };
+
+    class WebPrivate
+    {
+    public:
+        WebPrivate()
+        {
+            mProxy = mScene.addWidget(&mView);
+        }
+        ~WebPrivate()
+        {
+            mScene.removeItem(mProxy);
+        }
+
+    public:
+        WebPrivate(const WebPrivate&) {BLIK_ASSERT("사용금지", false);}
+        WebPrivate& operator=(const WebPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
+
+    public:
+        void attachHandle(h_web web)
+        {
+            mView.mHandle = web;
+        }
         void Reload(chars url)
         {
             mView.load(QUrl(QString(url)));
@@ -1620,27 +1668,17 @@
         }
         const QImage& GetImage()
         {
-            if(ViewAPI::CurCanvas())
-                ViewAPI::CurCanvas()->Pause();
-            if(CanvasClass* NewCanvas = new CanvasClass(&mLastImage))
-            {
-                const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
-                //NewCanvas->painter().fillRect(CurRect, QColor(255, 0, 0, 255));/////////////////////////////////
-                //NewCanvas->Pause();
-                mView.page()->view()->render(&NewCanvas->painter(), QPoint(0, 0), QRegion(CurRect));
-                //mView.page()->view()->render(&mLastImage, QPoint(0, 0), QRegion(CurRect));
-                //mView.repaint();
-                //NewCanvas->Resume();
-                delete NewCanvas;
-                mLastImage.save("C:/Users/slacealic/Desktop/BlikProject/dreamstudio/assets-rem/test.png", "PNG");
-            }
-            if(ViewAPI::CurCanvas())
-                ViewAPI::CurCanvas()->Resume();
+            mView.update();
+            CanvasClass CurCanvas(&mLastImage);
+            const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
+            mScene.render(&CurCanvas.painter(), CurRect, CurRect);
             return mLastImage;
         }
 
     private:
-        QWebEngineView mView;
+        WebViewPrivate mView;
+        QGraphicsProxyWidget* mProxy;
+        QGraphicsScene mScene;
         QImage mLastImage;
     };
 

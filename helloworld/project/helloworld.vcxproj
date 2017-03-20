@@ -118,12 +118,9 @@
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)\$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+      <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
-
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll" "$(OutDir)" /F /S /R /Y /I
-</Command>
+"$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "..\bin_$(Configuration)$(PlatformArchitecture)" md "..\bin_$(Configuration)$(PlatformArchitecture)"</Command>
@@ -150,12 +147,9 @@ xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll"
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)\$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+      <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
-
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll" "$(OutDir)" /F /S /R /Y /I
-</Command>
+"$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "..\bin_$(Configuration)$(PlatformArchitecture)" md "..\bin_$(Configuration)$(PlatformArchitecture)"</Command>
@@ -184,12 +178,9 @@ xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll"
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)\$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+      <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
-
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll" "$(OutDir)" /F /S /R /Y /I
-</Command>
+"$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "..\bin_$(Configuration)$(PlatformArchitecture)" md "..\bin_$(Configuration)$(PlatformArchitecture)"</Command>
@@ -219,12 +210,9 @@ xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll"
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)\$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+      <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
-
-xcopy "..\..\package_qt5\win$(PlatformArchitecture)\$(Configuration)\glew32.dll" "$(OutDir)" /F /S /R /Y /I
-</Command>
+"$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "..\bin_$(Configuration)$(PlatformArchitecture)" md "..\bin_$(Configuration)$(PlatformArchitecture)"</Command>
