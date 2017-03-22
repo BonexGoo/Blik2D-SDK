@@ -130,7 +130,6 @@
             connect(&m_update_timer, &QTimer::timeout, this, &ViewAPI::update_timeout);
             connect(&m_tooltip_timer, &QTimer::timeout, this, &ViewAPI::tooltip_timeout);
             connect(&m_longpress_timer, &QTimer::timeout, this, &ViewAPI::longpress_timeout);
-            m_tick_timer.start(17);
         }
 
         ViewAPI(const ViewAPI& rhs) = delete;
@@ -269,6 +268,7 @@
                 g_view = getWidget();
                 m_view_manager->_create();
             }
+            m_tick_timer.start(17);
         }
 
         inline bool canQuit()
@@ -283,6 +283,7 @@
 
         inline void sendDestroy()
         {
+            m_tick_timer.stop();
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();

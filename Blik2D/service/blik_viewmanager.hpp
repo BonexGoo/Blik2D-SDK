@@ -13,75 +13,75 @@
 // 옵션스택관련
 #define BLIK_LTRB(PANEL, L, T, R, B) \
     for(bool _ = (PANEL)._push_clip(L, T, R, B, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_LTRB_UI(PANEL, L, T, R, B, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_LTRB_UI(PANEL, L, T, R, B, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_LTRB_SCISSOR(PANEL, L, T, R, B) \
     for(bool _ = (PANEL)._push_clip(L, T, R, B, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_LTRB_UI_SCISSOR(PANEL, L, T, R, B, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_LTRB_UI_SCISSOR(PANEL, L, T, R, B, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_XYWH(PANEL, X, Y, W, H) \
     for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYWH_UI(PANEL, X, Y, W, H, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_XYWH_UI(PANEL, X, Y, W, H, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_XYWH_SCISSOR(PANEL, X, Y, W, H) \
     for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_XYRR(PANEL, X, Y, RW, RH) \
     for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYRR_UI(PANEL, X, Y, RW, RH, ...) \
-    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_XYRR_UI(PANEL, X, Y, RW, RH, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_XYRR_SCISSOR(PANEL, X, Y, RW, RH) \
     for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, ...) \
-    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_RECT(PANEL, R) \
     for(bool _ = (PANEL)._push_clip_by_rect(R, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_RECT_UI(PANEL, R, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_RECT_UI(PANEL, R, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_RECT_SCISSOR(PANEL, R) \
     for(bool _ = (PANEL)._push_clip_by_rect(R, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_RECT_UI_SCISSOR(PANEL, R, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_RECT_UI_SCISSOR(PANEL, R, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_INNER(PANEL, V) \
     for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_INNER_UI(PANEL, V, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_INNER_UI(PANEL, V, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_INNER_SCISSOR(PANEL, V) \
     for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_INNER_UI_SCISSOR(PANEL, V, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_INNER_UI_SCISSOR(PANEL, V, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_CHILD(PANEL) \
     for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_UI(PANEL, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_UI(PANEL, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_CHILD_SCISSOR(PANEL) \
     for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_UI_SCISSOR(PANEL, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_UI_SCISSOR(PANEL, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_CHILD_AT(PANEL, IX, IY) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_AT_UI(PANEL, IX, IY, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_AT_UI(PANEL, IX, IY, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_CHILD_AT_SCISSOR(PANEL, IX, IY) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_CHILD_SECTION(PANEL, IX, IY, XC, YC) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 #define BLIK_CHILD_SECTION_SCISSOR(PANEL, IX, IY, XC, YC) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+#define BLIK_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, NAME, ...) \
+    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
 #define BLIK_RGB(PANEL, R, G, B) \
     for(bool _ = (PANEL)._push_color(R, G, B, 0xFF); _; _ = (PANEL)._pop_color())
