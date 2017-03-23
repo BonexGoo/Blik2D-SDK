@@ -120,6 +120,8 @@
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
+xcopy "$(ProjectDir)..\..\dependency\msvc_$(PlatformToolset)\$(PlatformTarget)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+
 "$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -148,6 +150,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+
+xcopy "$(ProjectDir)..\..\dependency\msvc_$(PlatformToolset)\$(PlatformTarget)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
 "$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
@@ -180,6 +184,8 @@
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
+xcopy "$(ProjectDir)..\..\dependency\msvc_$(PlatformToolset)\$(PlatformTarget)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+
 "$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -211,6 +217,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(ProjectName).*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
+
+xcopy "$(ProjectDir)..\..\dependency\msvc_$(PlatformToolset)\$(PlatformTarget)\*.*" "..\bin_$(Configuration)$(PlatformArchitecture)" /F /S /R /Y /I
 
 "$(QTDIR)\bin\windeployqt.exe" "..\bin_$(Configuration)$(PlatformArchitecture)\$(TargetFileName)"</Command>
     </PostBuildEvent>

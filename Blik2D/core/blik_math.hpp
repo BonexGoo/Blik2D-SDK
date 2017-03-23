@@ -63,6 +63,26 @@ namespace BLIK
         static float MaxF(const float a, const float b);
 
         /*!
+        \brief 한계값 구하기
+        \param min : 하한값
+        \param value : 입력값
+        \param max : 상한값
+        \return 한계값
+        */
+        inline static sint32 Bound(const sint32 min, const sint32 value, const sint32 max)
+        {return Max(min, Min(value, max));}
+
+        /*!
+        \brief 한계값 구하기(float)
+        \param min : 하한값
+        \param value : 입력값
+        \param max : 상한값
+        \return 한계값
+        */
+        inline static float BoundF(const float min, const float value, const float max)
+        {return MaxF(min, MinF(value, max));}
+
+        /*!
         \brief 올림값 구하기
         \param v : 인수
         \return 올림값

@@ -58,7 +58,10 @@
     void CanvasClass::BindCore(QPaintDevice* device)
     {
         if(mSavedCanvas = ST())
+        {
+            mSavedCanvas->mSavedClipRect = mSavedCanvas->mPainter.clipBoundingRect();
             mSavedCanvas->mPainter.end();
+        }
         mPainter.begin(device);
         ST() = this;
     }
@@ -69,7 +72,10 @@
         if(auto CurGLWidget = g_data->getGLWidget())
             CurGLWidget->makeCurrent();
         if(ST() = mSavedCanvas)
+        {
             mSavedCanvas->mPainter.begin(mSavedCanvas->mPainter.device());
+            mSavedCanvas->mPainter.setClipRect(mSavedCanvas->mSavedClipRect);
+        }
     }
 
     #if BLIK_ANDROID

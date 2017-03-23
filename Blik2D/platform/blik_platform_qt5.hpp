@@ -91,6 +91,7 @@
         const bool mIsTypeSurface;
         bool mIsSurfaceBinded;
         CanvasClass* mSavedCanvas;
+        QRectF mSavedClipRect;
         QPainter mPainter;
         QColor mColor;
     };
