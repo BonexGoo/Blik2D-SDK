@@ -262,8 +262,9 @@ namespace BLIK
     public:
         void erase() const;
         void fill() const;
-        void circle() const;
+        void rect(float thick) const;
         void line(const Point& begin, const Point& end, float thick) const;
+        void circle() const;
         void bezier(const Vector& begin, const Vector& end, float thick) const;
         void polygon(Points p) const;
         void polyline(Points p, float thick) const;

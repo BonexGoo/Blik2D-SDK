@@ -531,13 +531,14 @@ namespace BLIK
             static void FillPolygon(float x, float y, Points p);
 
             /*!
-            \brief 타원 출력
+            \brief 사각라인 출력(FillRect출력영역 바깥으로 두께만큼)
             \param x : 좌측위치(px)
             \param y : 상단위치(px)
             \param w : 가로길이(px)
             \param h : 세로길이(px)
+            \param thick : 두께(px)
             */
-            static void DrawCircle(float x, float y, float w, float h);
+            static void DrawRect(float x, float y, float w, float h, float thick);
 
             /*!
             \brief 라인 출력
@@ -546,6 +547,15 @@ namespace BLIK
             \param thick : 두께(px)
             */
             static void DrawLine(const Point& begin, const Point& end, float thick);
+
+            /*!
+            \brief 타원 출력
+            \param x : 좌측위치(px)
+            \param y : 상단위치(px)
+            \param w : 가로길이(px)
+            \param h : 세로길이(px)
+            */
+            static void DrawCircle(float x, float y, float w, float h);
 
             /*!
             \brief 베지어 출력

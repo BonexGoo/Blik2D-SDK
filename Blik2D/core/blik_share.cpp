@@ -59,10 +59,8 @@ namespace BLIK
         {
             --_DebugShareCount();
             if(--share->sharecount == 0)
-            {
                 delete share;
-                share = nullptr;
-            }
+            share = nullptr;
         }
     }
 

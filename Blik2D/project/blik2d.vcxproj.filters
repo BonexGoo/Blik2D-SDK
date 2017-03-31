@@ -147,21 +147,6 @@
     <ClCompile Include="..\platform\android\OpenGLES_Functions.cpp">
       <Filter>Blik2D\platform\android</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_asyncfilemanager.cpp">
-      <Filter>Blik2D\service</Filter>
-    </ClCompile>
-    <ClCompile Include="..\service\blik_batchbuilder.cpp">
-      <Filter>Blik2D\service</Filter>
-    </ClCompile>
-    <ClCompile Include="..\service\blik_imagebuilder.cpp">
-      <Filter>Blik2D\service</Filter>
-    </ClCompile>
-    <ClCompile Include="..\service\blik_kiwiservice.cpp">
-      <Filter>Blik2D\service</Filter>
-    </ClCompile>
-    <ClCompile Include="..\service\blik_viewmanager.cpp">
-      <Filter>Blik2D\service</Filter>
-    </ClCompile>
     <ClCompile Include="..\platform\blik_platform_blank.cpp">
       <Filter>Blik2D\platform</Filter>
     </ClCompile>
@@ -233,6 +218,24 @@
     </ClCompile>
     <ClCompile Include="..\core\blik_wstring.cpp">
       <Filter>Blik2D\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_asyncfilemanager.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_batchbuilder.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_imagebuilder.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_kiwiservice.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_oauth2service.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\service\blik_viewmanager.cpp">
+      <Filter>Blik2D\service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -341,21 +344,6 @@
     <ClInclude Include="..\platform\win32\glew.h">
       <Filter>Blik2D\platform\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_asyncfilemanager.hpp">
-      <Filter>Blik2D\service</Filter>
-    </ClInclude>
-    <ClInclude Include="..\service\blik_batchbuilder.hpp">
-      <Filter>Blik2D\service</Filter>
-    </ClInclude>
-    <ClInclude Include="..\service\blik_imagebuilder.hpp">
-      <Filter>Blik2D\service</Filter>
-    </ClInclude>
-    <ClInclude Include="..\service\blik_kiwiservice.hpp">
-      <Filter>Blik2D\service</Filter>
-    </ClInclude>
-    <ClInclude Include="..\service\blik_viewmanager.hpp">
-      <Filter>Blik2D\service</Filter>
-    </ClInclude>
     <ClInclude Include="..\platform\blik_platform.hpp">
       <Filter>Blik2D\platform</Filter>
     </ClInclude>
@@ -439,6 +427,24 @@
     </ClInclude>
     <ClInclude Include="..\core\blik_wstring.hpp">
       <Filter>Blik2D\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_asyncfilemanager.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_batchbuilder.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_imagebuilder.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_kiwiservice.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_oauth2service.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_viewmanager.hpp">
+      <Filter>Blik2D\service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

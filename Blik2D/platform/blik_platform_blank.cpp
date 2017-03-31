@@ -578,7 +578,7 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-        void Platform::Graphics::DrawCircle(float x, float y, float w, float h)
+        void Platform::Graphics::DrawRect(float x, float y, float w, float h, float thick)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
 
@@ -586,6 +586,13 @@
         }
 
         void Platform::Graphics::DrawLine(const Point& begin, const Point& end, float thick)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Graphics::DrawCircle(float x, float y, float w, float h)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", ViewAPI::CurPainter());
 

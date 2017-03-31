@@ -79,6 +79,7 @@
     <ClCompile Include="..\service\blik_batchbuilder.cpp" />
     <ClCompile Include="..\service\blik_imagebuilder.cpp" />
     <ClCompile Include="..\service\blik_kiwiservice.cpp" />
+    <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_viewmanager.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -152,6 +153,12 @@
     <ClInclude Include="..\platform\blik_platform_cocos2dx.hpp" />
     <ClInclude Include="..\platform\blik_platform_impl.hpp" />
     <ClInclude Include="..\platform\blik_platform_native.hpp" />
+    <ClInclude Include="..\service\blik_asyncfilemanager.hpp" />
+    <ClInclude Include="..\service\blik_batchbuilder.hpp" />
+    <ClInclude Include="..\service\blik_imagebuilder.hpp" />
+    <ClInclude Include="..\service\blik_kiwiservice.hpp" />
+    <ClInclude Include="..\service\blik_oauth2service.hpp" />
+    <ClInclude Include="..\service\blik_viewmanager.hpp" />
     <CustomBuild Include="..\platform\blik_platform_qt5.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing blik_platform_qt5.hpp...</Message>
@@ -171,11 +178,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -DNDEBUG -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_SERIALPORT_LIB -DQT_WEBENGINEWIDGETS_LIB -DBLIK_NDEBUG=1 -DQT_NO_DEBUG "-D$(NOINHERIT)\." "-I$(SolutionDir)..\source" "-I.\..\..\Blik2D\core" "-I.\..\..\Blik2D" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(NOINHERIT)\."</Command>
     </CustomBuild>
     <ClInclude Include="..\platform\win32\glew.h" />
-    <ClInclude Include="..\service\blik_asyncfilemanager.hpp" />
-    <ClInclude Include="..\service\blik_batchbuilder.hpp" />
-    <ClInclude Include="..\service\blik_imagebuilder.hpp" />
-    <ClInclude Include="..\service\blik_kiwiservice.hpp" />
-    <ClInclude Include="..\service\blik_viewmanager.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{64B9A321-85F9-49FE-8F41-C4DE8136050C}</ProjectGuid>

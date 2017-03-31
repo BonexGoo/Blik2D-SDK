@@ -22,14 +22,18 @@ extern "C"
 namespace BLIK
 {
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Create, id_curl, void)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, Clone, id_curl, id_curl)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Release, void, id_curl)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, Request, chars, id_curl, chars, String*, sint32)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, ServiceRequest, chars, id_curl, chars, chars)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, SendStream, void, id_curl, chars, chars, CurlReadCB, payload)
 
     static autorun Bind_AddOn_Curl()
     {
         Core_AddOn_Curl_Create() = Customized_AddOn_Curl_Create;
+        Core_AddOn_Curl_Clone() = Customized_AddOn_Curl_Clone;
         Core_AddOn_Curl_Release() = Customized_AddOn_Curl_Release;
+        Core_AddOn_Curl_Request() = Customized_AddOn_Curl_Request;
         Core_AddOn_Curl_ServiceRequest() = Customized_AddOn_Curl_ServiceRequest;
         Core_AddOn_Curl_SendStream() = Customized_AddOn_Curl_SendStream;
 
@@ -72,23 +76,113 @@ static size_t CurlWriteForAssert(char* ptr, size_t size, size_t nitems, void* ou
 // 구현부
 namespace BLIK
 {
+    struct CurlStruct
+    {
+        CURL* mId;
+        sint32 mRefCount;
+    };
+
     id_curl Customized_AddOn_Curl_Create(void)
     {
-        CURL* NewCurl = curl_easy_init();
-        return (id_curl) NewCurl;
+        CurlStruct* NewStruct = new CurlStruct();
+        NewStruct->mId = curl_easy_init();
+        NewStruct->mRefCount = 1;
+        return (id_curl) NewStruct;
+    }
+
+    id_curl Customized_AddOn_Curl_Clone(id_curl curl)
+    {
+        if(!curl) return nullptr;
+        CurlStruct* CurStruct = (CurlStruct*) curl;
+        CurStruct->mRefCount++;
+        return (id_curl) CurStruct;
     }
 
     void Customized_AddOn_Curl_Release(id_curl curl)
     {
-        CURL* OldCurl = (CURL*) curl;
-        if(!OldCurl) return;
-        curl_easy_cleanup(OldCurl);
+        if(!curl) return;
+        CurlStruct* OldStruct = (CurlStruct*) curl;
+        if(--OldStruct->mRefCount == 0)
+        {
+            curl_easy_cleanup(OldStruct->mId);
+            delete OldStruct;
+        }
+    }
+
+    chars Customized_AddOn_Curl_Request(id_curl curl, chars url, String* redirect_url, sint32 successcode)
+    {
+        if(!curl) return "";
+        CURL* CurCurl = ((CurlStruct*) curl)->mId;
+
+        static String Result;
+        Result = "";
+        curl_easy_setopt(CurCurl, CURLOPT_URL, url);
+        curl_easy_setopt(CurCurl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(CurCurl, CURLOPT_POST, 0);
+        curl_easy_setopt(CurCurl, CURLOPT_WRITEDATA, &Result);
+        curl_easy_setopt(CurCurl, CURLOPT_WRITEFUNCTION, CurlWriteToResult);
+
+        String Host;
+        for(chars iurl = url + 2, ibegin = nullptr; true; ++iurl)
+        {
+            if(*iurl == '\0')
+            {
+                if(ibegin)
+                    Host = String(ibegin, iurl - ibegin);
+                break;
+            }
+            else if(*iurl == '/')
+            {
+                if(ibegin)
+                {
+                    Host = String(ibegin, iurl - ibegin);
+                    break;
+                }
+                else if(iurl[-2] == ':' && iurl[-1] == '/')
+                    ibegin = iurl + 1;
+            }
+        }
+        String Referer;
+        for(chars iurl = url; true; ++iurl)
+        {
+            if(*iurl == '\0' || *iurl == '?')
+            {
+                Referer = String(url, iurl - url);
+                break;
+            }
+        }
+
+        curl_slist* cheader = nullptr;
+        cheader = curl_slist_append(cheader, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.0.3705)");
+        cheader = curl_slist_append(cheader, String::Format("Host: %s", (chars) Host));
+        cheader = curl_slist_append(cheader, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        cheader = curl_slist_append(cheader, "Accept-Language: en-US,en;q=0.5");
+        cheader = curl_slist_append(cheader, "Connection: keep-alive");
+        cheader = curl_slist_append(cheader, String::Format("Referer: %s", (chars) Referer));
+        cheader = curl_slist_append(cheader, "Content-Type: application/x-www-form-urlencoded");
+        curl_easy_setopt(CurCurl, CURLOPT_HTTPHEADER, cheader);
+
+        CURLcode res = curl_easy_perform(CurCurl);
+        curl_slist_free_all(cheader);
+
+        if(res == CURLE_OK)
+        {
+            long statLong = 0;
+            if(CURLE_OK == curl_easy_getinfo(CurCurl, CURLINFO_HTTP_CODE, &statLong))
+            if(redirect_url && statLong == successcode)
+            {
+                char* location = nullptr;
+                curl_easy_getinfo(CurCurl, CURLINFO_REDIRECT_URL, &location);
+                *redirect_url = location;
+            }
+        }
+        return Result;
     }
 
     chars Customized_AddOn_Curl_ServiceRequest(id_curl curl, chars service, chars arg)
     {
-        CURL* CurCurl = (CURL*) curl;
-        if(!CurCurl) return "";
+        if(!curl) return "";
+        CURL* CurCurl = ((CurlStruct*) curl)->mId;
 
         const String ClientId = "575714888985-k3vms25oep7ev6mo0k749aaildj5ltjf.apps.googleusercontent.com";
         const String ClientSecret = "uBPaOngNjODdI9xMC1QuIwiX";
@@ -372,8 +466,8 @@ namespace BLIK
 
     void Customized_AddOn_Curl_SendStream(id_curl curl, chars service, chars key, CurlReadCB cb, payload data)
     {
-        CURL* CurCurl = (CURL*) curl;
-        if(!CurCurl) return;
+        if(!curl) return;
+        CURL* CurCurl = ((CurlStruct*) curl)->mId;
 
         // 구글
         if(!String::Compare(service, "YouTube"))

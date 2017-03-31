@@ -32,6 +32,22 @@ namespace BLIK
         memcpy(dst, src, size);
     }
 
+    void Memory::CopyVPTR(void* dst, const void* src)
+    {
+        switch(sizeof(void*))
+        {
+        case 4:
+            *((uint32*) dst) = *((const uint32*) src);
+            break;
+        case 8:
+            *((uint64*) dst) = *((const uint64*) src);
+            break;
+        default:
+            BLIK_ASSERT("VPTR의 복사에 실패하였습니다", false);
+            break;
+        }
+    }
+
     sint32 Memory::Compare(const void* dst, const void* src, const sint32 size)
     {
         return memcmp(dst, src, size);

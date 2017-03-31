@@ -825,12 +825,11 @@
             delete[] NewPoint;
         }
 
-        void Platform::Graphics::DrawCircle(float x, float y, float w, float h)
+        void Platform::Graphics::DrawRect(float x, float y, float w, float h, float thick)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", CanvasClass::get());
-            CanvasClass::get()->painter().setPen(Qt::NoPen);
-            CanvasClass::get()->painter().setBrush(QBrush(CanvasClass::get()->color()));
-            CanvasClass::get()->painter().drawEllipse(QRectF(x, y, w, h));
+            CanvasClass::get()->painter().setPen(QPen(QBrush(CanvasClass::get()->color()), thick));
+            CanvasClass::get()->painter().drawRect(QRectF(x - thick / 2, y - thick / 2, w + thick, h + thick));
         }
 
         void Platform::Graphics::DrawLine(const Point& begin, const Point& end, float thick)
@@ -839,6 +838,14 @@
             CanvasClass::get()->painter().setPen(QPen(QBrush(CanvasClass::get()->color()), thick));
             CanvasClass::get()->painter().setBrush(Qt::NoBrush);
             CanvasClass::get()->painter().drawLine(QPointF(begin.x, begin.y), QPointF(end.x, end.y));
+        }
+
+        void Platform::Graphics::DrawCircle(float x, float y, float w, float h)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", CanvasClass::get());
+            CanvasClass::get()->painter().setPen(Qt::NoPen);
+            CanvasClass::get()->painter().setBrush(QBrush(CanvasClass::get()->color()));
+            CanvasClass::get()->painter().drawEllipse(QRectF(x, y, w, h));
         }
 
         void Platform::Graphics::DrawBezier(const Vector& begin, const Vector& end, float thick)

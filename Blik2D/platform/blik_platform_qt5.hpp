@@ -1661,8 +1661,11 @@
         }
         void Resize(sint32 width, sint32 height)
         {
-            mView.resize(width, height);
-            mLastImage = QImage(width, height, QImage::Format_ARGB32);
+            if(width != mLastImage.width() || height != mLastImage.height())
+            {
+                mView.resize(width, height);
+                mLastImage = QImage(width, height, QImage::Format_ARGB32);
+            }
         }
         const QPixmap GetPixmap()
         {

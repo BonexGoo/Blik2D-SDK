@@ -38,6 +38,13 @@ namespace BLIK
         static void Copy(void* dst, const void* src, const sint32 size);
 
         /*!
+        \brief 가상함수테이블포인터 복사
+        \param dst : 복사받을 객체의 시작주소
+        \param src : 복사할 객체의 시작주소
+        */
+        static void CopyVPTR(void* dst, const void* src);
+
+        /*!
         \brief 비교
         \param dst : 비교당할 시작주소
         \param src : 비교할 시작주소

@@ -41,7 +41,9 @@ namespace BLIK
         {
         public:
             static id_curl Create(void);
+            static id_curl Clone(id_curl curl);
             static void Release(id_curl curl);
+            static chars Request(id_curl curl, chars url, String* redirect_url = nullptr, sint32 successcode = 0);
             static chars ServiceRequest(id_curl curl, chars service, chars arg);
             static void SendStream(id_curl curl, chars service, chars key, CurlReadCB cb, payload data);
         };

@@ -57,15 +57,23 @@ namespace BLIK
     ////////////////////////////////////////////////////////////////////////////////
     static void Curl_Error() {BLIK_ASSERT("Curl애드온이 준비되지 않았습니다", false);}
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Create, id_curl, return nullptr, void)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, Clone, id_curl, return nullptr, id_curl)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Release, void, return, id_curl)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, Request, chars, return "", id_curl, chars, String*, sint32)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, ServiceRequest, chars, return "", id_curl, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, SendStream, void, return, id_curl, chars, chars, CurlReadCB, payload)
 
     id_curl AddOn::Curl::Create(void)
     {return Core_AddOn_Curl_Create()();}
 
+    id_curl AddOn::Curl::Clone(id_curl curl)
+    {return Core_AddOn_Curl_Clone()(curl);}
+
     void AddOn::Curl::Release(id_curl curl)
     {Core_AddOn_Curl_Release()(curl);}
+
+    chars AddOn::Curl::Request(id_curl curl, chars url, String* redirect_url, sint32 successcode)
+    {return Core_AddOn_Curl_Request()(curl, url, redirect_url, successcode);}
 
     chars AddOn::Curl::ServiceRequest(id_curl curl, chars service, chars arg)
     {return Core_AddOn_Curl_ServiceRequest()(curl, service, arg);}

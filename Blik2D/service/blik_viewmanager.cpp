@@ -293,10 +293,10 @@ namespace BLIK
         Platform::Graphics::FillRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
-    void ViewPanel::circle() const
+    void ViewPanel::rect(float thick) const
     {
         const Clip& LastClip = m_stack_clip[-1];
-        Platform::Graphics::DrawCircle(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
+        Platform::Graphics::DrawRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height(), thick);
     }
 
     void ViewPanel::line(const Point& begin, const Point& end, float thick) const
@@ -304,6 +304,12 @@ namespace BLIK
         const Clip& LastClip = m_stack_clip[-1];
         const Point PointAdd = Point(LastClip.l, LastClip.t);
         Platform::Graphics::DrawLine(begin + PointAdd, end + PointAdd, thick);
+    }
+
+    void ViewPanel::circle() const
+    {
+        const Clip& LastClip = m_stack_clip[-1];
+        Platform::Graphics::DrawCircle(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
     void ViewPanel::bezier(const Vector& begin, const Vector& end, float thick) const
