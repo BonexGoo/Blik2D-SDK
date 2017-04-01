@@ -15,6 +15,20 @@ namespace BLIK
         return fmaxf(a, b);
     }
 
+    sint32 Math::Cycle(const sint32 v, const sint32 low, const sint32 len)
+    {
+        BLIK_ASSERT("len은 0보다 커야 합니다", 0 < len);
+        const sint32 C = (v - low) % len;
+        return C + low + len * (C < 0);
+    }
+
+    float Math::CycleF(const float v, const float low, const float len)
+    {
+        BLIK_ASSERT("len은 0보다 커야 합니다", 0 < len);
+        const float C = fmod(v - low, len);
+        return C + low + len * (C < 0);
+    }
+
     float Math::Ceil(const float v)
     {
         return ceilf(v);

@@ -63,24 +63,42 @@ namespace BLIK
         static float MaxF(const float a, const float b);
 
         /*!
-        \brief 한계값 구하기
-        \param min : 하한값
-        \param value : 입력값
-        \param max : 상한값
-        \return 한계값
+        \brief 보정값 구하기
+        \param v : 인수
+        \param low : 하한값
+        \param high : 상한값
+        \return 보정값
         */
-        inline static sint32 Bound(const sint32 min, const sint32 value, const sint32 max)
-        {return Max(min, Min(value, max));}
+        inline static sint32 Clamp(const sint32 v, const sint32 low, const sint32 high)
+        {return Max(low, Min(v, high));}
 
         /*!
-        \brief 한계값 구하기(float)
-        \param min : 하한값
-        \param value : 입력값
-        \param max : 상한값
-        \return 한계값
+        \brief 보정값 구하기(float)
+        \param v : 인수
+        \param low : 하한값
+        \param high : 상한값
+        \return 보정값
         */
-        inline static float BoundF(const float min, const float value, const float max)
-        {return MaxF(min, MinF(value, max));}
+        inline static float ClampF(const float v, const float low, const float high)
+        {return MaxF(low, MinF(v, high));}
+
+        /*!
+        \brief 순환값 구하기
+        \param v : 인수
+        \param low : 순환시작
+        \param len : 순환구간
+        \return 순환값
+        */
+        static sint32 Cycle(const sint32 v, const sint32 low, const sint32 len);
+
+        /*!
+        \brief 순환값 구하기(float)
+        \param v : 인수
+        \param low : 순환시작
+        \param len : 순환구간
+        \return 순환값
+        */
+        static float CycleF(const float v, const float low, const float len);
 
         /*!
         \brief 올림값 구하기
