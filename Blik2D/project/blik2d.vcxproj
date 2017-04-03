@@ -55,6 +55,7 @@
     <ClCompile Include="..\core\blik_string.cpp" />
     <ClCompile Include="..\core\blik_tasking.cpp" />
     <ClCompile Include="..\core\blik_updater.cpp" />
+    <ClCompile Include="..\core\blik_view.cpp" />
     <ClCompile Include="..\core\blik_wstring.cpp" />
     <ClCompile Include="..\element\blik_clip.cpp" />
     <ClCompile Include="..\element\blik_color.cpp" />
@@ -77,8 +78,8 @@
     <ClCompile Include="..\platform\blik_platform_qt5.cpp" />
     <ClCompile Include="..\service\blik_asyncfilemanager.cpp" />
     <ClCompile Include="..\service\blik_batchbuilder.cpp" />
+    <ClCompile Include="..\service\blik_briiservice.cpp" />
     <ClCompile Include="..\service\blik_imagebuilder.cpp" />
-    <ClCompile Include="..\service\blik_kiwiservice.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_viewmanager.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
@@ -133,6 +134,7 @@
     <ClInclude Include="..\core\blik_string.hpp" />
     <ClInclude Include="..\core\blik_tasking.hpp" />
     <ClInclude Include="..\core\blik_updater.hpp" />
+    <ClInclude Include="..\core\blik_view.hpp" />
     <ClInclude Include="..\core\blik_wstring.hpp" />
     <ClInclude Include="..\element\blik_clip.hpp" />
     <ClInclude Include="..\element\blik_color.hpp" />
@@ -155,8 +157,8 @@
     <ClInclude Include="..\platform\blik_platform_native.hpp" />
     <ClInclude Include="..\service\blik_asyncfilemanager.hpp" />
     <ClInclude Include="..\service\blik_batchbuilder.hpp" />
+    <ClInclude Include="..\service\blik_briiservice.hpp" />
     <ClInclude Include="..\service\blik_imagebuilder.hpp" />
-    <ClInclude Include="..\service\blik_kiwiservice.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
     <ClInclude Include="..\service\blik_viewmanager.hpp" />
     <CustomBuild Include="..\platform\blik_platform_qt5.hpp">

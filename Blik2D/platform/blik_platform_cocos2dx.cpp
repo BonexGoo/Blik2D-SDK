@@ -188,10 +188,23 @@
             g_data->initForMDI();
         }
 
+        void Platform::SetViewCreator(View::CreatorCB creator)
+        {
+            PlatformImpl::Core::g_Creator = creator;
+        }
+
         void Platform::SetWindowName(chars name)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             g_window->WindowName = name;
+        }
+
+        h_view Platform::SetWindowView(chars viewclass)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+
+            BLIK_ASSERT("Further development is needed.", false);
+            return h_view::null();
         }
 
         void Platform::SetWindowPos(sint32 x, sint32 y)
@@ -239,14 +252,6 @@
             return nullptr;
         }
 
-        h_view Platform::SetWindowView(chars viewclass)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-
-            BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
-        }
-
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
@@ -259,7 +264,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_icon::null();
         }
 
         h_action Platform::CreateAction(chars name, chars tip, h_view view, h_icon icon)
@@ -267,7 +272,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_action::null();
         }
 
         h_policy Platform::CreatePolicy(sint32 minwidth, sint32 minheight, sint32 maxwidth, sint32 maxheight)
@@ -275,24 +280,23 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_policy::null();
         }
 
         h_view Platform::CreateView(chars name, sint32 width, sint32 height, h_policy policy, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            auto NewViewManager = new ViewManager(viewclass);
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
             buffer NewGenericView = Buffer::AllocNoConstructorOnce<GenericView>(BLIK_DBG 1);
             BLIK_CONSTRUCTOR(NewGenericView, 0, GenericView, NewViewManager, name, width, height);
 
-            h_view Result = (h_view) g_data->regist(
-                class_h_view::create_by_buf(BLIK_DBG (buffer) ((GenericView*) NewGenericView)->m_api));
+            h_view Result = (h_view) g_data->regist(class_h_view::create_by_buf(BLIK_DBG (buffer) ((GenericView*) NewGenericView)->m_api));
             NewViewManager->_setview(Result);
             NewViewManager->_create();
             return Result;
         }
 
-        ViewClass* Platform::SetNextViewClass(h_view view, chars viewclass)
+        void* Platform::SetNextViewClass(h_view view, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
@@ -300,7 +304,7 @@
             return nullptr;
         }
 
-        bool Platform::SetNextViewManager(h_view view, ViewManager* viewmanager)
+        bool Platform::SetNextViewManager(h_view view, View* viewmanager)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
@@ -313,7 +317,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_dock::null();
         }
 
         void Platform::AddAction(chars group, h_action action, UIRole role)
@@ -342,7 +346,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_window::null();
         }
 
         h_window Platform::OpenPopupWindow(h_view view, h_icon icon)
@@ -350,7 +354,7 @@
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
-            return nullptr;
+            return h_window::null();
         }
 
         void Platform::CloseWindow(h_window window)
@@ -366,23 +370,23 @@
             if(needout)
             {
                 id_cloned_share Result;
-                ((ViewAPI*) view->get())->sendNotify(topic, in, &Result);
+                ((ViewAPI*) view.get())->sendNotify(topic, in, &Result);
                 return Result;
             }
-            ((ViewAPI*) view->get())->sendNotify(topic, in, nullptr);
+            ((ViewAPI*) view.get())->sendNotify(topic, in, nullptr);
             return nullptr;
         }
 
         void Platform::BroadcastNotify(chars topic, id_share in, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            if(auto Views = ViewManager::_searchview(viewclass, ViewManager::SC_Search))
+            if(auto Views = View::Search(viewclass, SC_Search))
             {
                 struct Payload {chars topic; id_share in;} Param = {topic, in};
-                Views->AccessByCallback([](const MapPath*, const h_view* view, const void* param)->void
+                Views->AccessByCallback([](const MapPath*, const h_view* view, payload param)->void
                 {
                     const Payload* Param = (const Payload*) param;
-                    ((ViewAPI*) (*view)->get())->sendNotify(Param->topic, Param->in, nullptr);
+                    ((ViewAPI*) view->get())->sendNotify(Param->topic, Param->in, nullptr);
                 }, &Param);
             }
         }

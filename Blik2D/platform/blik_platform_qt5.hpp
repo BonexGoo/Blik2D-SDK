@@ -6,7 +6,6 @@
 
 #ifdef BLIK_PLATFORM_QT5
 
-    #include <service/blik_viewmanager.hpp>
     #include <element/blik_image.hpp>
     #include <format/blik_bmp.hpp>
 
@@ -104,7 +103,7 @@
         enum ParentType {PT_Null, PT_GenericView, PT_MainViewGL, PT_MainViewMDI};
 
     public:
-        ViewAPI(ParentType type, buffer buf, ViewManager* manager, ViewClass::UpdaterCB cb, QWidget* data, QWidget* device)
+        ViewAPI(ParentType type, buffer buf, View* manager, View::UpdaterCB cb, QWidget* data, QWidget* device)
         {
             m_parent_type = type;
             m_parent_buf = buf;
@@ -115,7 +114,7 @@
             m_view_data = data;
             m_paint_device = device;
             if(manager)
-                manager->_setcallback((void*) m_view_cb, m_view_data);
+                manager->SetCallback(m_view_cb, m_view_data);
 
             m_input_enabled = true;
             m_width = 0;
@@ -184,27 +183,27 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_setview(view);
+            m_view_manager->SetView(view);
 
             sendCreate();
         }
 
-        h_view changeViewManagerAndDestroy(ViewManager* manager)
+        h_view changeViewManagerAndDestroy(View* manager)
         {
             sendDestroy();
             h_view OldViewHandle;
             if(m_view_manager)
             {
-                OldViewHandle = m_view_manager->_setview(h_view::null());
+                OldViewHandle = m_view_manager->SetView(h_view::null());
                 delete m_view_manager;
             }
 
             m_view_manager = manager;
-            m_view_manager->_setcallback((void*) m_view_cb, m_view_data);
+            m_view_manager->SetCallback(m_view_cb, m_view_data);
             return OldViewHandle;
         }
 
-        inline void setNextViewManager(ViewManager* manager)
+        inline void setNextViewManager(View* manager)
         {
             delete m_next_manager;
             m_next_manager = manager;
@@ -214,12 +213,12 @@
         {
             m_view_data = data;
             if(m_view_manager)
-                m_view_manager->_setcallback((void*) m_view_cb, m_view_data);
+                m_view_manager->SetCallback(m_view_cb, m_view_data);
         }
 
         inline ViewClass* getClass() const
         {
-            return m_view_manager->_getclass();
+            return (ViewClass*) m_view_manager->GetClass();
         }
 
         inline QWidget* getWidget() const
@@ -228,8 +227,8 @@
             {
                 if(m_view_data)
                     return m_view_data;
-                if(m_view_manager->_isnative())
-                    return (QWidget*) m_view_manager->_getclass();
+                if(m_view_manager->IsNative())
+                    return (QWidget*) m_view_manager->GetClass();
             }
             return (QWidget*) getParent();
         }
@@ -245,7 +244,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_render(width, height, Rect(0, 0, width, height));
+            m_view_manager->OnRender(width, height, 0, 0, width, height);
 
             if(m_next_manager)
             {
@@ -259,7 +258,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_touch(type, id, x, y);
+            m_view_manager->OnTouch(type, id, x, y);
         }
 
         inline void sendCreate()
@@ -267,7 +266,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_create();
+                m_view_manager->OnCreate();
             }
             m_tick_timer.start(17);
         }
@@ -277,7 +276,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                return m_view_manager->_canquit();
+                return m_view_manager->OnCanQuit();
             }
             return true;
         }
@@ -288,7 +287,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_destroy();
+                m_view_manager->OnDestroy();
             }
         }
 
@@ -297,7 +296,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_tick();
+                m_view_manager->OnTick();
             }
         }
 
@@ -305,7 +304,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_sendnotify("(platform)", topic, in, out);
+            m_view_manager->SendNotify("(platform)", topic, in, out);
         }
 
         inline bool isInputEnabled() const
@@ -323,7 +322,7 @@
         {
             m_width = width;
             m_height = height;
-            m_view_manager->_size(width, height);
+            m_view_manager->OnSize(width, height);
         }
 
         void paint()
@@ -486,9 +485,9 @@
         ParentType m_parent_type;
         buffer m_parent_buf;
         void* m_parent_ptr;
-        ViewManager* m_view_manager;
-        ViewManager* m_next_manager;
-        ViewClass::UpdaterCB m_view_cb;
+        View* m_view_manager;
+        View* m_next_manager;
+        View::UpdaterCB m_view_cb;
         QWidget* m_view_data;
         QWidget* m_paint_device;
 
@@ -520,7 +519,7 @@
             setAutoFillBackground(false);
         }
 
-        GenericView(ViewManager* manager, QString name, sint32 width, sint32 height, SizePolicy* policy)
+        GenericView(View* manager, QString name, sint32 width, sint32 height, SizePolicy* policy)
         {
             BLIK_DECLARE_BUFFERED_CLASS(BufferedViewAPI, ViewAPI, PT_Null, nullptr, nullptr, nullptr, nullptr, nullptr);
             buffer NewAPI = Buffer::AllocNoConstructorOnce<BufferedViewAPI>(BLIK_DBG 1);
@@ -3252,10 +3251,13 @@
     #include <QHostInfo>
     #include <QTcpSocket>
     #include <QUdpSocket>
+    #include <QTcpServer>
     #include <QGLWidget>
     #include <QGLFunctions>
     #include <QGLShaderProgram>
     #include <QAbstractVideoSurface>
+    #include <QAudioProbe>
+    #include <QWebEngineView>
     class ViewAPI : public QObject {Q_OBJECT};
     class GenericView : public QFrame {Q_OBJECT};
     class MainViewGL : public QGLWidget {Q_OBJECT};
@@ -3264,5 +3266,10 @@
     class EditTracker : public QLineEdit {Q_OBJECT};
     class ListTracker : public QListWidget {Q_OBJECT private slots: void onItemPressed(QListWidgetItem* item) {}};
     class VideoSurface : public QAbstractVideoSurface {Q_OBJECT};
+    class ThreadClass : public QThread {Q_OBJECT};
+    class TCPAgent : public QTcpServer {Q_OBJECT};
+    class CameraSurface : public QAbstractVideoSurface {Q_OBJECT};
+    class MicrophoneClass : public QAudioProbe {Q_OBJECT};
+    class WebViewPrivate : public QWebEngineView {Q_OBJECT};
 
 #endif

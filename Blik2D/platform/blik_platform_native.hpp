@@ -4,10 +4,11 @@
 
 #ifdef BLIK_PLATFORM_NATIVE
 
-    #include <service/blik_viewmanager.hpp>
+    #include <element/blik_rect.hpp>
+    #include <element/blik_color.hpp>
     # if BLIK_WINDOWS
     #  include <platform/win32/glew.h>
-    #  pragma comment(lib, "platform/win32/lib/Release/Win32/glew32.lib")
+    #  pragma comment(lib, "../../Blik2D/platform/win32/lib/Release/Win32/glew32.lib")
     #  pragma comment(lib, "opengl32.lib")
     #  pragma comment(lib, "glu32.lib")
     #  pragma comment(lib, "user32.lib")
@@ -84,7 +85,7 @@
     class ViewAPI
     {
     public:
-        ViewAPI(ViewManager* manager = nullptr);
+        ViewAPI(View* manager = nullptr);
         ViewAPI(const ViewAPI& rhs);
         ViewAPI& operator=(const ViewAPI& rhs);
         ~ViewAPI();
@@ -94,15 +95,15 @@
         static BLIK::Color& CurColor();
 
     public:
-        h_view changeViewManager(ViewManager* manager);
-        void setNextViewManager(ViewManager* manager);
+        h_view changeViewManager(View* manager);
+        void setNextViewManager(View* manager);
         void render(sint32 width, sint32 height);
         void touch(TouchType type, sint32 id, sint32 x, sint32 y);
         void sendCreate();
 
     private:
-        ViewManager* m_view_manager;
-        ViewManager* m_next_manager;
+        View* m_view_manager;
+        View* m_next_manager;
     };
 
 #endif

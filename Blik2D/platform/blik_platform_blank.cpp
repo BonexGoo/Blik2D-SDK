@@ -136,11 +136,24 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
+        void Platform::SetViewCreator(View::CreatorCB creator)
+        {
+            PlatformImpl::Core::g_Creator = creator;
+        }
+
         void Platform::SetWindowName(chars name)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        h_view Platform::SetWindowView(chars viewclass)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return h_view::null();
         }
 
         void Platform::SetWindowPos(sint32 x, sint32 y)
@@ -188,14 +201,6 @@
             return nullptr;
         }
 
-        h_view Platform::SetWindowView(chars viewclass)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-
-            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-            return h_view::null();
-        }
-
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
@@ -235,7 +240,7 @@
             return h_view::null();
         }
 
-        ViewClass* Platform::SetNextViewClass(h_view view, chars viewclass)
+        void* Platform::SetNextViewClass(h_view view, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
@@ -243,7 +248,7 @@
             return nullptr;
         }
 
-        bool Platform::SetNextViewManager(h_view view, ViewManager* viewmanager)
+        bool Platform::SetNextViewManager(h_view view, View* viewmanager)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 

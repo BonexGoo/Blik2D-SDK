@@ -171,11 +171,35 @@
             BLIK_ASSERT("Further development is needed.", false);
         }
 
+        void Platform::SetViewCreator(View::CreatorCB creator)
+        {
+            PlatformImpl::Core::g_Creator = creator;
+        }
+
         void Platform::SetWindowName(chars name)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        h_view Platform::SetWindowView(chars viewclass)
+        {
+            if(g_view)
+            {
+                Buffer::Free((buffer) g_view);
+                g_view = nullptr;
+            }
+
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
+            buffer NewViewAPI = Buffer::AllocNoConstructorOnce<ViewAPI>(BLIK_DBG 1);
+            BLIK_CONSTRUCTOR(NewViewAPI, 0, ViewAPI, NewViewManager);
+
+            g_view = (ViewAPI*) NewViewAPI;
+            h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_view);
+            NewViewManager->SetView(NewViewHandle);
+            g_view->sendCreate();
+            return NewViewHandle;
         }
 
         void Platform::SetWindowPos(sint32 x, sint32 y)
@@ -223,25 +247,6 @@
             return nullptr;
         }
 
-        h_view Platform::SetWindowView(chars viewclass)
-        {
-            if(g_view)
-            {
-                Buffer::Free((buffer) g_view);
-                g_view = nullptr;
-            }
-
-            auto NewViewManager = new ViewManager(viewclass);
-            buffer NewViewAPI = Buffer::AllocNoConstructorOnce<ViewAPI>(BLIK_DBG 1);
-            BLIK_CONSTRUCTOR(NewViewAPI, 0, ViewAPI, NewViewManager);
-
-            g_view = (ViewAPI*) NewViewAPI;
-            h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_view);
-            NewViewManager->_setview(NewViewHandle);
-            g_view->sendCreate();
-            return NewViewHandle;
-        }
-
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
@@ -281,14 +286,14 @@
             return h_view::null();
         }
 
-        ViewClass* Platform::SetNextViewClass(h_view view, chars viewclass)
+        void* Platform::SetNextViewClass(h_view view, chars viewclass)
         {
-            auto NewViewManager = new ViewManager(viewclass);
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
             ((ViewAPI*) view.get())->setNextViewManager(NewViewManager);
-            return NewViewManager->_getclass();
+            return NewViewManager->GetClass();
         }
 
-        bool Platform::SetNextViewManager(h_view view, ViewManager* viewmanager)
+        bool Platform::SetNextViewManager(h_view view, View* viewmanager)
         {
             ((ViewAPI*) view.get())->setNextViewManager(viewmanager);
             return true;
@@ -1866,7 +1871,7 @@
         m_m[3][3] = m[3][0] * m03 + m[3][1] * m13 + m[3][2] * m23 + m[3][3] * m33;
     }
 
-    ViewAPI::ViewAPI(ViewManager* manager)
+    ViewAPI::ViewAPI(View* manager)
     {
         m_view_manager = manager;
         m_next_manager = nullptr;
@@ -1890,12 +1895,12 @@
     BLIK::Color& ViewAPI::CurColor()
     {static BLIK::Color _; return _;}
 
-    h_view ViewAPI::changeViewManager(ViewManager* manager)
+    h_view ViewAPI::changeViewManager(View* manager)
     {
         h_view OldViewHandle;
         if(m_view_manager)
         {
-            OldViewHandle = m_view_manager->_setview(h_view::null());
+            OldViewHandle = m_view_manager->SetView(h_view::null());
             delete m_view_manager;
         }
 
@@ -1903,7 +1908,7 @@
         return OldViewHandle;
     }
 
-    void ViewAPI::setNextViewManager(ViewManager* manager)
+    void ViewAPI::setNextViewManager(View* manager)
     {
         delete m_next_manager;
         m_next_manager = manager;
@@ -1917,22 +1922,22 @@
 
         Painter.reset(width, height);
         CurPainter() = &Painter;
-        m_view_manager->_render(width, height, BLIK::Rect(0, 0, width, height));
+        m_view_manager->OnRender(width, height, 0, 0, width, height);
         CurPainter() = nullptr;
 
         if(m_next_manager)
         {
             h_view OldViewHandle = changeViewManager(m_next_manager);
-            m_next_manager->_setview(OldViewHandle);
+            m_next_manager->SetView(OldViewHandle);
             m_next_manager = nullptr;
             sendCreate();
         }
     }
 
     void ViewAPI::touch(TouchType type, sint32 id, sint32 x, sint32 y)
-    {m_view_manager->_touch(type, id, x, y);}
+    {m_view_manager->OnTouch(type, id, x, y);}
 
     void ViewAPI::sendCreate()
-    {m_view_manager->_create();}
+    {m_view_manager->OnCreate();}
 
 #endif

@@ -227,10 +227,26 @@
             g_data->initForMDI();
         }
 
+        void Platform::SetViewCreator(View::CreatorCB creator)
+        {
+            PlatformImpl::Core::g_Creator = creator;
+        }
+
         void Platform::SetWindowName(chars name)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             g_window->setWindowTitle(QString::fromUtf8(name));
+        }
+
+        h_view Platform::SetWindowView(chars viewclass)
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
+            g_data->getMainAPI()->changeViewManagerAndDestroy(NewViewManager);
+
+            h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_data->getMainAPI());
+            g_data->getMainAPI()->setViewAndCreate(NewViewHandle);
+            return NewViewHandle;
         }
 
         void Platform::SetWindowPos(sint32 x, sint32 y)
@@ -311,17 +327,6 @@
             return ScreenshotImage.GetBitmap();
         }
 
-        h_view Platform::SetWindowView(chars viewclass)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            auto NewViewManager = new ViewManager(viewclass);
-            g_data->getMainAPI()->changeViewManagerAndDestroy(NewViewManager);
-
-            h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_data->getMainAPI());
-            g_data->getMainAPI()->setViewAndCreate(NewViewHandle);
-            return NewViewHandle;
-        }
-
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
@@ -368,25 +373,25 @@
         h_view Platform::CreateView(chars name, sint32 width, sint32 height, h_policy policy, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            auto NewViewManager = new ViewManager(viewclass);
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
             buffer NewGenericView = Buffer::AllocNoConstructorOnce<GenericView>(BLIK_DBG 1);
             BLIK_CONSTRUCTOR(NewGenericView, 0, GenericView, NewViewManager,
                 QString::fromUtf8(name), width, height, (SizePolicy*) policy.get());
 
             h_view NewViewHandle = h_view::create_by_buf(BLIK_DBG (buffer) ((GenericView*) NewGenericView)->m_api);
-            NewViewManager->_setview(NewViewHandle);
+            NewViewManager->SetView(NewViewHandle);
             return NewViewHandle;
         }
 
-        ViewClass* Platform::SetNextViewClass(h_view view, chars viewclass)
+        void* Platform::SetNextViewClass(h_view view, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            auto NewViewManager = new ViewManager(viewclass);
+            auto NewViewManager = PlatformImpl::Core::g_Creator(viewclass);
             ((ViewAPI*) view.get())->setNextViewManager(NewViewManager);
-            return NewViewManager->_getclass();
+            return NewViewManager->GetClass();
         }
 
-        bool Platform::SetNextViewManager(h_view view, ViewManager* viewmanager)
+        bool Platform::SetNextViewManager(h_view view, View* viewmanager)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             ((ViewAPI*) view.get())->setNextViewManager(viewmanager);
@@ -504,7 +509,7 @@
         void Platform::BroadcastNotify(chars topic, id_share in, chars viewclass)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            if(auto Views = ViewManager::_searchview(viewclass, ViewManager::SC_Search))
+            if(auto Views = View::Search(viewclass, SC_Search))
             {
                 struct Payload {chars topic; id_share in;} Param = {topic, in};
                 Views->AccessByCallback([](const MapPath*, const h_view* view, payload param)->void
@@ -519,7 +524,7 @@
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
             BLIK_ASSERT("콜백함수가 nullptr입니다", cb);
-            if(auto Views = ViewManager::_searchview(nullptr, ViewManager::SC_Search))
+            if(auto Views = View::Search(nullptr, SC_Search))
             {
                 struct Payload {PassCB cb; payload data; bool canceled;} Param = {cb, data, false};
                 Views->AccessByCallback([](const MapPath*, const h_view* view, payload param)->void

@@ -129,11 +129,11 @@ namespace BLIK
     {
         ViewClass* Result = nullptr;
         if(m_view.get())
-            Result = Platform::SetNextViewClass(m_view, viewclass);
+            Result = (ViewClass*) Platform::SetNextViewClass(m_view, viewclass);
         return Result;
     }
 
-    bool ViewClass::next(ViewManager* viewmanager)
+    bool ViewClass::next(View* viewmanager)
     {
         bool Result = false;
         if(m_view.get())
@@ -880,78 +880,6 @@ namespace BLIK
         Platform::Graphics::SetScissor(LastRect.l, LastRect.t, LastRect.Width(), LastRect.Height());
     }
 
-    ViewManager::ViewManager(chars viewclass)
-        : m_ref_func(ViewManager::_accessfunc(viewclass, false)), m_viewclass((viewclass)? viewclass : "")
-    {
-        BLIK_ASSERT(String::Format("존재하지 않는 뷰(%s)를 생성하려 합니다", viewclass), m_ref_func);
-        m_class = m_ref_func->m_alloc();
-        m_touch = Buffer::Alloc<Touch>(BLIK_DBG 1);
-        m_agreed_quit = false;
-    }
-
-    ViewManager::~ViewManager()
-    {
-        m_ref_func->m_free(m_class);
-        Buffer::Free(m_touch);
-    }
-
-    h_view ViewManager::_setview(h_view view)
-    {
-        h_view OldViewHandle = m_class->m_view;
-        m_class->m_view = view;
-        return OldViewHandle;
-    }
-
-    void ViewManager::_create()
-    {
-        BLIK_ASSERT("브로드캐스트 등록에 실패하였습니다", m_class);
-        _searchview(m_viewclass, SC_Create, m_class);
-
-        m_ref_func->m_bind(m_class);
-        m_ref_func->m_command(CT_Create, "", nullptr, nullptr);
-        m_ref_func->m_bind(nullptr);
-    }
-
-    bool ViewManager::_canquit()
-    {
-        if(!m_agreed_quit)
-        {
-            m_ref_func->m_bind(m_class);
-            id_cloned_share out = nullptr;
-            m_ref_func->m_command(CT_CanQuit, "(Can you quit?)", nullptr, &out);
-            m_ref_func->m_bind(nullptr);
-
-            bool Result = true;
-            if(out)
-            {
-                bools OutResult((id_cloned_share_read) out);
-                Result = (m_agreed_quit = !!OutResult[0]);
-            }
-            return Result;
-        }
-        return m_agreed_quit;
-    }
-
-    void ViewManager::_destroy()
-    {
-        m_ref_func->m_bind(m_class);
-        m_ref_func->m_command(CT_Destroy, "", nullptr, nullptr);
-        m_ref_func->m_bind(nullptr);
-
-        BLIK_ASSERT("브로드캐스트 해제에 실패하였습니다", m_class);
-        _searchview(m_viewclass, SC_Destroy, m_class);
-    }
-
-    void ViewManager::_size(sint32 w, sint32 h)
-    {
-        sint32s WH;
-        WH.AtAdding() = w;
-        WH.AtAdding() = h;
-        m_ref_func->m_bind(m_class);
-        m_ref_func->m_command(CT_Size, "", WH, nullptr);
-        m_ref_func->m_bind(nullptr);
-    }
-
     class ViewController : public ViewClass
     {
     private:
@@ -979,7 +907,106 @@ namespace BLIK
         }
     };
 
-    void ViewManager::_tick()
+    ViewManager::ViewManager(chars viewclass) : View(),
+        m_ref_func(ViewManager::_accessfunc(viewclass, false)), m_viewclass((viewclass)? viewclass : "")
+    {
+        BLIK_ASSERT(String::Format("존재하지 않는 뷰(%s)를 생성하려 합니다", viewclass), m_ref_func);
+        m_class = m_ref_func->m_alloc();
+        m_touch = Buffer::Alloc<Touch>(BLIK_DBG 1);
+        m_agreed_quit = false;
+    }
+
+    ViewManager::~ViewManager()
+    {
+        m_ref_func->m_free(m_class);
+        Buffer::Free(m_touch);
+    }
+
+    View* ViewManager::Creator(chars viewclass)
+    {
+        return new ViewManager(viewclass);
+    }
+
+    h_view ViewManager::SetView(h_view view)
+    {
+        h_view OldViewHandle = m_class->m_view;
+        m_class->m_view = view;
+        return OldViewHandle;
+    }
+
+    bool ViewManager::IsNative()
+    {
+        return m_ref_func->m_isnative;
+    }
+
+    void* ViewManager::GetClass()
+    {
+        return m_class;
+    }
+
+    void ViewManager::SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out)
+    {
+        m_ref_func->m_bind(m_class);
+        m_ref_func->m_notify(sender, topic, in, out);
+        m_ref_func->m_bind(nullptr);
+    }
+
+    void ViewManager::SetCallback(UpdaterCB cb, payload data)
+    {
+        ((ViewController*) m_class)->setCallback(_finder, this, cb, data);
+    }
+
+    void ViewManager::OnCreate()
+    {
+        BLIK_ASSERT("브로드캐스트 등록에 실패하였습니다", m_class);
+        View::Search(m_viewclass, SC_Create, m_class->m_view);
+
+        m_ref_func->m_bind(m_class);
+        m_ref_func->m_command(CT_Create, "", nullptr, nullptr);
+        m_ref_func->m_bind(nullptr);
+    }
+
+    bool ViewManager::OnCanQuit()
+    {
+        if(!m_agreed_quit)
+        {
+            m_ref_func->m_bind(m_class);
+            id_cloned_share out = nullptr;
+            m_ref_func->m_command(CT_CanQuit, "(Can you quit?)", nullptr, &out);
+            m_ref_func->m_bind(nullptr);
+
+            bool Result = true;
+            if(out)
+            {
+                bools OutResult((id_cloned_share_read) out);
+                Result = (m_agreed_quit = !!OutResult[0]);
+            }
+            return Result;
+        }
+        return m_agreed_quit;
+    }
+
+    void ViewManager::OnDestroy()
+    {
+        m_ref_func->m_bind(m_class);
+        m_ref_func->m_command(CT_Destroy, "", nullptr, nullptr);
+        m_ref_func->m_bind(nullptr);
+
+        BLIK_ASSERT("브로드캐스트 해제에 실패하였습니다", m_class);
+        View::Search(m_viewclass, SC_Destroy, m_class->m_view);
+    }
+
+    void ViewManager::OnSize(sint32 w, sint32 h)
+    {
+        sint32s WH;
+        WH.AtAdding() = w;
+        WH.AtAdding() = h;
+        m_ref_func->m_bind(m_class);
+        m_ref_func->m_command(CT_Size, "", WH, nullptr);
+        m_ref_func->m_bind(nullptr);
+    }
+
+    void ViewManager::OnTick()
     {
         m_ref_func->m_bind(m_class);
         m_ref_func->m_command(CT_Tick, "", nullptr, nullptr);
@@ -988,18 +1015,11 @@ namespace BLIK
         ((ViewController*) m_class)->wakeUpCheck();
     }
 
-    void ViewManager::_gesture(GestureType type, sint32 x, sint32 y)
-    {
-        m_ref_func->m_bind(m_class);
-        m_ref_func->m_gesture(type, x, y);
-        m_ref_func->m_bind(nullptr);
-    }
-
-    void ViewManager::_render(sint32 width, sint32 height, const Rect& viewport)
+    void ViewManager::OnRender(sint32 width, sint32 height, float l, float t, float r, float b)
     {
         ViewPanel NewPanel(width, height, m_touch);
-        BLIK_RECT_SCISSOR(NewPanel, viewport)
-        BLIK_XYWH(NewPanel, -viewport.l, -viewport.t, viewport.r, viewport.b)
+        BLIK_LTRB_SCISSOR(NewPanel, l, t, r, b)
+        BLIK_XYWH(NewPanel, -l, -t, r, b)
         {
             m_ref_func->m_bind(m_class);
             m_ref_func->m_render(NewPanel);
@@ -1010,10 +1030,10 @@ namespace BLIK
         // 매프레임마다 화면갱신을 위한 터치를 일으킴(마우스기기를 위한 시나리오)
         Touch* CurTouch = (Touch*) m_touch;
         if(!CurTouch->ishovered(0)) // 호버ID가 0이 아니라면, 즉 저장된 호버좌표가 있다면
-            _touch(TT_Render, 0, CurTouch->hoverx(), CurTouch->hovery());
+            OnTouch(TT_Render, 0, CurTouch->hoverx(), CurTouch->hovery());
     }
 
-    void ViewManager::_touch(TouchType type, sint32 id, sint32 x, sint32 y)
+    void ViewManager::OnTouch(TouchType type, sint32 id, sint32 x, sint32 y)
     {
         Touch* CurTouch = (Touch*) m_touch;
         const Element& CurElement = CurTouch->get(x, y);
@@ -1092,26 +1112,11 @@ namespace BLIK
             m_class->invalidate();
     }
 
-    bool ViewManager::_isnative()
-    {
-        return m_ref_func->m_isnative;
-    }
-
-    ViewClass* ViewManager::_getclass()
-    {
-        return m_class;
-    }
-
-    void ViewManager::_sendnotify(chars sender, chars topic, id_share in, id_cloned_share* out)
+    void ViewManager::_gesture(GestureType type, sint32 x, sint32 y)
     {
         m_ref_func->m_bind(m_class);
-        m_ref_func->m_notify(sender, topic, in, out);
+        m_ref_func->m_gesture(type, x, y);
         m_ref_func->m_bind(nullptr);
-    }
-
-    void ViewManager::_setcallback(void* cb, void* data)
-    {
-        ((ViewController*) m_class)->setCallback(_finder, this, (ViewClass::UpdaterCB) cb, data);
     }
 
     autorun ViewManager::_makefunc(bool isnative, chars viewclass,
@@ -1145,42 +1150,6 @@ namespace BLIK
 
         chars ViewName = (viewclass && *viewclass)? viewclass : "_defaultview_";
         return (creatable)? &AllFunctions(ViewName) : AllFunctions.Access(ViewName);
-    }
-
-    const Map<h_view>* ViewManager::_searchview(chars viewclass, SearchCommand command, ViewClass* param)
-    {
-        typedef Map<h_view> ViewMap;
-        ViewMap& AllViews = *BLIK_STORAGE_SYS(ViewMap);
-        Map<ViewMap>& ViewsInClass = *BLIK_STORAGE_SYS(Map<ViewMap>);
-
-        if(command == SC_Search)
-        {
-            if(viewclass)
-                return &ViewsInClass(viewclass);
-            else return &AllViews;
-        }
-
-        const uint64 CurKey = PtrToUint64(param);
-        BLIK_ASSERT("사용할 수 없는 Key입니다", CurKey);
-        chars ViewName = (viewclass && *viewclass)? viewclass : "_defaultview_";
-        switch(command)
-        {
-        case SC_Create:
-            {
-                BLIK_ASSERT("이미 생성된 뷰가 존재합니다", !AllViews.Access(CurKey));
-                AllViews[CurKey] = param->m_view;
-                ViewsInClass(ViewName)[CurKey] = param->m_view;
-            }
-            break;
-        case SC_Destroy:
-            {
-                BLIK_ASSERT("해제할 뷰가 존재하지 않습니다", AllViews.Access(CurKey));
-                AllViews.Remove(CurKey);
-                ViewsInClass(ViewName).Remove(CurKey);
-            }
-            break;
-        }
-        return nullptr;
     }
 
     const void* ViewManager::_finder(void* data, chars uiname)
@@ -1475,7 +1444,7 @@ namespace BLIK
     {
         if(data->m_subcb)
         {
-            data->m_subcb(manager->_getclass(), data->m_name, type, x, y);
+            data->m_subcb((ViewClass*) manager->GetClass(), data->m_name, type, x, y);
             data->m_saved_xy.x = x;
             data->m_saved_xy.y = y;
         }

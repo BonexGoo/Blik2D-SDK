@@ -94,6 +94,7 @@ HEADERS += ../../Blik2D/core/blik_storage.hpp
 HEADERS += ../../Blik2D/core/blik_string.hpp
 HEADERS += ../../Blik2D/core/blik_tasking.hpp
 HEADERS += ../../Blik2D/core/blik_updater.hpp
+HEADERS += ../../Blik2D/core/blik_view.hpp
 HEADERS += ../../Blik2D/core/blik_wstring.hpp
 SOURCES += ../../Blik2D/core/blik.cpp
 SOURCES += ../../Blik2D/core/blik_asset.cpp
@@ -111,6 +112,7 @@ SOURCES += ../../Blik2D/core/blik_storage.cpp
 SOURCES += ../../Blik2D/core/blik_string.cpp
 SOURCES += ../../Blik2D/core/blik_tasking.cpp
 SOURCES += ../../Blik2D/core/blik_updater.cpp
+SOURCES += ../../Blik2D/core/blik_view.cpp
 SOURCES += ../../Blik2D/core/blik_wstring.cpp
 
 ###########################################################
@@ -170,11 +172,11 @@ HEADERS += ../../Blik2D/platform/win32/glew.h
 ###########################################################
 HEADERS += ../../Blik2D/service/blik_asyncfilemanager.hpp
 HEADERS += ../../Blik2D/service/blik_batchbuilder.hpp
+HEADERS += ../../Blik2D/service/blik_briiservice.hpp
 HEADERS += ../../Blik2D/service/blik_imagebuilder.hpp
-HEADERS += ../../Blik2D/service/blik_kiwiservice.hpp
 HEADERS += ../../Blik2D/service/blik_viewmanager.hpp
 SOURCES += ../../Blik2D/service/blik_asyncfilemanager.cpp
 SOURCES += ../../Blik2D/service/blik_batchbuilder.cpp
+SOURCES += ../../Blik2D/service/blik_briiservice.cpp
 SOURCES += ../../Blik2D/service/blik_imagebuilder.cpp
-SOURCES += ../../Blik2D/service/blik_kiwiservice.cpp
 SOURCES += ../../Blik2D/service/blik_viewmanager.cpp

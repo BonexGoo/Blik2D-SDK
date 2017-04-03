@@ -3,13 +3,13 @@
 
 namespace BLIK
 {
-    //! \brief 서비스-키위통신
-    class KiwiService
+    //! \brief 서비스-브리통신
+    class BriiService
     {
     public:
-        KiwiService();
-        virtual ~KiwiService();
-        KiwiService& operator=(const KiwiService&);
+        BriiService();
+        virtual ~BriiService();
+        BriiService& operator=(const BriiService&);
 
     public:
         void SettingForServer(uint16 port);
@@ -64,63 +64,64 @@ namespace BLIK
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // KiwiEvent
+    // BriiEvent
     ////////////////////////////////////////////////////////////////////////////////
-    #define KIWI_EVENT_CLASS(CLASS, INITLIST) \
+    #define BRII_EVENT_CLASS(CLASS, INITLIST) \
         public: CLASS() : INITLIST {} \
         public: ~CLASS() {} \
         public: CLASS& operator=(const CLASS&) \
         {BLIK_ASSERT("해당 객체는 복사할 수 없습니다", false); return *this;}
-    enum KiwiEventType {KET_Null,
-        KET_EventResult_Done, KET_EventResult_ExitScript, KET_EventResult_NotFound,
-        KET_IconPack, KET_RunScript, KET_InitClass, KET_QuitClass, KET_CallEvent, KET_UserEnum};
-    class KiwiEventClass
+    enum BriiEventType {BET_Null,
+        BET_EventResult_Done, BET_EventResult_ExitScript, BET_EventResult_NotFound,
+        BET_IconPack, BET_RunScript, BET_InitClass, BET_QuitClass, BET_CallEvent, BET_UserEnum};
+
+    class BriiEventClass
     {
     protected:
-        KiwiEventClass(KiwiEventType type = KET_Null) : m_type(type) {}
-        ~KiwiEventClass() {}
+        BriiEventClass(BriiEventType type = BET_Null) : m_type(type) {}
+        ~BriiEventClass() {}
     public:
-        const KiwiEventType m_type;
+        const BriiEventType m_type;
     };
-    class KiwiEvent
+    class BriiEvent
     {
     public:
-        class EventResult_Done : public KiwiEventClass
+        class EventResult_Done : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(EventResult_Done, KiwiEventClass(KET_EventResult_Done))
+            BRII_EVENT_CLASS(EventResult_Done, BriiEventClass(BET_EventResult_Done))
         };
-        class EventResult_ExitScript : public KiwiEventClass
+        class EventResult_ExitScript : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(EventResult_ExitScript, KiwiEventClass(KET_EventResult_ExitScript))
+            BRII_EVENT_CLASS(EventResult_ExitScript, BriiEventClass(BET_EventResult_ExitScript))
         };
-        class EventResult_NotFound : public KiwiEventClass
+        class EventResult_NotFound : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(EventResult_NotFound, KiwiEventClass(KET_EventResult_NotFound))
+            BRII_EVENT_CLASS(EventResult_NotFound, BriiEventClass(BET_EventResult_NotFound))
         };
-        class IconPack : public KiwiEventClass
+        class IconPack : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(IconPack, KiwiEventClass(KET_IconPack))
+            BRII_EVENT_CLASS(IconPack, BriiEventClass(BET_IconPack))
         public:
             Remote::StrParam m_botName;
             Remote::HexParam m_iconBinary;
         };
-        class RunScript : public KiwiEventClass
+        class RunScript : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(RunScript, KiwiEventClass(KET_RunScript))
+            BRII_EVENT_CLASS(RunScript, BriiEventClass(BET_RunScript))
         };
-        class InitClass : public KiwiEventClass
+        class InitClass : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(InitClass, KiwiEventClass(KET_InitClass))
+            BRII_EVENT_CLASS(InitClass, BriiEventClass(BET_InitClass))
         public:
             sint32 m_runID;
         };
-        class QuitClass : public KiwiEventClass
+        class QuitClass : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(QuitClass, KiwiEventClass(KET_QuitClass))
+            BRII_EVENT_CLASS(QuitClass, BriiEventClass(BET_QuitClass))
         };
-        class CallEvent : public KiwiEventClass
+        class CallEvent : public BriiEventClass
         {
-            KIWI_EVENT_CLASS(CallEvent, KiwiEventClass(KET_CallEvent))
+            BRII_EVENT_CLASS(CallEvent, BriiEventClass(BET_CallEvent))
         public:
             Remote::StrParam m_methodName;
             sint32 m_eventID;
@@ -129,14 +130,14 @@ namespace BLIK
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // KiwiDebuggerService
+    // BriiDebuggerService
     ////////////////////////////////////////////////////////////////////////////////
-    class KiwiDebuggerService : public KiwiService
+    class BriiDebuggerService : public BriiService
     {
     public:
-        KiwiDebuggerService();
-        ~KiwiDebuggerService() override;
-        KiwiDebuggerService& operator=(const KiwiDebuggerService&);
+        BriiDebuggerService();
+        ~BriiDebuggerService() override;
+        BriiDebuggerService& operator=(const BriiDebuggerService&);
 
     private:
         void InitForThread() override;
@@ -167,14 +168,14 @@ namespace BLIK
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // KiwiBotService
+    // BriiBotService
     ////////////////////////////////////////////////////////////////////////////////
-    class KiwiBotService : public KiwiService
+    class BriiBotService : public BriiService
     {
     public:
-        KiwiBotService();
-        ~KiwiBotService() override;
-        KiwiBotService& operator=(const KiwiBotService&);
+        BriiBotService();
+        ~BriiBotService() override;
+        BriiBotService& operator=(const BriiBotService&);
 
     private:
         void InitForThread() override;

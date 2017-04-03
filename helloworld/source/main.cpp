@@ -1,10 +1,14 @@
 ﻿#include <blik.hpp>
 #include <platform/blik_platform.hpp>
+#include <service/blik_viewmanager.hpp>
+
 #include <r.hpp>
 
 void PlatformInit()
 {
     Platform::InitForGL();
+    Platform::SetViewCreator(ViewManager::Creator);
+
     Platform::SetWindowName("Hello World");
     Platform::SetWindowView("HWView");
 

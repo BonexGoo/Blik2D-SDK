@@ -4,8 +4,6 @@
 
 #if !defined(BLIK_PLATFORM_QT5) && !defined(BLIK_PLATFORM_COCOS2DX) && !defined(BLIK_PLATFORM_NATIVE)
 
-    #include <service/blik_viewmanager.hpp>
-
     class ViewAPI
     {
     public:

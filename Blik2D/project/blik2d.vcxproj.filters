@@ -216,6 +216,9 @@
     <ClCompile Include="..\core\blik_updater.cpp">
       <Filter>Blik2D\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\blik_view.cpp">
+      <Filter>Blik2D\core</Filter>
+    </ClCompile>
     <ClCompile Include="..\core\blik_wstring.cpp">
       <Filter>Blik2D\core</Filter>
     </ClCompile>
@@ -225,10 +228,10 @@
     <ClCompile Include="..\service\blik_batchbuilder.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_imagebuilder.cpp">
+    <ClCompile Include="..\service\blik_briiservice.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_kiwiservice.cpp">
+    <ClCompile Include="..\service\blik_imagebuilder.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
     <ClCompile Include="..\service\blik_oauth2service.cpp">
@@ -425,6 +428,9 @@
     <ClInclude Include="..\core\blik_updater.hpp">
       <Filter>Blik2D\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\blik_view.hpp">
+      <Filter>Blik2D\core</Filter>
+    </ClInclude>
     <ClInclude Include="..\core\blik_wstring.hpp">
       <Filter>Blik2D\core</Filter>
     </ClInclude>
@@ -434,10 +440,10 @@
     <ClInclude Include="..\service\blik_batchbuilder.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_imagebuilder.hpp">
+    <ClInclude Include="..\service\blik_briiservice.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_kiwiservice.hpp">
+    <ClInclude Include="..\service\blik_imagebuilder.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
     <ClInclude Include="..\service\blik_oauth2service.hpp">

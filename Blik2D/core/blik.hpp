@@ -271,6 +271,7 @@ namespace BLIK
     #include <blik_string.hpp>
     #include <blik_tasking.hpp>
     #include <blik_updater.hpp>
+    #include <blik_view.hpp>
     #include <blik_wstring.hpp>
 
     namespace BLIK
@@ -278,7 +279,6 @@ namespace BLIK
         BLIK_DECLARE_HANDLE(h_icon);
         BLIK_DECLARE_HANDLE(h_action);
         BLIK_DECLARE_HANDLE(h_policy);
-        BLIK_DECLARE_HANDLE(h_view);
         BLIK_DECLARE_HANDLE(h_dock);
         BLIK_DECLARE_HANDLE(h_window);
         BLIK_DECLARE_HANDLE(h_web);

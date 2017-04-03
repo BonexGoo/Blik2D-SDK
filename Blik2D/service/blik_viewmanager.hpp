@@ -150,15 +150,6 @@
 namespace BLIK
 {
     enum CommandType {CT_Create, CT_CanQuit, CT_Destroy, CT_Size, CT_Tick};
-    enum TouchType {
-        // 일반
-        TT_Moving, TT_Press, TT_Dragging, TT_Release,
-        // 마우스휠
-        TT_WheelUp, TT_WheelDown, TT_WheelPress, TT_WheelDragging, TT_WheelRelease,
-        // 마우스확장(우클릭드래그)
-        TT_ExtendPress, TT_ExtendDragging, TT_ExtendRelease,
-        // 특수
-        TT_ToolTip, TT_LongPress, TT_Render};
     enum GestureType {
         // 일반
         GT_Null, GT_Moving, GT_MovingLosed, GT_Pressed,
@@ -216,7 +207,7 @@ namespace BLIK
 
     public:
         ViewClass* next(chars viewclass);
-        bool next(ViewManager* viewmanager);
+        bool next(View* viewmanager);
         void exit();
         bool valid(chars uiname = nullptr) const;
         const rect128& rect(chars uiname = nullptr) const;
@@ -386,13 +377,10 @@ namespace BLIK
     };
 
     //! \brief 매니저-뷰
-    class ViewManager
+    class ViewManager : public View
     {
         friend class ViewClass;
         friend class ViewPanel;
-
-    public:
-        enum SearchCommand {SC_Search, SC_Create, SC_Destroy};
 
     private:
         //! \brief 뷰의 영역객체
@@ -542,31 +530,38 @@ namespace BLIK
             ViewClass::FreeCB m_free;
         };
 
-    public:
+    protected:
         ViewManager(chars viewclass = nullptr);
-        ~ViewManager();
+    public:
+        ~ViewManager() override;
 
     public:
-        h_view _setview(h_view view);
-        void _create();
-        bool _canquit();
-        void _destroy();
-        void _size(sint32 w, sint32 h);
-        void _tick();
+        static View* Creator(chars viewclass);
+
+    public:
+        h_view SetView(h_view view) override;
+        bool IsNative() override;
+        void* GetClass() override;
+        void SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out) override;
+        void SetCallback(UpdaterCB cb, payload data) override;
+
+    public:
+        void OnCreate() override;
+        bool OnCanQuit() override;
+        void OnDestroy() override;
+        void OnSize(sint32 w, sint32 h) override;
+        void OnTick() override;
+        void OnRender(sint32 width, sint32 height, float l, float t, float r, float b) override;
+        void OnTouch(TouchType type, sint32 id, sint32 x, sint32 y) override;
+
+    private:
         void _gesture(GestureType type, sint32 x, sint32 y);
-        void _render(sint32 width, sint32 height, const Rect& viewport);
-        void _touch(TouchType type, sint32 id, sint32 x, sint32 y);
-        bool _isnative();
-        ViewClass* _getclass();
-        void _sendnotify(chars sender, chars topic, id_share in, id_cloned_share* out);
-        void _setcallback(void* cb, void* data);
 
     public:
         static autorun _makefunc(bool isnative, chars viewclass,
             ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::GestureCB g, ViewPanel::RenderCB r,
             ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f);
         static Function* _accessfunc(chars viewclass, bool creatable);
-        static const Map<h_view>* _searchview(chars viewclass, SearchCommand command, ViewClass* param = nullptr);
 
     private:
         static const void* _finder(void* data, chars uiname);

@@ -4,7 +4,6 @@
 
 #ifdef BLIK_PLATFORM_COCOS2DX
 
-    #include <service/blik_viewmanager.hpp>
     // 코코스2DX #include관련
     #undef ssize_t
     #define ssize_t __w64 long
@@ -69,27 +68,27 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_setview(view);
+            m_view_manager->SetView(view);
 
             sendCreate();
         }
 
-        h_view changeViewManagerAndDestroy(ViewManager* manager)
+        h_view changeViewManagerAndDestroy(View* manager)
         {
             sendDestroy();
-            h_view OldViewHandle = nullptr;
+            h_view OldViewHandle = h_view::null();
             if(m_view_manager)
             {
-                OldViewHandle = m_view_manager->_setview(nullptr);
+                OldViewHandle = m_view_manager->SetView(h_view::null());
                 delete m_view_manager;
             }
 
             m_view_manager = manager;
-            m_view_manager->_setcallback((void*) m_view_cb, m_view_data);
+            m_view_manager->SetCallback(m_view_cb, m_view_data);
             return OldViewHandle;
         }
 
-        inline void setNextViewManager(ViewManager* manager)
+        inline void setNextViewManager(View* manager)
         {
             delete m_next_manager;
             m_next_manager = manager;
@@ -99,12 +98,12 @@
         {
             m_view_data = data;
             if(m_view_manager)
-                m_view_manager->_setcallback((void*) m_view_cb, m_view_data);
+                m_view_manager->SetCallback(m_view_cb, m_view_data);
         }
 
         inline ViewClass* getClass() const
         {
-            return m_view_manager->_getclass();
+            return (ViewClass*) m_view_manager->GetClass();
         }
 
         inline cocos2d::Node* getWidget() const
@@ -113,8 +112,8 @@
             {
                 if(m_view_data)
                     return m_view_data;
-                if(m_view_manager->_isnative())
-                    return (cocos2d::Node*) m_view_manager->_getclass();
+                if(m_view_manager->IsNative())
+                    return (cocos2d::Node*) m_view_manager->GetClass();
             }
             return (cocos2d::Node*) getParent();
         }
@@ -123,7 +122,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_render(width, height, viewport);
+            m_view_manager->OnRender(width, height, viewport.l, viewport.t, viewport.r, viewport.b);
 
             if(m_next_manager)
             {
@@ -137,7 +136,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_touch(type, id, x, y);
+            m_view_manager->OnTouch(type, id, x, y);
         }
 
         inline void sendCreate()
@@ -145,7 +144,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_create();
+                m_view_manager->OnCreate();
             }
         }
 
@@ -154,7 +153,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                return m_view_manager->_canquit();
+                return m_view_manager->OnCanQuit();
             }
             return true;
         }
@@ -164,7 +163,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_destroy();
+                m_view_manager->OnDestroy();
             }
         }
 
@@ -173,7 +172,7 @@
             if(m_view_manager != nullptr)
             {
                 g_view = getWidget();
-                m_view_manager->_tick();
+                m_view_manager->OnTick();
             }
         }
 
@@ -181,7 +180,7 @@
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
-            m_view_manager->_sendnotify("(platform)", topic, in, out);
+            m_view_manager->SendNotify("(platform)", topic, in, out);
         }
 
     public:
@@ -189,7 +188,7 @@
         {
             m_width = width;
             m_height = height;
-            if(doCommand) m_view_manager->_size(width, height);
+            if(doCommand) m_view_manager->OnSize(width, height);
         }
         sint32 width() const {return m_width;}
         sint32 height() const {return m_height;}
@@ -248,7 +247,7 @@
             m_view_cb = cb;
             m_view_data = data;
             if(manager)
-                manager->_setcallback((void*) m_view_cb, m_view_data);
+                manager->SetCallback(m_view_cb, m_view_data);
 
             m_width = 0;
             m_height = 0;
@@ -269,8 +268,8 @@
         ParentType m_parent_type;
         buffer m_parent_buf;
         void* m_parent_ptr;
-        ViewManager* m_view_manager;
-        ViewManager* m_next_manager;
+        View* m_view_manager;
+        View* m_next_manager;
         ViewClass::UpdaterCB m_view_cb;
         cocos2d::Node* m_view_data;
 
@@ -533,7 +532,7 @@
             m_touchPressed = false;
         }
 
-        GenericView(ViewManager* manager, chars name, sint32 width, sint32 height)
+        GenericView(View* manager, chars name, sint32 width, sint32 height)
         {
             BLIK_DECLARE_BUFFERED_CLASS(BufferedViewAPI, ViewAPI, PT_Null, nullptr, nullptr, nullptr, nullptr);
             buffer NewAPI = Buffer::AllocNoConstructorOnce<BufferedViewAPI>(BLIK_DBG 1);

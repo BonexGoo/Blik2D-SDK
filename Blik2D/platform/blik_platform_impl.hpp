@@ -22,6 +22,7 @@ namespace BLIK
                 return (TYPE*) Result;
             }
 
+            extern View::CreatorCB g_Creator;
             extern String g_AssetsRoot;
             extern String g_AssetsRemRoot;
         }

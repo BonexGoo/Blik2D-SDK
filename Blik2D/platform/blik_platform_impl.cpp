@@ -301,6 +301,7 @@ namespace BLIK
                 return nullptr;
             }
 
+            View::CreatorCB g_Creator = View::Creator;
             String g_AssetsRoot;
             String g_AssetsRemRoot;
         }

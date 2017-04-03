@@ -45,10 +45,23 @@ namespace BLIK
         static void InitForMDI();
 
         /*!
+        \brief 뷰생성기 설정
+        \param creator : 뷰생성기
+        */
+        static void SetViewCreator(View::CreatorCB creator);
+
+        /*!
         \brief 윈도우이름 설정
         \param name : 윈도우이름
         */
         static void SetWindowName(chars name);
+
+        /*!
+        \brief 윈도우뷰 설정
+        \param viewclass : 로드할 뷰클래스(BLIK_DECLARE_VIEW로 선언, nullptr일 경우 _defaultview_)
+        \return 뷰핸들
+        */
+        static h_view SetWindowView(chars viewclass = nullptr);
 
         /*!
         \brief 윈도우위치 설정
@@ -91,13 +104,6 @@ namespace BLIK
         \return 스크린샷 비트맵(nullptr은 실패)
         */
         static id_bitmap_read GetScreenshotBitmap(const rect128& rect, bool vflip = true);
-
-        /*!
-        \brief 윈도우뷰 설정
-        \param viewclass : 로드할 뷰클래스(BLIK_DECLARE_VIEW로 선언, nullptr일 경우 _defaultview_)
-        \return 뷰핸들
-        */
-        static h_view SetWindowView(chars viewclass = nullptr);
 
         /*!
         \brief 상태창 설정
@@ -150,15 +156,15 @@ namespace BLIK
         \param viewclass : 변경할 뷰클래스(BLIK_DECLARE_VIEW로 선언, nullptr일 경우 _defaultview_)
         \return 뷰클래스객체
         */
-        static ViewClass* SetNextViewClass(h_view view, chars viewclass = nullptr);
+        static void* SetNextViewClass(h_view view, chars viewclass = nullptr);
 
         /*!
-        \brief 해당 뷰에 변경할 뷰매니저를 지정
+        \brief 해당 뷰에 변경할 뷰오브젝트를 지정
         \param view : 뷰핸들
         \param viewmanager : 변경할 뷰매니저
         \return 변경 성공 여부
         */
-        static bool SetNextViewManager(h_view view, ViewManager* viewmanager);
+        static bool SetNextViewManager(h_view view, View* viewmanager);
 
         /*!
         \brief 도킹바 생성 및 추가
@@ -1282,6 +1288,8 @@ namespace BLIK
             \param height : 웹페이지 세로길이(px)
             */
             static void Resize(h_web web, sint32 width, sint32 height);
+
+            //static void SendTouchEvent(h_web web, );
 
             /*!
             \brief 웹페이지 스크린샷 이미지 얻기
