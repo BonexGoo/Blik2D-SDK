@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include <service/blik_viewmanager.hpp>
+#include <service/blik_zay.hpp>
 
-class HWData : public ViewClass
+class HWData : public ZayObject
 {
 public:
     HWData();

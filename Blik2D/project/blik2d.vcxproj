@@ -78,10 +78,10 @@
     <ClCompile Include="..\platform\blik_platform_qt5.cpp" />
     <ClCompile Include="..\service\blik_asyncfilemanager.cpp" />
     <ClCompile Include="..\service\blik_batchbuilder.cpp" />
-    <ClCompile Include="..\service\blik_briiservice.cpp" />
-    <ClCompile Include="..\service\blik_imagebuilder.cpp" />
+    <ClCompile Include="..\service\blik_boxr.cpp" />
+    <ClCompile Include="..\service\blik_brii.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
-    <ClCompile Include="..\service\blik_viewmanager.cpp" />
+    <ClCompile Include="..\service\blik_zay.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -157,10 +157,10 @@
     <ClInclude Include="..\platform\blik_platform_native.hpp" />
     <ClInclude Include="..\service\blik_asyncfilemanager.hpp" />
     <ClInclude Include="..\service\blik_batchbuilder.hpp" />
-    <ClInclude Include="..\service\blik_briiservice.hpp" />
-    <ClInclude Include="..\service\blik_imagebuilder.hpp" />
+    <ClInclude Include="..\service\blik_boxr.hpp" />
+    <ClInclude Include="..\service\blik_brii.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
-    <ClInclude Include="..\service\blik_viewmanager.hpp" />
+    <ClInclude Include="..\service\blik_zay.hpp" />
     <CustomBuild Include="..\platform\blik_platform_qt5.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing blik_platform_qt5.hpp...</Message>

@@ -3,8 +3,8 @@
 
 #include <format/blik_bmp.hpp>
 #include <format/blik_png.hpp>
-#include <service/blik_imagebuilder.hpp>
 #include <platform/blik_platform.hpp>
+#include <service/blik_boxr.hpp>
 
 namespace BLIK
 {
@@ -95,7 +95,7 @@ namespace BLIK
     void R::RebuildAll()
     {
         gImageMap.Reset();
-        ImageBuilder Builder;
+        BoxrBuilder Builder;
         for(sint32 i = 0, iend = gAtlasSets.Count(); i < iend; ++i)
         {
             String FullPath = Platform::File::RootForAssets() + gAtlasDir + gAtlasSets[i].MapFilename;

@@ -3,13 +3,13 @@
 
 namespace BLIK
 {
-    //! \brief 빌더-이미지
-    class ImageBuilder
+    //! \brief 복서빌더
+    class BoxrBuilder
     {
     public:
-        ImageBuilder();
-        ~ImageBuilder();
-        ImageBuilder& operator=(const ImageBuilder&)
+        BoxrBuilder();
+        ~BoxrBuilder();
+        BoxrBuilder& operator=(const BoxrBuilder&)
         {
             BLIK_ASSERT("해당 객체는 복사할 수 없습니다", false);
             return *this;

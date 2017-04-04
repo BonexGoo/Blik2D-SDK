@@ -3,13 +3,13 @@
 
 namespace BLIK
 {
-    //! \brief 서비스-브리통신
-    class BriiService
+    //! \brief 브리통신
+    class BriiConnector
     {
     public:
-        BriiService();
-        virtual ~BriiService();
-        BriiService& operator=(const BriiService&);
+        BriiConnector();
+        virtual ~BriiConnector();
+        BriiConnector& operator=(const BriiConnector&);
 
     public:
         void SettingForServer(uint16 port);
@@ -83,6 +83,7 @@ namespace BLIK
     public:
         const BriiEventType m_type;
     };
+
     class BriiEvent
     {
     public:
@@ -130,14 +131,14 @@ namespace BLIK
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // BriiDebuggerService
+    // BriiDebuggerConnector
     ////////////////////////////////////////////////////////////////////////////////
-    class BriiDebuggerService : public BriiService
+    class BriiDebuggerConnector : public BriiConnector
     {
     public:
-        BriiDebuggerService();
-        ~BriiDebuggerService() override;
-        BriiDebuggerService& operator=(const BriiDebuggerService&);
+        BriiDebuggerConnector();
+        ~BriiDebuggerConnector() override;
+        BriiDebuggerConnector& operator=(const BriiDebuggerConnector&);
 
     private:
         void InitForThread() override;
@@ -168,14 +169,14 @@ namespace BLIK
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // BriiBotService
+    // BriiBotConnector
     ////////////////////////////////////////////////////////////////////////////////
-    class BriiBotService : public BriiService
+    class BriiBotConnector : public BriiConnector
     {
     public:
-        BriiBotService();
-        ~BriiBotService() override;
-        BriiBotService& operator=(const BriiBotService&);
+        BriiBotConnector();
+        ~BriiBotConnector() override;
+        BriiBotConnector& operator=(const BriiBotConnector&);
 
     private:
         void InitForThread() override;

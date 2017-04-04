@@ -1,11 +1,11 @@
 ﻿#include <blik.hpp>
-#include "blik_briiservice.hpp"
+#include "blik_brii.hpp"
 
 #include <platform/blik_platform.hpp>
 
 namespace BLIK
 {
-    BriiService::BriiService()
+    BriiConnector::BriiConnector()
     {
         m_taskAnswer = nullptr;
         m_remote = nullptr;
@@ -27,7 +27,7 @@ namespace BLIK
         m_callApiMethod_D2B = nullptr;
     }
 
-    BriiService::~BriiService()
+    BriiConnector::~BriiConnector()
     {
         BLIK_ASSERT("잘못된 시나리오입니다", !m_addIcon_B2D);
         BLIK_ASSERT("잘못된 시나리오입니다", !m_runScript_D2B);
@@ -46,25 +46,25 @@ namespace BLIK
         BLIK_ASSERT("잘못된 시나리오입니다", !m_callApiMethod_D2B);
     }
 
-    BriiService& BriiService::operator=(const BriiService&)
+    BriiConnector& BriiConnector::operator=(const BriiConnector&)
     {
         BLIK_ASSERT("해당 객체는 복사할 수 없습니다", false);
         return *this;
     }
 
-    void BriiService::SettingForServer(uint16 port)
+    void BriiConnector::SettingForServer(uint16 port)
     {
         m_domain = "";
         m_port = port;
     }
 
-    void BriiService::SettingForClient(chars domain, uint16 port)
+    void BriiConnector::SettingForClient(chars domain, uint16 port)
     {
         m_domain = domain;
         m_port = port;
     }
 
-    bool BriiService::AddAnswer(buffer answer)
+    bool BriiConnector::AddAnswer(buffer answer)
     {
         if(m_taskAnswer)
         {
@@ -74,12 +74,12 @@ namespace BLIK
         return false;
     }
 
-    void BriiService::InitForThread()
+    void BriiConnector::InitForThread()
     {
         BLIK_ASSERT("잘못된 시나리오입니다", false);
     }
 
-    void BriiService::QuitForThread()
+    void BriiConnector::QuitForThread()
     {
         Remote::Disconnect(m_remote);
         m_remote = nullptr;
@@ -116,127 +116,127 @@ namespace BLIK
         m_callApiMethod_D2B = nullptr;
     }
 
-    void BriiService::BindTaskQueue(Queue<buffer>* taskAnswer)
+    void BriiConnector::BindTaskQueue(Queue<buffer>* taskAnswer)
     {
         m_taskAnswer = taskAnswer;
     }
 
-    void BriiService::UnbindTaskQueue()
+    void BriiConnector::UnbindTaskQueue()
     {
         m_taskAnswer = nullptr;
     }
 
-    void BriiService::LinkStep_AddIcon_BotToDebugger(chars name, bytes icon, sint32 iconLength) const
+    void BriiConnector::LinkStep_AddIcon_BotToDebugger(chars name, bytes icon, sint32 iconLength) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_addIcon_B2D);
         (*m_addIcon_B2D)(name)(icon, iconLength);
     }
 
-    void BriiService::LinkStep_RunScript_DebuggerToBot(chars mainClassName, sint32 runID) const
+    void BriiConnector::LinkStep_RunScript_DebuggerToBot(chars mainClassName, sint32 runID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_runScript_D2B);
         (*m_runScript_D2B)(mainClassName)(runID);
     }
 
-    void BriiService::LinkStep_ExitScript_DebuggerToBot(sint32 runID) const
+    void BriiConnector::LinkStep_ExitScript_DebuggerToBot(sint32 runID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_exitScript_D2B);
         (*m_exitScript_D2B)(runID);
     }
 
-    void BriiService::LinkStep_KickScript_BotToDebugger(sint32 runID) const
+    void BriiConnector::LinkStep_KickScript_BotToDebugger(sint32 runID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_kickScript_B2D);
         (*m_kickScript_B2D)(runID);
     }
 
-    void BriiService::DebugStep_AddTrace_BotToDebugger(sint32 level, chars comment) const
+    void BriiConnector::DebugStep_AddTrace_BotToDebugger(sint32 level, chars comment) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_addTrace_B2D);
         (*m_addTrace_B2D)(level)(comment);
     }
 
-    sint32 BriiService::DebugStep_AssertBreak_BotToDebugger(chars comment, chars filename, sint32 linenumber, chars funcname) const
+    sint32 BriiConnector::DebugStep_AssertBreak_BotToDebugger(chars comment, chars filename, sint32 linenumber, chars funcname) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_assertBreak_B2D);
         Remote::IntParam Result((id_cloned_share) (*m_assertBreak_B2D)(comment)(filename)(linenumber)(funcname));
         return (sint32) Result.ConstValue();
     }
 
-    String BriiService::DebugStep_GetApiClasses_DebuggerToBot() const
+    String BriiConnector::DebugStep_GetApiClasses_DebuggerToBot() const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_getApiClasses_D2B);
         return (id_cloned_share) (*m_getApiClasses_D2B)();
     }
 
-    String BriiService::DebugStep_GetApiClassDetail_DebuggerToBot(chars className) const
+    String BriiConnector::DebugStep_GetApiClassDetail_DebuggerToBot(chars className) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_getApiClassDetail_D2B);
         return (id_cloned_share) (*m_getApiClassDetail_D2B)(className);
     }
 
-    String BriiService::DebugStep_GetApiMethods_DebuggerToBot(chars className) const
+    String BriiConnector::DebugStep_GetApiMethods_DebuggerToBot(chars className) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_getApiMethods_D2B);
         return (id_cloned_share) (*m_getApiMethods_D2B)(className);
     }
 
-    String BriiService::DebugStep_GetApiMethodDetail_DebuggerToBot(chars className, chars methodName) const
+    String BriiConnector::DebugStep_GetApiMethodDetail_DebuggerToBot(chars className, chars methodName) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_getApiMethodDetail_D2B);
         return (id_cloned_share) (*m_getApiMethodDetail_D2B)(className)(methodName);
     }
 
-    const Remote::Method BriiService::RunStep_BeginEvent_BotToDebugger(chars methodName, sint32 eventID) const
+    const Remote::Method BriiConnector::RunStep_BeginEvent_BotToDebugger(chars methodName, sint32 eventID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_beginEvent_B2D);
         return (*m_beginEvent_B2D)(methodName)(eventID);
     }
 
-    void BriiService::RunStep_EndEvent_DebuggerToBot(sint32 eventID, sint32 success) const
+    void BriiConnector::RunStep_EndEvent_DebuggerToBot(sint32 eventID, sint32 success) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_endEvent_D2B);
         (*m_endEvent_D2B)(eventID)(success);
     }
 
-    void BriiService::RunStep_CreateApiClass_DebuggerToBot(chars className, sint32 classID) const
+    void BriiConnector::RunStep_CreateApiClass_DebuggerToBot(chars className, sint32 classID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_createApiClass_D2B);
         (*m_createApiClass_D2B)(className)(classID);
     }
 
-    void BriiService::RunStep_RemoveApiClass_DebuggerToBot(sint32 classID) const
+    void BriiConnector::RunStep_RemoveApiClass_DebuggerToBot(sint32 classID) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_removeApiClass_D2B);
         (*m_removeApiClass_D2B)(classID);
     }
 
-    const Remote::Method BriiService::RunStep_CallApiMethod_DebuggerToBot(sint32 classID, chars methodName) const
+    const Remote::Method BriiConnector::RunStep_CallApiMethod_DebuggerToBot(sint32 classID, chars methodName) const
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_callApiMethod_D2B);
         return (*m_callApiMethod_D2B)(classID)(methodName);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    // BriiDebuggerService
+    // BriiDebuggerConnector
     ////////////////////////////////////////////////////////////////////////////////
-    BriiDebuggerService::BriiDebuggerService()
+    BriiDebuggerConnector::BriiDebuggerConnector()
     {
         m_isRunning = false;
         m_lastRunID = -1;
     }
 
-    BriiDebuggerService::~BriiDebuggerService()
+    BriiDebuggerConnector::~BriiDebuggerConnector()
     {
     }
 
-    BriiDebuggerService& BriiDebuggerService::operator=(const BriiDebuggerService&)
+    BriiDebuggerConnector& BriiDebuggerConnector::operator=(const BriiDebuggerConnector&)
     {
         BLIK_ASSERT("해당 객체는 복사할 수 없습니다", false);
         return *this;
     }
 
-    void BriiDebuggerService::InitForThread()
+    void BriiDebuggerConnector::InitForThread()
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_remote == nullptr);
         m_addIcon_B2D = new Remote::Method("OnAddIcon", OnAddIcon, this);
@@ -277,12 +277,12 @@ namespace BLIK
         else m_remote = Remote::ConnectForServer(m_port, Methods);
     }
 
-    bool BriiDebuggerService::IsRunning()
+    bool BriiDebuggerConnector::IsRunning()
     {
         return m_isRunning;
     }
 
-    buffer BriiDebuggerService::RunScript(chars mainClassName)
+    buffer BriiDebuggerConnector::RunScript(chars mainClassName)
     {
         if(!m_isRunning)
         {
@@ -297,7 +297,7 @@ namespace BLIK
         return nullptr;
     }
 
-    buffer BriiDebuggerService::ExitScript()
+    buffer BriiDebuggerConnector::ExitScript()
     {
         if(m_isRunning)
         {
@@ -310,21 +310,21 @@ namespace BLIK
         return nullptr;
     }
 
-    const Remote::Method BriiDebuggerService::CallApiMethod(sint32 classID, chars methodName)
+    const Remote::Method BriiDebuggerConnector::CallApiMethod(sint32 classID, chars methodName)
     {
         return RunStep_CallApiMethod_DebuggerToBot(classID, methodName);
     }
 
-    void BriiDebuggerService::EndEvent(sint32 eventID, bool success)
+    void BriiDebuggerConnector::EndEvent(sint32 eventID, bool success)
     {
         if(m_isRunning)
             RunStep_EndEvent_DebuggerToBot(eventID, (sint32) success);
     }
 
-    void BriiDebuggerService::OnAddIcon(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnAddIcon(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiDebuggerService* Self = (BriiDebuggerService*) data;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) data;
 
         auto NewIconPack = (BriiEvent::IconPack*) Buffer::Alloc<BriiEvent::IconPack>(BLIK_DBG 1);
         NewIconPack->m_botName = params[0].Drain();
@@ -334,34 +334,34 @@ namespace BLIK
         BLIK_ASSERT("잘못된 시나리오입니다", Result);
     }
 
-    void BriiDebuggerService::OnKickScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnKickScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiDebuggerService* Self = (BriiDebuggerService*) data;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiDebuggerService::OnAddTrace(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnAddTrace(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiDebuggerService* Self = (BriiDebuggerService*) data;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiDebuggerService::OnAssertBreak(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnAssertBreak(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiDebuggerService* Self = (BriiDebuggerService*) data;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiDebuggerService::OnBeginEvent(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnBeginEvent(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiDebuggerService* Self = (BriiDebuggerService*) data;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) data;
 
         auto NewCallEvent = (BriiEvent::CallEvent*) Buffer::Alloc<BriiEvent::CallEvent>(BLIK_DBG 1);
         NewCallEvent->m_methodName = params[0].Drain();
@@ -373,14 +373,14 @@ namespace BLIK
         BLIK_ASSERT("잘못된 시나리오입니다", Result);
     }
 
-    void BriiDebuggerService::OnNull(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiDebuggerConnector::OnNull(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("봇이 시나리오에 맞지 않는 잘못된 호출을 하였습니다", localcall);
     }
 
-    sint32 BriiDebuggerService::OnTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common)
+    sint32 BriiDebuggerConnector::OnTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common)
     {
-        BriiDebuggerService* Self = (BriiDebuggerService*) self;
+        BriiDebuggerConnector* Self = (BriiDebuggerConnector*) self;
         Self->BindTaskQueue(&answer);
         if(!Self->m_remote) Self->InitForThread();
         const bool IsConnected = Remote::CommunicateOnce(Self->m_remote);
@@ -402,9 +402,9 @@ namespace BLIK
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    // BriiBotService
+    // BriiBotConnector
     ////////////////////////////////////////////////////////////////////////////////
-    BriiBotService::BriiBotService()
+    BriiBotConnector::BriiBotConnector()
     {
         m_needSighUp = true;
         m_isRunning = false;
@@ -413,18 +413,18 @@ namespace BLIK
         m_icon = nullptr;
     }
 
-    BriiBotService::~BriiBotService()
+    BriiBotConnector::~BriiBotConnector()
     {
         Buffer::Free(m_icon);
     }
 
-    BriiBotService& BriiBotService::operator=(const BriiBotService&)
+    BriiBotConnector& BriiBotConnector::operator=(const BriiBotConnector&)
     {
         BLIK_ASSERT("해당 객체는 복사할 수 없습니다", false);
         return *this;
     }
 
-    void BriiBotService::SetIcon(chars name, chars filename)
+    void BriiBotConnector::SetIcon(chars name, chars filename)
     {
         m_name = name;
 
@@ -437,17 +437,17 @@ namespace BLIK
         Asset::Close(File);
     }
 
-    bool BriiBotService::IsRunningAndNotEventing()
+    bool BriiBotConnector::IsRunningAndNotEventing()
     {
         return (m_isRunning && !m_isEventing);
     }
 
-    void BriiBotService::AddApiMethod(chars apiMethodName, Remote::Method::GlueSubCB cb)
+    void BriiBotConnector::AddApiMethod(chars apiMethodName, Remote::Method::GlueSubCB cb)
     {
         m_apiMethod(apiMethodName) = cb;
     }
 
-    const Remote::Method BriiBotService::BeginEvent(chars methodName)
+    const Remote::Method BriiBotConnector::BeginEvent(chars methodName)
     {
         if(m_isRunning && !m_isEventing)
         {
@@ -457,7 +457,7 @@ namespace BLIK
         return Remote::Method();
     }
 
-    void BriiBotService::EndEventProc(EndEventResult result)
+    void BriiBotConnector::EndEventProc(EndEventResult result)
     {
         if(m_isEventing)
         {
@@ -484,7 +484,7 @@ namespace BLIK
         }
     }
 
-    void BriiBotService::InitForThread()
+    void BriiBotConnector::InitForThread()
     {
         BLIK_ASSERT("잘못된 시나리오입니다", m_remote == nullptr);
         m_addIcon_B2D = new Remote::Method("OnAddIcon", OnNull, this);
@@ -525,86 +525,86 @@ namespace BLIK
         else m_remote = Remote::ConnectForServer(m_port, Methods);
     }
 
-    void BriiBotService::OnRunScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnRunScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         Self->m_isRunning = true;
         Self->AddAnswer(Buffer::Alloc<BriiEvent::RunScript>(BLIK_DBG 1));
     }
 
-    void BriiBotService::OnExitScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnExitScript(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         Self->m_isRunning = false;
         Self->EndEventProc(EER_ExitScript);
     }
 
-    void BriiBotService::OnGetApiClasses(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnGetApiClasses(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnGetApiClassDetail(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnGetApiClassDetail(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnGetApiMethods(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnGetApiMethods(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnGetApiMethodDetail(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnGetApiMethodDetail(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnEndEvent(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnEndEvent(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         Remote::IntParam EventID = params[0].Drain();
         Remote::IntParam Success = params[1].Drain();
         Self->EndEventProc((Success.ConstValue())? EER_Done : EER_NotFound);
     }
 
-    void BriiBotService::OnCreateApiClass(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnCreateApiClass(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnRemoveApiClass(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnRemoveApiClass(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         BLIK_ASSERT("구현필요!!!", false); ///////////////////////
     }
 
-    void BriiBotService::OnCallApiMethod(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnCallApiMethod(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("잘못된 시나리오입니다", data);
-        BriiBotService* Self = (BriiBotService*) data;
+        BriiBotConnector* Self = (BriiBotConnector*) data;
 
         Remote::IntParam ClassID = params[0].Drain();
         Remote::StrParam MethodName = params[1].Drain();
@@ -612,14 +612,14 @@ namespace BLIK
             (*CurMethod)(data, &params[2], params.Count() - 2, ret);
     }
 
-    void BriiBotService::OnNull(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
+    void BriiBotConnector::OnNull(payload data, const Remote::Params& params, id_cloned_share* ret, bool localcall)
     {
         BLIK_ASSERT("디버거가 시나리오에 맞지 않는 잘못된 호출을 하였습니다", localcall);
     }
 
-    sint32 BriiBotService::OnTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common)
+    sint32 BriiBotConnector::OnTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common)
     {
-        BriiBotService* Self = (BriiBotService*) self;
+        BriiBotConnector* Self = (BriiBotConnector*) self;
         Self->BindTaskQueue(&answer);
         if(!Self->m_remote) Self->InitForThread();
         const bool IsConnected = Remote::CommunicateOnce(Self->m_remote);

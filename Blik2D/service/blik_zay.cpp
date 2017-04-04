@@ -1,12 +1,12 @@
 ﻿#include <blik.hpp>
-#include "blik_viewmanager.hpp"
+#include "blik_zay.hpp"
 
-BLIK_DECLARE_VIEW("_defaultview_")
-BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*) {}
-BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*) {}
-BLIK_VIEW_API OnGesture(GestureType, sint32, sint32) {}
-BLIK_VIEW_API OnRender(ViewPanel& panel)
-{BLIK_RGB(panel, 0x80, 0x80, 0x80) panel.fill();}
+ZAY_DECLARE_VIEW("_defaultview_")
+ZAY_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*) {}
+ZAY_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*) {}
+ZAY_VIEW_API OnGesture(GestureType, sint32, sint32) {}
+ZAY_VIEW_API OnRender(ZayPanel& panel)
+{ZAY_RGB(panel, 0x80, 0x80, 0x80) panel.fill();}
 
 namespace BLIK
 {
@@ -14,7 +14,7 @@ namespace BLIK
     {
     public:
         TouchRect() {BLIK_ASSERT("잘못된 시나리오입니다", false);}
-        TouchRect(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubGestureCB cb, bool hoverpass)
+        TouchRect(chars uiname, float l, float t, float r, float b, float zoom, ZayPanel::SubGestureCB cb, bool hoverpass)
         {
             mName = uiname;
             mL = l;
@@ -31,7 +31,7 @@ namespace BLIK
         {BLIK_ASSERT("잘못된 시나리오입니다", false); return *this;}
 
     public:
-        static buffer Create(chars uiname, float l, float t, float r, float b, float zoom, ViewPanel::SubGestureCB cb, bool hoverpass)
+        static buffer Create(chars uiname, float l, float t, float r, float b, float zoom, ZayPanel::SubGestureCB cb, bool hoverpass)
         {
             buffer NewBuffer = Buffer::AllocNoConstructorOnce<TouchRect>(BLIK_DBG 1);
             BLIK_CONSTRUCTOR(NewBuffer, 0, TouchRect, uiname, l, t, r, b, zoom, cb, hoverpass);
@@ -45,7 +45,7 @@ namespace BLIK
         float mR;
         float mB;
         float mZoom;
-        ViewPanel::SubGestureCB mCB;
+        ZayPanel::SubGestureCB mCB;
         bool mHoverPass;
     };
     typedef Object<TouchRect> TouchRectObject;
@@ -75,7 +75,7 @@ namespace BLIK
         TouchRectObjects mTouchRects;
     };
 
-    ViewClass::ViewClass()
+    ZayObject::ZayObject()
     {
         m_resource = nullptr;
         m_frame_counter = 0;
@@ -87,53 +87,53 @@ namespace BLIK
         m_resizing_height = -1;
     }
 
-    ViewClass::~ViewClass()
+    ZayObject::~ZayObject()
     {
     }
 
-    void ViewClass::bind(void* resource)
+    void ZayObject::bind(void* resource)
     {
         m_resource = resource;
     }
 
-    void ViewClass::initialize()
+    void ZayObject::initialize()
     {
         BLIK_ASSERT("This function should not be called directly.", false);
     }
 
-    void ViewClass::synchronize(SynchronizeModel model, sint32 param) const
+    void ZayObject::synchronize(SynchronizeModel model, sint32 param) const
     {
         BLIK_ASSERT("This function should not be called directly.", false);
     }
 
-    void ViewClass::invalidate(sint32 count) const
+    void ZayObject::invalidate(sint32 count) const
     {
         BLIK_ASSERT("Updater가 없습니다", m_updater);
         if(m_updater && 0 < count)
             m_updater(m_updater_data, count);
     }
 
-    void ViewClass::invalidate(chars uigroup) const
+    void ZayObject::invalidate(chars uigroup) const
     {
         if(uigroup)
             TouchCollector::ST(uigroup)->mDirty = true;
         invalidate();
     }
 
-    void ViewClass::invalidator(payload data, chars uigroup)
+    void ZayObject::invalidator(payload data, chars uigroup)
     {
-        ((const ViewClass*) data)->invalidate(uigroup);
+        ((const ZayObject*) data)->invalidate(uigroup);
     }
 
-    ViewClass* ViewClass::next(chars viewclass)
+    ZayObject* ZayObject::next(chars viewclass)
     {
-        ViewClass* Result = nullptr;
+        ZayObject* Result = nullptr;
         if(m_view.get())
-            Result = (ViewClass*) Platform::SetNextViewClass(m_view, viewclass);
+            Result = (ZayObject*) Platform::SetNextViewClass(m_view, viewclass);
         return Result;
     }
 
-    bool ViewClass::next(View* viewmanager)
+    bool ZayObject::next(View* viewmanager)
     {
         bool Result = false;
         if(m_view.get())
@@ -141,52 +141,52 @@ namespace BLIK
         return Result;
     }
 
-    void ViewClass::exit()
+    void ZayObject::exit()
     {
         BLIK_ASSERT("Updater가 없습니다", m_updater);
         if(m_updater)
             m_updater(m_updater_data, -1);
     }
 
-    bool ViewClass::valid(chars uiname) const
+    bool ZayObject::valid(chars uiname) const
     {
         BLIK_ASSERT("Finder가 없습니다", m_finder);
         return !!m_finder(m_finder_data, uiname);
     }
 
-    const rect128& ViewClass::rect(chars uiname) const
+    const rect128& ZayObject::rect(chars uiname) const
     {
         BLIK_ASSERT("Finder가 없습니다", m_finder);
-        if(auto CurElement = (const ViewManager::Element*) m_finder(m_finder_data, uiname))
+        if(auto CurElement = (const ZayView::Element*) m_finder(m_finder_data, uiname))
             return CurElement->m_rect;
         static const rect128 NullRect = {0, 0, 0, 0};
         return NullRect;
     }
 
-    const float ViewClass::zoom(chars uiname) const
+    const float ZayObject::zoom(chars uiname) const
     {
         BLIK_ASSERT("Finder가 없습니다", m_finder);
-        if(auto CurElement = (const ViewManager::Element*) m_finder(m_finder_data, uiname))
+        if(auto CurElement = (const ZayView::Element*) m_finder(m_finder_data, uiname))
             return CurElement->m_zoom;
         return 1;
     }
 
-    const point64& ViewClass::oldxy(chars uiname) const
+    const point64& ZayObject::oldxy(chars uiname) const
     {
         BLIK_ASSERT("Finder가 없습니다", m_finder);
-        if(auto CurElement = (const ViewManager::Element*) m_finder(m_finder_data, uiname))
+        if(auto CurElement = (const ZayView::Element*) m_finder(m_finder_data, uiname))
             return CurElement->m_saved_xy;
         static const point64 NullPoint = {0, 0};
         return NullPoint;
     }
 
-    void ViewClass::resizeForced(sint32 w, sint32 h)
+    void ZayObject::resizeForced(sint32 w, sint32 h)
     {
         m_resizing_width = w;
         m_resizing_height = h;
     }
 
-    bool ViewClass::getResizingValue(sint32& w, sint32& h)
+    bool ZayObject::getResizingValue(sint32& w, sint32& h)
     {
         bool Result = false;
         if(m_resizing_width != -1)
@@ -204,14 +204,14 @@ namespace BLIK
         return Result;
     }
 
-    ViewPanel::ViewPanel(float width, float height, const buffer touch)
+    ZayPanel::ZayPanel(float width, float height, const buffer touch)
         : m_width(width), m_height(height)
     {
         m_dirty = false;
         m_ref_surface = nullptr;
         m_ref_touch = touch;
         m_ref_touch_collector = nullptr;
-        ((ViewManager::Touch*) m_ref_touch)->ready((sint32) m_width, (sint32) m_height);
+        ((ZayView::Touch*) m_ref_touch)->ready((sint32) m_width, (sint32) m_height);
 
         m_stack_clip.AtAdding() = Clip(0, 0, m_width, m_height, true);
         m_stack_scissor.AtAdding() = Rect(0, 0, m_width, m_height);
@@ -231,7 +231,7 @@ namespace BLIK
         Platform::Graphics::SetZoom(1);
     }
 
-    ViewPanel::ViewPanel(id_surface surface, float width, float height, chars uigroup)
+    ZayPanel::ZayPanel(id_surface surface, float width, float height, chars uigroup)
         : m_width(width), m_height(height)
     {
         BLIK_ASSERT("surface가 nullptr입니다", surface);
@@ -276,62 +276,62 @@ namespace BLIK
         else m_ref_surface = nullptr;
     }
 
-    ViewPanel::~ViewPanel()
+    ZayPanel::~ZayPanel()
     {
         Platform::Graphics::UnbindSurface(m_ref_surface);
     }
 
-    void ViewPanel::erase() const
+    void ZayPanel::erase() const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::EraseRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
-    void ViewPanel::fill() const
+    void ZayPanel::fill() const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::FillRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
-    void ViewPanel::rect(float thick) const
+    void ZayPanel::rect(float thick) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::DrawRect(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height(), thick);
     }
 
-    void ViewPanel::line(const Point& begin, const Point& end, float thick) const
+    void ZayPanel::line(const Point& begin, const Point& end, float thick) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         const Point PointAdd = Point(LastClip.l, LastClip.t);
         Platform::Graphics::DrawLine(begin + PointAdd, end + PointAdd, thick);
     }
 
-    void ViewPanel::circle() const
+    void ZayPanel::circle() const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::DrawCircle(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height());
     }
 
-    void ViewPanel::bezier(const Vector& begin, const Vector& end, float thick) const
+    void ZayPanel::bezier(const Vector& begin, const Vector& end, float thick) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         const Point PointAdd = Point(LastClip.l, LastClip.t);
         Platform::Graphics::DrawBezier(begin + PointAdd, end + PointAdd, thick);
     }
 
-    void ViewPanel::polygon(Points p) const
+    void ZayPanel::polygon(Points p) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::FillPolygon(LastClip.l, LastClip.t, p);
     }
 
-    void ViewPanel::polyline(Points p, float thick) const
+    void ZayPanel::polyline(Points p, float thick) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::DrawPolyLine(LastClip.l, LastClip.t, p, thick);
     }
 
-    void ViewPanel::polybezier(Points p, float thick, bool showfirst, bool showlast) const
+    void ZayPanel::polybezier(Points p, float thick, bool showfirst, bool showlast) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         Platform::Graphics::DrawPolyBezier(LastClip.l, LastClip.t, p, thick, showfirst, showlast);
@@ -361,7 +361,7 @@ namespace BLIK
         return YAlignCode;
     }
 
-    haschild ViewPanel::icon(const Image& image, UIAlign align)
+    haschild ZayPanel::icon(const Image& image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -384,7 +384,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::icon(float x, float y, const Image& image, UIAlign align)
+    haschild ZayPanel::icon(float x, float y, const Image& image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -407,7 +407,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::iconNative(id_image_read image, UIAlign align)
+    haschild ZayPanel::iconNative(id_image_read image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -422,7 +422,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::iconNative(float x, float y, id_image_read image, UIAlign align)
+    haschild ZayPanel::iconNative(float x, float y, id_image_read image, UIAlign align)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -437,7 +437,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::stretch(const Image& image, bool rebuild)
+    haschild ZayPanel::stretch(const Image& image, bool rebuild)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const float XRate = LastClip.Width() / image.GetWidth();
@@ -462,7 +462,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::stretchNative(id_image_read image) const
+    haschild ZayPanel::stretchNative(id_image_read image) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 ImageWidth = Platform::Graphics::GetImageWidth(image);
@@ -477,7 +477,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ViewPanel::ninepatch(const Image& image)
+    haschild ZayPanel::ninepatch(const Image& image)
     {
         const Clip& LastClip = m_stack_clip[-1];
 
@@ -505,7 +505,7 @@ namespace BLIK
         return haschild_null;
     }
 
-    void ViewPanel::pattern(const Image& image, UIAlign align, bool reversed_xorder, bool reversed_yorder) const
+    void ZayPanel::pattern(const Image& image, UIAlign align, bool reversed_xorder, bool reversed_yorder) const
     {
         sint32 XAlignCode = 0;
         switch(align)
@@ -553,13 +553,13 @@ namespace BLIK
         }
     }
 
-    bool ViewPanel::text(chars string, UIFontAlign align, UIFontElide elide) const
+    bool ZayPanel::text(chars string, UIFontAlign align, UIFontElide elide) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         return Platform::Graphics::DrawString(LastClip.l, LastClip.t, LastClip.Width(), LastClip.Height(), string, align, elide);
     }
 
-    void ViewPanel::text(float x, float y, chars string, UIFontAlign align) const
+    void ZayPanel::text(float x, float y, chars string, UIFontAlign align) const
     {
         x += m_stack_clip[-1].l;
         y += m_stack_clip[-1].t;
@@ -609,11 +609,11 @@ namespace BLIK
         Platform::Graphics::DrawString(CalcRect.l, CalcRect.t, CalcRect.Width(), CalcRect.Height(), string, UIFA_LeftTop);
     }
 
-    void ViewPanel::sub(chars uigroup, id_surface surface) const
+    void ZayPanel::sub(chars uigroup, id_surface surface) const
     {
         auto CurCollector = TouchCollector::ST(uigroup);
         bool DirtyTest = CurCollector->mDirty;
-        if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+        if(auto CurTouch = (ZayView::Touch*) m_ref_touch)
         {
             const Clip& LastClip = m_stack_clip[-1];
             const float HRate = LastClip.Width() / CurCollector->mWidth;
@@ -635,21 +635,21 @@ namespace BLIK
         stretchNative(Platform::Graphics::GetImageFromSurface(surface));
     }
 
-    PanelState ViewPanel::state(chars uiname) const
+    PanelState ZayPanel::state(chars uiname) const
     {
-        if(auto CurTouch = (const ViewManager::Touch*) m_ref_touch)
+        if(auto CurTouch = (const ZayView::Touch*) m_ref_touch)
         if(auto CurElement = CurTouch->get(uiname, 1))
             return CurElement->GetState(m_ref_touch);
         return PS_Null;
     }
 
-    Point ViewPanel::toview(float x, float y) const
+    Point ZayPanel::toview(float x, float y) const
     {
         const Clip& LastClip = m_stack_clip[-1];
         return Point(LastClip.l + x, LastClip.t + y);
     }
 
-    void ViewPanel::test(UITestOrder order)
+    void ZayPanel::test(UITestOrder order)
     {
         switch(order)
         {
@@ -658,7 +658,7 @@ namespace BLIK
         }
     }
 
-    didstack ViewPanel::_push_clip(float l, float t, float r, float b, bool doScissor)
+    didstack ZayPanel::_push_clip(float l, float t, float r, float b, bool doScissor)
     {
         Clip& NewClip = m_stack_clip.AtAdding();
         const Clip& LastClip = m_stack_clip[-2];
@@ -675,7 +675,7 @@ namespace BLIK
         return didstack_ok;
     }
 
-    didstack ViewPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    didstack ZayPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         if(_push_clip(l, t, r, b, doScissor))
         {
@@ -686,7 +686,7 @@ namespace BLIK
                 CurCollector->mTouchRects.AtAdding() =
                     TouchRect::Create(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            else if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+            else if(auto CurTouch = (ZayView::Touch*) m_ref_touch)
             {
                 const Clip& LastClip = m_stack_clip[-1];
                 const float& LastZoom = m_stack_zoom[-1];
@@ -697,17 +697,17 @@ namespace BLIK
         return didstack_null;
     }
 
-    didstack ViewPanel::_push_clip_by_rect(const Rect& r, bool doScissor)
+    didstack ZayPanel::_push_clip_by_rect(const Rect& r, bool doScissor)
     {
         return _push_clip(r.l, r.t, r.r, r.b, doScissor);
     }
 
-    didstack ViewPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    didstack ZayPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         return _push_clip_ui(r.l, r.t, r.r, r.b, doScissor, uiname, cb, hoverpass);
     }
 
-    didstack ViewPanel::_push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor)
+    didstack ZayPanel::_push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor)
     {
         Rect CalcedRect;
         if(!m_child_image) CalcedRect = m_child_guide;
@@ -721,7 +721,7 @@ namespace BLIK
         return _push_clip(l, t, r, b, doScissor);
     }
 
-    didstack ViewPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    didstack ZayPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         if(_push_clip_by_child(ix, iy, xcount, ycount, doScissor))
         {
@@ -732,7 +732,7 @@ namespace BLIK
                 CurCollector->mTouchRects.AtAdding() =
                     TouchRect::Create(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            else if(auto CurTouch = (ViewManager::Touch*) m_ref_touch)
+            else if(auto CurTouch = (ZayView::Touch*) m_ref_touch)
             {
                 const Clip& LastClip = m_stack_clip[-1];
                 const float& LastZoom = m_stack_zoom[-1];
@@ -743,7 +743,7 @@ namespace BLIK
         return didstack_null;
     }
 
-    didstack ViewPanel::_push_color(sint32 r, sint32 g, sint32 b, sint32 a)
+    didstack ZayPanel::_push_color(sint32 r, sint32 g, sint32 b, sint32 a)
     {
         Color& NewColor = m_stack_color.AtAdding();
         const Color& LastColor = m_stack_color[-2];
@@ -759,12 +759,12 @@ namespace BLIK
         return didstack_ok;
     }
 
-    didstack ViewPanel::_push_color(const Color& color)
+    didstack ZayPanel::_push_color(const Color& color)
     {
         return _push_color(color.r, color.g, color.b, color.a);
     }
 
-    didstack ViewPanel::_push_color_clear()
+    didstack ZayPanel::_push_color_clear()
     {
         Color& NewColor = m_stack_color.AtAdding();
         NewColor = Color(Color::ColoringDefault);
@@ -773,7 +773,7 @@ namespace BLIK
         return didstack_ok;
     }
 
-    didstack ViewPanel::_push_font(float size, chars name)
+    didstack ZayPanel::_push_font(float size, chars name)
     {
         Font& NewFont = m_stack_font.AtAdding();
         const Font& LastFont = m_stack_font[-2];
@@ -784,7 +784,7 @@ namespace BLIK
         return didstack_ok;
     }
 
-    didstack ViewPanel::_push_zoom(float zoom)
+    didstack ZayPanel::_push_zoom(float zoom)
     {
         float& NewZoom = m_stack_zoom.AtAdding();
         const float& LastZoom = m_stack_zoom[-2];
@@ -806,7 +806,7 @@ namespace BLIK
         return didstack_ok;
     }
 
-    endstack ViewPanel::_pop_clip()
+    endstack ZayPanel::_pop_clip()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_clip.Count());
         if(m_stack_clip[-1].didscissor)
@@ -820,7 +820,7 @@ namespace BLIK
         return endstack_null;
     }
 
-    endstack ViewPanel::_pop_color()
+    endstack ZayPanel::_pop_color()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_color.Count());
         m_stack_color.SubtractionOne();
@@ -830,7 +830,7 @@ namespace BLIK
         return endstack_null;
     }
 
-    endstack ViewPanel::_pop_font()
+    endstack ZayPanel::_pop_font()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_font.Count());
         m_stack_font.SubtractionOne();
@@ -840,7 +840,7 @@ namespace BLIK
         return endstack_null;
     }
 
-    endstack ViewPanel::_pop_zoom()
+    endstack ZayPanel::_pop_zoom()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_zoom.Count());
         m_stack_zoom.SubtractionOne();
@@ -852,7 +852,7 @@ namespace BLIK
         return endstack_null;
     }
 
-    bool ViewPanel::_push_scissor(float l, float t, float r, float b)
+    bool ZayPanel::_push_scissor(float l, float t, float r, float b)
     {
         Rect& NewRect = m_stack_scissor.AtAdding();
         const Rect& LastRect = m_stack_scissor[-2];
@@ -871,7 +871,7 @@ namespace BLIK
         return true;
     }
 
-    void ViewPanel::_pop_scissor()
+    void ZayPanel::_pop_scissor()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_scissor.Count());
         m_stack_scissor.SubtractionOne();
@@ -880,25 +880,25 @@ namespace BLIK
         Platform::Graphics::SetScissor(LastRect.l, LastRect.t, LastRect.Width(), LastRect.Height());
     }
 
-    class ViewController : public ViewClass
+    class ZayController : public ZayObject
     {
     private:
-        ViewController() {}
-        ~ViewController() {}
+        ZayController() {}
+        ~ZayController() {}
 
     public:
         void nextFrame()
         {
             m_frame_counter++;
-            m_frame_updater.Flush(ViewClass::invalidator, this);
+            m_frame_updater.Flush(ZayObject::invalidator, this);
         }
 
         void wakeUpCheck()
         {
-            m_frame_updater.WakeUp(ViewClass::invalidator, this);
+            m_frame_updater.WakeUp(ZayObject::invalidator, this);
         }
 
-        void setCallback(ViewClass::FinderCB fcb, void* fdata, ViewClass::UpdaterCB icb, void* idata)
+        void setCallback(ZayObject::FinderCB fcb, void* fdata, ZayObject::UpdaterCB icb, void* idata)
         {
             m_finder = fcb;
             m_finder_data = fdata;
@@ -907,8 +907,8 @@ namespace BLIK
         }
     };
 
-    ViewManager::ViewManager(chars viewclass) : View(),
-        m_ref_func(ViewManager::_accessfunc(viewclass, false)), m_viewclass((viewclass)? viewclass : "")
+    ZayView::ZayView(chars viewclass) : View(),
+        m_ref_func(ZayView::_accessfunc(viewclass, false)), m_viewclass((viewclass)? viewclass : "")
     {
         BLIK_ASSERT(String::Format("존재하지 않는 뷰(%s)를 생성하려 합니다", viewclass), m_ref_func);
         m_class = m_ref_func->m_alloc();
@@ -916,47 +916,47 @@ namespace BLIK
         m_agreed_quit = false;
     }
 
-    ViewManager::~ViewManager()
+    ZayView::~ZayView()
     {
         m_ref_func->m_free(m_class);
         Buffer::Free(m_touch);
     }
 
-    View* ViewManager::Creator(chars viewclass)
+    View* ZayView::Creator(chars viewclass)
     {
-        return new ViewManager(viewclass);
+        return new ZayView(viewclass);
     }
 
-    h_view ViewManager::SetView(h_view view)
+    h_view ZayView::SetView(h_view view)
     {
         h_view OldViewHandle = m_class->m_view;
         m_class->m_view = view;
         return OldViewHandle;
     }
 
-    bool ViewManager::IsNative()
+    bool ZayView::IsNative()
     {
         return m_ref_func->m_isnative;
     }
 
-    void* ViewManager::GetClass()
+    void* ZayView::GetClass()
     {
         return m_class;
     }
 
-    void ViewManager::SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out)
+    void ZayView::SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out)
     {
         m_ref_func->m_bind(m_class);
         m_ref_func->m_notify(sender, topic, in, out);
         m_ref_func->m_bind(nullptr);
     }
 
-    void ViewManager::SetCallback(UpdaterCB cb, payload data)
+    void ZayView::SetCallback(UpdaterCB cb, payload data)
     {
-        ((ViewController*) m_class)->setCallback(_finder, this, cb, data);
+        ((ZayController*) m_class)->setCallback(_finder, this, cb, data);
     }
 
-    void ViewManager::OnCreate()
+    void ZayView::OnCreate()
     {
         BLIK_ASSERT("브로드캐스트 등록에 실패하였습니다", m_class);
         View::Search(m_viewclass, SC_Create, m_class->m_view);
@@ -966,7 +966,7 @@ namespace BLIK
         m_ref_func->m_bind(nullptr);
     }
 
-    bool ViewManager::OnCanQuit()
+    bool ZayView::OnCanQuit()
     {
         if(!m_agreed_quit)
         {
@@ -986,7 +986,7 @@ namespace BLIK
         return m_agreed_quit;
     }
 
-    void ViewManager::OnDestroy()
+    void ZayView::OnDestroy()
     {
         m_ref_func->m_bind(m_class);
         m_ref_func->m_command(CT_Destroy, "", nullptr, nullptr);
@@ -996,7 +996,7 @@ namespace BLIK
         View::Search(m_viewclass, SC_Destroy, m_class->m_view);
     }
 
-    void ViewManager::OnSize(sint32 w, sint32 h)
+    void ZayView::OnSize(sint32 w, sint32 h)
     {
         sint32s WH;
         WH.AtAdding() = w;
@@ -1006,26 +1006,26 @@ namespace BLIK
         m_ref_func->m_bind(nullptr);
     }
 
-    void ViewManager::OnTick()
+    void ZayView::OnTick()
     {
         m_ref_func->m_bind(m_class);
         m_ref_func->m_command(CT_Tick, "", nullptr, nullptr);
         m_ref_func->m_bind(nullptr);
 
-        ((ViewController*) m_class)->wakeUpCheck();
+        ((ZayController*) m_class)->wakeUpCheck();
     }
 
-    void ViewManager::OnRender(sint32 width, sint32 height, float l, float t, float r, float b)
+    void ZayView::OnRender(sint32 width, sint32 height, float l, float t, float r, float b)
     {
-        ViewPanel NewPanel(width, height, m_touch);
-        BLIK_LTRB_SCISSOR(NewPanel, l, t, r, b)
-        BLIK_XYWH(NewPanel, -l, -t, r, b)
+        ZayPanel NewPanel(width, height, m_touch);
+        ZAY_LTRB_SCISSOR(NewPanel, l, t, r, b)
+        ZAY_XYWH(NewPanel, -l, -t, r, b)
         {
             m_ref_func->m_bind(m_class);
             m_ref_func->m_render(NewPanel);
             m_ref_func->m_bind(nullptr);
         }
-        ((ViewController*) m_class)->nextFrame();
+        ((ZayController*) m_class)->nextFrame();
 
         // 매프레임마다 화면갱신을 위한 터치를 일으킴(마우스기기를 위한 시나리오)
         Touch* CurTouch = (Touch*) m_touch;
@@ -1033,7 +1033,7 @@ namespace BLIK
             OnTouch(TT_Render, 0, CurTouch->hoverx(), CurTouch->hovery());
     }
 
-    void ViewManager::OnTouch(TouchType type, sint32 id, sint32 x, sint32 y)
+    void ZayView::OnTouch(TouchType type, sint32 id, sint32 x, sint32 y)
     {
         Touch* CurTouch = (Touch*) m_touch;
         const Element& CurElement = CurTouch->get(x, y);
@@ -1112,16 +1112,16 @@ namespace BLIK
             m_class->invalidate();
     }
 
-    void ViewManager::_gesture(GestureType type, sint32 x, sint32 y)
+    void ZayView::_gesture(GestureType type, sint32 x, sint32 y)
     {
         m_ref_func->m_bind(m_class);
         m_ref_func->m_gesture(type, x, y);
         m_ref_func->m_bind(nullptr);
     }
 
-    autorun ViewManager::_makefunc(bool isnative, chars viewclass,
-        ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::GestureCB g, ViewPanel::RenderCB r,
-        ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f)
+    autorun ZayView::_makefunc(bool isnative, chars viewclass,
+        ZayObject::CommandCB c, ZayObject::NotifyCB n, ZayPanel::GestureCB g, ZayPanel::RenderCB r,
+        ZayObject::BindCB b, ZayObject::AllocCB a, ZayObject::FreeCB f)
     {
         BLIK_ASSERT("중복된 이름의 뷰가 존재합니다", !_accessfunc(viewclass, false));
         Function* NewFunction = _accessfunc(viewclass, true);
@@ -1137,7 +1137,7 @@ namespace BLIK
         return true;
     }
 
-    ViewManager::Function* ViewManager::_accessfunc(chars viewclass, bool creatable)
+    ZayView::Function* ZayView::_accessfunc(chars viewclass, bool creatable)
     {
         static Map<Function> AllFunctions;
         // 본 함수는 아래와 같은 TLS기법으로 AllFunctions의 싱글톤을 관리하지 않는다.
@@ -1152,13 +1152,13 @@ namespace BLIK
         return (creatable)? &AllFunctions(ViewName) : AllFunctions.Access(ViewName);
     }
 
-    const void* ViewManager::_finder(void* data, chars uiname)
+    const void* ZayView::_finder(void* data, chars uiname)
     {
-        Touch* CurTouch = (Touch*) ((ViewManager*) data)->m_touch;
+        Touch* CurTouch = (Touch*) ((ZayView*) data)->m_touch;
         return CurTouch->get(uiname, 0);
     }
 
-    ViewManager::Element::Element()
+    ZayView::Element::Element()
     {
         m_updateid = -1;
         m_rect.l = 0;
@@ -1177,11 +1177,11 @@ namespace BLIK
         m_saved_state_old = PS_Null;
     }
 
-    ViewManager::Element::~Element()
+    ZayView::Element::~Element()
     {
     }
 
-    ViewManager::Element& ViewManager::Element::operator=(const Element& rhs)
+    ZayView::Element& ZayView::Element::operator=(const Element& rhs)
     {
         m_updateid = rhs.m_updateid;
         m_name = rhs.m_name;
@@ -1202,12 +1202,12 @@ namespace BLIK
         return *this;
     }
 
-    PanelState ViewManager::Element::GetState(void* touch) const
+    PanelState ZayView::Element::GetState(void* touch) const
     {
         if(m_updateid != m_saved_updateid_for_state)
         {
             PanelState StateCollector = PS_Null;
-            auto CurTouch = (const ViewManager::Touch*) touch;
+            auto CurTouch = (const ZayView::Touch*) touch;
             if(CurTouch->ishovered(m_hoverid))
                 StateCollector = StateCollector | PS_Hovered;
             if(CurTouch->getfocus() == this)
@@ -1230,12 +1230,12 @@ namespace BLIK
         return m_saved_state;
     }
 
-    bool ViewManager::Element::IsStateChanged(void* touch) const
+    bool ZayView::Element::IsStateChanged(void* touch) const
     {
         return (GetState(touch) != m_saved_state_old);
     }
 
-    ViewManager::Touch::Touch()
+    ZayView::Touch::Touch()
     {
         m_updateid = 0;
         m_hoverid = 0;
@@ -1249,11 +1249,11 @@ namespace BLIK
         m_hover_y = -1;
     }
 
-    ViewManager::Touch::~Touch()
+    ZayView::Touch::~Touch()
     {
     }
 
-    ViewManager::Touch& ViewManager::Touch::operator=(const ViewManager::Touch& rhs)
+    ZayView::Touch& ZayView::Touch::operator=(const ZayView::Touch& rhs)
     {
         m_updateid = rhs.m_updateid;
         m_hoverid = rhs.m_hoverid;
@@ -1271,7 +1271,7 @@ namespace BLIK
         return *this;
     }
 
-    void ViewManager::Touch::ready(sint32 width, sint32 height)
+    void ZayView::Touch::ready(sint32 width, sint32 height)
     {
         m_updateid++;
         m_block_width = (width + Cell::Size - 1) / Cell::Size;
@@ -1283,8 +1283,8 @@ namespace BLIK
         m_element.m_cb = OnGesture;
     }
 
-    void ViewManager::Touch::update(chars uiname, float l, float t, float r, float b,
-        float zoom, ViewPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest)
+    void ZayView::Touch::update(chars uiname, float l, float t, float r, float b,
+        float zoom, ZayPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest)
     {
         if(uiname == nullptr || uiname[0] == '\0' || r <= l || b <= t)
             return;
@@ -1322,12 +1322,12 @@ namespace BLIK
             *dirtytest = CurElement.IsStateChanged(this);
     }
 
-    const ViewManager::Element* ViewManager::Touch::get() const
+    const ZayView::Element* ZayView::Touch::get() const
     {
         return &m_element;
     }
 
-    const ViewManager::Element* ViewManager::Touch::get(chars uiname, sint32 lag) const
+    const ZayView::Element* ZayView::Touch::get(chars uiname, sint32 lag) const
     {
         BLIK_ASSERT("uiname이 nullptr입니다", uiname);
         if(const Element* CurElement = m_map.Access(uiname))
@@ -1336,7 +1336,7 @@ namespace BLIK
         return nullptr;
     }
 
-    const ViewManager::Element& ViewManager::Touch::get(sint32 x, sint32 y) const
+    const ZayView::Element& ZayView::Touch::get(sint32 x, sint32 y) const
     {
         if(const Cell* CurCell = getcell_const(x, y))
         {
@@ -1351,7 +1351,7 @@ namespace BLIK
         return m_element;
     }
 
-    bool ViewManager::Touch::hovertest(sint32 x, sint32 y)
+    bool ZayView::Touch::hovertest(sint32 x, sint32 y)
     {
         m_hoverid++;
         bool NeedUpdate = false;
@@ -1393,7 +1393,7 @@ namespace BLIK
         return NeedUpdate;
     }
 
-    ViewManager::Touch::Cell* ViewManager::Touch::getcell(sint32 x, sint32 y)
+    ZayView::Touch::Cell* ZayView::Touch::getcell(sint32 x, sint32 y)
     {
         const sint32 CellX = x / Cell::Size;
         const sint32 CellY = y / Cell::Size;
@@ -1413,7 +1413,7 @@ namespace BLIK
         return nullptr;
     }
 
-    const ViewManager::Touch::Cell* ViewManager::Touch::getcell_const(sint32 x, sint32 y) const
+    const ZayView::Touch::Cell* ZayView::Touch::getcell_const(sint32 x, sint32 y) const
     {
         const sint32 CellX = x / Cell::Size;
         const sint32 CellY = y / Cell::Size;
@@ -1433,24 +1433,24 @@ namespace BLIK
         return nullptr;
     }
 
-    void ViewManager::Touch::OnGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
+    void ZayView::Touch::OnGesture(ZayView* manager, const Element* data, GestureType type, sint32 x, sint32 y)
     {
         manager->_gesture(type, x, y);
         data->m_saved_xy.x = x;
         data->m_saved_xy.y = y;
     }
 
-    void ViewManager::Touch::OnSubGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y)
+    void ZayView::Touch::OnSubGesture(ZayView* manager, const Element* data, GestureType type, sint32 x, sint32 y)
     {
         if(data->m_subcb)
         {
-            data->m_subcb((ViewClass*) manager->GetClass(), data->m_name, type, x, y);
+            data->m_subcb((ZayObject*) manager->GetClass(), data->m_name, type, x, y);
             data->m_saved_xy.x = x;
             data->m_saved_xy.y = y;
         }
     }
 
-    ViewManager::Function::Function()
+    ZayView::Function::Function()
     {
         m_isnative = false;
         m_command = nullptr;
@@ -1462,7 +1462,7 @@ namespace BLIK
         m_free = nullptr;
     }
 
-    ViewManager::Function::~Function()
+    ZayView::Function::~Function()
     {
     }
 }

@@ -228,16 +228,16 @@
     <ClCompile Include="..\service\blik_batchbuilder.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_briiservice.cpp">
+    <ClCompile Include="..\service\blik_boxr.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_imagebuilder.cpp">
+    <ClCompile Include="..\service\blik_brii.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
     <ClCompile Include="..\service\blik_oauth2service.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
-    <ClCompile Include="..\service\blik_viewmanager.cpp">
+    <ClCompile Include="..\service\blik_zay.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
   </ItemGroup>
@@ -440,16 +440,16 @@
     <ClInclude Include="..\service\blik_batchbuilder.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_briiservice.hpp">
+    <ClInclude Include="..\service\blik_boxr.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_imagebuilder.hpp">
+    <ClInclude Include="..\service\blik_brii.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
     <ClInclude Include="..\service\blik_oauth2service.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
-    <ClInclude Include="..\service\blik_viewmanager.hpp">
+    <ClInclude Include="..\service\blik_zay.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
   </ItemGroup>

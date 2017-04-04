@@ -1,20 +1,20 @@
 ﻿#include <blik.hpp>
-#include "blik_imagebuilder.hpp"
+#include "blik_boxr.hpp"
 
 #include <format/blik_bmp.hpp>
 #include <format/blik_png.hpp>
 
 namespace BLIK
 {
-    ImageBuilder::ImageBuilder()
+    BoxrBuilder::BoxrBuilder()
     {
     }
 
-    ImageBuilder::~ImageBuilder()
+    BoxrBuilder::~BoxrBuilder()
     {
     }
 
-    bool ImageBuilder::LoadAtlas(chars key_filename, chars map_filename, bool keep_collection)
+    bool BoxrBuilder::LoadAtlas(chars key_filename, chars map_filename, bool keep_collection)
     {
         id_bitmap KeyBitmap = MakeBitmap(key_filename);
         id_bitmap MapBitmap = MakeBitmap(map_filename);
@@ -164,13 +164,13 @@ namespace BLIK
         return true;
     }
 
-    void ImageBuilder::SaveSubImages(chars pathname) const
+    void BoxrBuilder::SaveSubImages(chars pathname) const
     {
         for(sint32 i = 0; i < m_subimages.Count(); ++i)
             m_subimages[i].Save(pathname);
     }
 
-    id_bitmap ImageBuilder::MakeBitmap(chars png_filename, id_assetpath_read assetpath)
+    id_bitmap BoxrBuilder::MakeBitmap(chars png_filename, id_assetpath_read assetpath)
     {
         id_bitmap Result = nullptr;
         if(id_asset_read PngAsset = Asset::OpenForRead(png_filename, assetpath))
@@ -185,7 +185,7 @@ namespace BLIK
         return Result;
     }
 
-    id_bitmap ImageBuilder::MakeTagBitmap(chars key_filename, chars tagname)
+    id_bitmap BoxrBuilder::MakeTagBitmap(chars key_filename, chars tagname)
     {
         id_bitmap KeyBitmap = MakeBitmap(key_filename);
         if(!KeyBitmap)

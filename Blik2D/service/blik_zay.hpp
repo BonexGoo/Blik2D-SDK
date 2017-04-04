@@ -11,141 +11,141 @@
 #include <functional>
 
 // 옵션스택관련
-#define BLIK_LTRB(PANEL, L, T, R, B) \
+#define ZAY_LTRB(PANEL, L, T, R, B) \
     for(bool _ = (PANEL)._push_clip(L, T, R, B, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_LTRB_UI(PANEL, L, T, R, B, NAME, ...) \
+#define ZAY_LTRB_UI(PANEL, L, T, R, B, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_LTRB_SCISSOR(PANEL, L, T, R, B) \
+#define ZAY_LTRB_SCISSOR(PANEL, L, T, R, B) \
     for(bool _ = (PANEL)._push_clip(L, T, R, B, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_LTRB_UI_SCISSOR(PANEL, L, T, R, B, NAME, ...) \
+#define ZAY_LTRB_UI_SCISSOR(PANEL, L, T, R, B, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_XYWH(PANEL, X, Y, W, H) \
+#define ZAY_XYWH(PANEL, X, Y, W, H) \
     for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYWH_UI(PANEL, X, Y, W, H, NAME, ...) \
+#define ZAY_XYWH_UI(PANEL, X, Y, W, H, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYWH_SCISSOR(PANEL, X, Y, W, H) \
+#define ZAY_XYWH_SCISSOR(PANEL, X, Y, W, H) \
     for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, NAME, ...) \
+#define ZAY_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_XYRR(PANEL, X, Y, RW, RH) \
+#define ZAY_XYRR(PANEL, X, Y, RW, RH) \
     for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYRR_UI(PANEL, X, Y, RW, RH, NAME, ...) \
+#define ZAY_XYRR_UI(PANEL, X, Y, RW, RH, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYRR_SCISSOR(PANEL, X, Y, RW, RH) \
+#define ZAY_XYRR_SCISSOR(PANEL, X, Y, RW, RH) \
     for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, NAME, ...) \
+#define ZAY_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_RECT(PANEL, R) \
+#define ZAY_RECT(PANEL, R) \
     for(bool _ = (PANEL)._push_clip_by_rect(R, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_RECT_UI(PANEL, R, NAME, ...) \
+#define ZAY_RECT_UI(PANEL, R, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_rect(R, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_RECT_SCISSOR(PANEL, R) \
+#define ZAY_RECT_SCISSOR(PANEL, R) \
     for(bool _ = (PANEL)._push_clip_by_rect(R, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_RECT_UI_SCISSOR(PANEL, R, NAME, ...) \
+#define ZAY_RECT_UI_SCISSOR(PANEL, R, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_rect(R, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_INNER(PANEL, V) \
+#define ZAY_INNER(PANEL, V) \
     for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false); _; _ = (PANEL)._pop_clip())
-#define BLIK_INNER_UI(PANEL, V, NAME, ...) \
+#define ZAY_INNER_UI(PANEL, V, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_INNER_SCISSOR(PANEL, V) \
+#define ZAY_INNER_SCISSOR(PANEL, V) \
     for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true); _; _ = (PANEL)._pop_clip())
-#define BLIK_INNER_UI_SCISSOR(PANEL, V, NAME, ...) \
+#define ZAY_INNER_UI_SCISSOR(PANEL, V, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_CHILD(PANEL) \
+#define ZAY_CHILD(PANEL) \
     for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_UI(PANEL, NAME, ...) \
+#define ZAY_CHILD_UI(PANEL, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SCISSOR(PANEL) \
+#define ZAY_CHILD_SCISSOR(PANEL) \
     for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_UI_SCISSOR(PANEL, NAME, ...) \
+#define ZAY_CHILD_UI_SCISSOR(PANEL, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_CHILD_AT(PANEL, IX, IY) \
+#define ZAY_CHILD_AT(PANEL, IX, IY) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_AT_UI(PANEL, IX, IY, NAME, ...) \
+#define ZAY_CHILD_AT_UI(PANEL, IX, IY, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_AT_SCISSOR(PANEL, IX, IY) \
+#define ZAY_CHILD_AT_SCISSOR(PANEL, IX, IY) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, NAME, ...) \
+#define ZAY_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_CHILD_SECTION(PANEL, IX, IY, XC, YC) \
+#define ZAY_CHILD_SECTION(PANEL, IX, IY, XC, YC) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, NAME, ...) \
+#define ZAY_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SECTION_SCISSOR(PANEL, IX, IY, XC, YC) \
+#define ZAY_CHILD_SECTION_SCISSOR(PANEL, IX, IY, XC, YC) \
     for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true); _; _ = (PANEL)._pop_clip())
-#define BLIK_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, NAME, ...) \
+#define ZAY_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, NAME, ...) \
     for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
 
-#define BLIK_RGB(PANEL, R, G, B) \
+#define ZAY_RGB(PANEL, R, G, B) \
     for(bool _ = (PANEL)._push_color(R, G, B, 0xFF); _; _ = (PANEL)._pop_color())
-#define BLIK_RGB_IF(PANEL, R, G, B, QUERY) \
+#define ZAY_RGB_IF(PANEL, R, G, B, QUERY) \
     for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(R, G, B, 0xFF); _; _ = __ && (PANEL)._pop_color())
-#define BLIK_RGBA(PANEL, R, G, B, A) \
+#define ZAY_RGBA(PANEL, R, G, B, A) \
     for(bool _ = (PANEL)._push_color(R, G, B, A); _; _ = (PANEL)._pop_color())
-#define BLIK_RGBA_IF(PANEL, R, G, B, A, QUERY) \
+#define ZAY_RGBA_IF(PANEL, R, G, B, A, QUERY) \
     for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(R, G, B, A); _; _ = __ && (PANEL)._pop_color())
-#define BLIK_COLOR(PANEL, COLOR) \
+#define ZAY_COLOR(PANEL, COLOR) \
     for(bool _ = (PANEL)._push_color(COLOR); _; _ = (PANEL)._pop_color())
-#define BLIK_COLOR_IF(PANEL, COLOR, QUERY) \
+#define ZAY_COLOR_IF(PANEL, COLOR, QUERY) \
     for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(COLOR); _; _ = __ && (PANEL)._pop_color())
-#define BLIK_COLOR_CLEAR(PANEL) \
+#define ZAY_COLOR_CLEAR(PANEL) \
     for(bool _ = (PANEL)._push_color_clear(); _; _ = (PANEL)._pop_color())
 
-#define BLIK_FONT(PANEL, ...) \
+#define ZAY_FONT(PANEL, ...) \
     for(bool _ = (PANEL)._push_font(__VA_ARGS__); _; _ = (PANEL)._pop_font())
-#define BLIK_ZOOM(PANEL, ZOOM) \
+#define ZAY_ZOOM(PANEL, ZOOM) \
     for(bool _ = (PANEL)._push_zoom(ZOOM); _; _ = (PANEL)._pop_zoom())
 
 // 서브패널관련
-#define BLIK_MAKE_SUB(PANEL, SURFACE) \
-    for(ViewPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE)); (PANEL)._is_dirty(); (PANEL)._clear_me())
-#define BLIK_MAKE_SUB_UI(PANEL, SURFACE, NAME) \
-    for(ViewPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE), NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
-#define BLIK_MAKE_SUB_WH(PANEL, SURFACE, W, H) \
-    for(ViewPanel PANEL(SURFACE, W, H); (PANEL)._is_dirty(); (PANEL)._clear_me())
-#define BLIK_MAKE_SUB_UI_WH(PANEL, SURFACE, NAME, W, H) \
-    for(ViewPanel PANEL(SURFACE, W, H, NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define ZAY_MAKE_SUB(PANEL, SURFACE) \
+    for(ZayPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE)); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define ZAY_MAKE_SUB_UI(PANEL, SURFACE, NAME) \
+    for(ZayPanel PANEL(SURFACE, Platform::Graphics::GetSurfaceWidth(SURFACE), Platform::Graphics::GetSurfaceHeight(SURFACE), NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define ZAY_MAKE_SUB_WH(PANEL, SURFACE, W, H) \
+    for(ZayPanel PANEL(SURFACE, W, H); (PANEL)._is_dirty(); (PANEL)._clear_me())
+#define ZAY_MAKE_SUB_UI_WH(PANEL, SURFACE, NAME, W, H) \
+    for(ZayPanel PANEL(SURFACE, W, H, NAME); (PANEL)._is_dirty(); (PANEL)._clear_me())
 
 // 뷰등록관련
-#define BLIK_VIEW_API static void
-#define BLIK_DECLARE_VIEW(NAME) BLIK_DECLARE_VIEW_CLASS(NAME, ViewClass)
-#define BLIK_DECLARE_VIEW_CLASS(NAME, CLASS) \
-    BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnGesture(GestureType, sint32, sint32); \
-    BLIK_VIEW_API OnRender(ViewPanel&); \
-    static ViewInstance<CLASS> m; \
-    static void _Bind(ViewClass* ptr) {m._bind((CLASS*) ptr);} \
-    static ViewClass* _Alloc() {return (ViewClass*) Buffer::Alloc<CLASS>(BLIK_DBG 1);} \
-    static void _Free(ViewClass* ptr) {Buffer::Free((buffer) ptr);} \
-    static autorun _ = ViewManager::_makefunc(false, "" NAME, OnCommand, OnNotify, \
+#define ZAY_VIEW_API static void
+#define ZAY_DECLARE_VIEW(NAME) ZAY_DECLARE_VIEW_CLASS(NAME, ZayObject)
+#define ZAY_DECLARE_VIEW_CLASS(NAME, CLASS) \
+    ZAY_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
+    ZAY_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
+    ZAY_VIEW_API OnGesture(GestureType, sint32, sint32); \
+    ZAY_VIEW_API OnRender(ZayPanel&); \
+    static ZayInstance<CLASS> m; \
+    static void _Bind(ZayObject* ptr) {m._bind((CLASS*) ptr);} \
+    static ZayObject* _Alloc() {return (ZayObject*) Buffer::Alloc<CLASS>(BLIK_DBG 1);} \
+    static void _Free(ZayObject* ptr) {Buffer::Free((buffer) ptr);} \
+    static autorun _ = ZayView::_makefunc(false, "" NAME, OnCommand, OnNotify, \
         OnGesture, OnRender, _Bind, _Alloc, _Free);
-#define BLIK_DECLARE_VIEW_NATIVE(NAME, CLASS) \
-    BLIK_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
-    BLIK_VIEW_API OnGesture(GestureType, sint32, sint32) {BLIK_ASSERT("This function should not be called directly.", false);} \
-    BLIK_VIEW_API OnRender(ViewPanel&) {BLIK_ASSERT("This function should not be called directly.", false);} \
-    static ViewInstance<CLASS> m; \
-    static void _Bind(ViewClass* ptr) {m._bind((CLASS*) ptr);} \
-    static ViewClass* _Alloc() {return (ViewClass*) new CLASS;} \
-    static void _Free(ViewClass* ptr) {delete (CLASS*) ptr;} \
-    static autorun _ = ViewManager::_makefunc(true, "" NAME, OnCommand, OnNotify, \
+#define ZAY_DECLARE_VIEW_NATIVE(NAME, CLASS) \
+    ZAY_VIEW_API OnCommand(CommandType, chars, id_share, id_cloned_share*); \
+    ZAY_VIEW_API OnNotify(chars, chars, id_share, id_cloned_share*); \
+    ZAY_VIEW_API OnGesture(GestureType, sint32, sint32) {BLIK_ASSERT("This function should not be called directly.", false);} \
+    ZAY_VIEW_API OnRender(ZayPanel&) {BLIK_ASSERT("This function should not be called directly.", false);} \
+    static ZayInstance<CLASS> m; \
+    static void _Bind(ZayObject* ptr) {m._bind((CLASS*) ptr);} \
+    static ZayObject* _Alloc() {return (ZayObject*) new CLASS;} \
+    static void _Free(ZayObject* ptr) {delete (CLASS*) ptr;} \
+    static autorun _ = ZayView::_makefunc(true, "" NAME, OnCommand, OnNotify, \
         OnGesture, OnRender, _Bind, _Alloc, _Free);
 
 // UI제스처 콜백함수
-#define BLIK_GESTURE_T(TYPE, ...)                       [__VA_ARGS__](ViewClass*, chars, GestureType TYPE, sint32, sint32)->void
-#define BLIK_GESTURE_TXY(TYPE, X, Y, ...)               [__VA_ARGS__](ViewClass*, chars, GestureType TYPE, sint32 X, sint32 Y)->void
-#define BLIK_GESTURE_NT(NAME, TYPE, ...)                [__VA_ARGS__](ViewClass*, chars NAME, GestureType TYPE, sint32, sint32)->void
-#define BLIK_GESTURE_NTXY(NAME, TYPE, X, Y, ...)        [__VA_ARGS__](ViewClass*, chars NAME, GestureType TYPE, sint32 X, sint32 Y)->void
-#define BLIK_GESTURE_VNT(VIEW, NAME, TYPE, ...)         [__VA_ARGS__](ViewClass* VIEW, chars NAME, GestureType TYPE, sint32, sint32)->void
-#define BLIK_GESTURE_VNTXY(VIEW, NAME, TYPE, X, Y, ...) [__VA_ARGS__](ViewClass* VIEW, chars NAME, GestureType TYPE, sint32 X, sint32 Y)->void
+#define ZAY_GESTURE_T(TYPE, ...)                       [__VA_ARGS__](ZayObject*, chars, GestureType TYPE, sint32, sint32)->void
+#define ZAY_GESTURE_TXY(TYPE, X, Y, ...)               [__VA_ARGS__](ZayObject*, chars, GestureType TYPE, sint32 X, sint32 Y)->void
+#define ZAY_GESTURE_NT(NAME, TYPE, ...)                [__VA_ARGS__](ZayObject*, chars NAME, GestureType TYPE, sint32, sint32)->void
+#define ZAY_GESTURE_NTXY(NAME, TYPE, X, Y, ...)        [__VA_ARGS__](ZayObject*, chars NAME, GestureType TYPE, sint32 X, sint32 Y)->void
+#define ZAY_GESTURE_VNT(VIEW, NAME, TYPE, ...)         [__VA_ARGS__](ZayObject* VIEW, chars NAME, GestureType TYPE, sint32, sint32)->void
+#define ZAY_GESTURE_VNTXY(VIEW, NAME, TYPE, X, Y, ...) [__VA_ARGS__](ZayObject* VIEW, chars NAME, GestureType TYPE, sint32 X, sint32 Y)->void
 
 namespace BLIK
 {
@@ -174,25 +174,25 @@ namespace BLIK
         SM_RenameChild, SM_MoveChild, SM_ModifyChild}; // 자식의 에디트
 
     //! \brief 뷰의 자료관리
-    class ViewClass
+    class ZayObject
     {
-        friend class ViewManager;
-        friend class ViewController;
+        friend class ZayView;
+        friend class ZayController;
 
     public:
         typedef void (*CommandCB)(CommandType, chars, id_share, id_cloned_share*);
         typedef void (*NotifyCB)(chars, chars, id_share, id_cloned_share*);
-        typedef void (*BindCB)(ViewClass*);
-        typedef ViewClass* (*AllocCB)();
-        typedef void (*FreeCB)(ViewClass*);
+        typedef void (*BindCB)(ZayObject*);
+        typedef ZayObject* (*AllocCB)();
+        typedef void (*FreeCB)(ZayObject*);
 
     public:
         typedef const void* (*FinderCB)(void*, chars);
         typedef void (*UpdaterCB)(void*, sint32);
 
     public:
-        ViewClass();
-        virtual ~ViewClass();
+        ZayObject();
+        virtual ~ZayObject();
 
     public:
         void bind(void* resource);
@@ -206,7 +206,7 @@ namespace BLIK
         static void invalidator(payload data, chars uigroup);
 
     public:
-        ViewClass* next(chars viewclass);
+        ZayObject* next(chars viewclass);
         bool next(View* viewmanager);
         void exit();
         bool valid(chars uiname = nullptr) const;
@@ -238,17 +238,17 @@ namespace BLIK
     };
 
     //! \brief 뷰의 패널관리
-    class ViewPanel
+    class ZayPanel
     {
     public:
         typedef void (*GestureCB)(GestureType, sint32, sint32);
-        typedef std::function<void(ViewClass*, chars, GestureType, sint32, sint32)> SubGestureCB;
-        typedef void (*RenderCB)(ViewPanel&);
+        typedef std::function<void(ZayObject*, chars, GestureType, sint32, sint32)> SubGestureCB;
+        typedef void (*RenderCB)(ZayPanel&);
 
     public:
-        ViewPanel(float width, float height, const buffer touch);
-        ViewPanel(id_surface surface, float width, float height, chars uigroup = nullptr);
-        ~ViewPanel();
+        ZayPanel(float width, float height, const buffer touch);
+        ZayPanel(id_surface surface, float width, float height, chars uigroup = nullptr);
+        ~ZayPanel();
 
     public:
         void erase() const;
@@ -333,14 +333,14 @@ namespace BLIK
 
     //! \brief 뷰의 인스턴스관리
     template<typename TYPE>
-    class ViewInstance
+    class ZayInstance
     {
     public:
-        ViewInstance()
+        ZayInstance()
         {
             m_ref_data_last = nullptr;
         }
-        ~ViewInstance()
+        ~ZayInstance()
         {
         }
 
@@ -376,18 +376,18 @@ namespace BLIK
         TYPE* m_ref_data_last;
     };
 
-    //! \brief 매니저-뷰
-    class ViewManager : public View
+    //! \brief 제이뷰
+    class ZayView : public View
     {
-        friend class ViewClass;
-        friend class ViewPanel;
+        friend class ZayObject;
+        friend class ZayPanel;
 
     private:
         //! \brief 뷰의 영역객체
         class Element
         {
         public:
-            typedef void (*GestureCB)(ViewManager*, const Element*, GestureType, sint32, sint32);
+            typedef void (*GestureCB)(ZayView*, const Element*, GestureType, sint32, sint32);
 
         public:
             Element();
@@ -404,7 +404,7 @@ namespace BLIK
             rect128 m_rect;
             float m_zoom;
             GestureCB m_cb;
-            ViewPanel::SubGestureCB m_subcb;
+            ZayPanel::SubGestureCB m_subcb;
             bool m_hoverpass;
             sint32 m_hoverid;
             mutable point64 m_saved_xy;
@@ -449,7 +449,7 @@ namespace BLIK
         public:
             void ready(sint32 width, sint32 height);
             void update(chars uiname, float l, float t, float r, float b,
-                float zoom, ViewPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest = nullptr);
+                float zoom, ZayPanel::SubGestureCB cb, bool hoverpass, bool* dirtytest = nullptr);
             const Element* get() const;
             const Element* get(chars uiname, sint32 lag) const;
             const Element& get(sint32 x, sint32 y) const;
@@ -491,8 +491,8 @@ namespace BLIK
             }
 
         private:
-            static void OnGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
-            static void OnSubGesture(ViewManager* manager, const Element* data, GestureType type, sint32 x, sint32 y);
+            static void OnGesture(ZayView* manager, const Element* data, GestureType type, sint32 x, sint32 y);
+            static void OnSubGesture(ZayView* manager, const Element* data, GestureType type, sint32 x, sint32 y);
 
         private:
             sint32 m_updateid;
@@ -521,19 +521,19 @@ namespace BLIK
         public:
             bool m_isnative;
             String m_viewclass;
-            ViewClass::CommandCB m_command;
-            ViewClass::NotifyCB m_notify;
-            ViewPanel::GestureCB m_gesture;
-            ViewPanel::RenderCB m_render;
-            ViewClass::BindCB m_bind;
-            ViewClass::AllocCB m_alloc;
-            ViewClass::FreeCB m_free;
+            ZayObject::CommandCB m_command;
+            ZayObject::NotifyCB m_notify;
+            ZayPanel::GestureCB m_gesture;
+            ZayPanel::RenderCB m_render;
+            ZayObject::BindCB m_bind;
+            ZayObject::AllocCB m_alloc;
+            ZayObject::FreeCB m_free;
         };
 
     protected:
-        ViewManager(chars viewclass = nullptr);
+        ZayView(chars viewclass = nullptr);
     public:
-        ~ViewManager() override;
+        ~ZayView() override;
 
     public:
         static View* Creator(chars viewclass);
@@ -559,8 +559,8 @@ namespace BLIK
 
     public:
         static autorun _makefunc(bool isnative, chars viewclass,
-            ViewClass::CommandCB c, ViewClass::NotifyCB n, ViewPanel::GestureCB g, ViewPanel::RenderCB r,
-            ViewClass::BindCB b, ViewClass::AllocCB a, ViewClass::FreeCB f);
+            ZayObject::CommandCB c, ZayObject::NotifyCB n, ZayPanel::GestureCB g, ZayPanel::RenderCB r,
+            ZayObject::BindCB b, ZayObject::AllocCB a, ZayObject::FreeCB f);
         static Function* _accessfunc(chars viewclass, bool creatable);
 
     private:
@@ -569,7 +569,7 @@ namespace BLIK
     private:
         const Function* m_ref_func;
         const String m_viewclass;
-        ViewClass* m_class;
+        ZayObject* m_class;
         buffer m_touch;
         bool m_agreed_quit;
     };
