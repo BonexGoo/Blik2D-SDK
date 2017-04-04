@@ -1,5 +1,5 @@
 # Blik2D
-Marvelous C++ SDK for App with Qt5
+Service centered C++ SDK for App with Qt5
 
 6월까지 준비하겠습니다.
 I'll be ready for service until June.
