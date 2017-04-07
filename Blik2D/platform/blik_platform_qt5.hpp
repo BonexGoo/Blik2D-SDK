@@ -261,6 +261,13 @@
             m_view_manager->OnTouch(type, id, x, y);
         }
 
+        inline void key(sint32 code, chars text, bool pressed)
+        {
+            BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
+            g_view = getWidget();
+            m_view_manager->OnKey(code, text, pressed);
+        }
+
         inline void sendCreate()
         {
             if(m_view_manager != nullptr)
@@ -454,6 +461,26 @@
             }
         }
 
+        void keyPressEvent(QKeyEvent* event)
+        {
+            if(!m_input_enabled)
+            {
+                event->ignore();
+                return;
+            }
+            key(event->key(), event->text().toUtf8().constData(), true);
+        }
+
+        void keyReleaseEvent(QKeyEvent* event)
+        {
+            if(!m_input_enabled)
+            {
+                event->ignore();
+                return;
+            }
+            key(event->key(), event->text().toUtf8().constData(), false);
+        }
+
     private:
         void tick_timeout()
         {
@@ -516,6 +543,7 @@
         {
             m_api = nullptr;
             setMouseTracking(true);
+            setFocusPolicy(Qt::ClickFocus);
             setAutoFillBackground(false);
         }
 
@@ -533,6 +561,7 @@
             setMaximumSize(policy->m_maxwidth, policy->m_maxheight);
 
             setMouseTracking(true);
+            setFocusPolicy(Qt::ClickFocus);
             setAutoFillBackground(false);
         }
 
@@ -540,6 +569,7 @@
         {
             takeView(view);
             setMouseTracking(true);
+            setFocusPolicy(Qt::ClickFocus);
             setAutoFillBackground(false);
         }
 
@@ -578,6 +608,8 @@
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
+        void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyPressEvent(event);}
+        void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyReleaseEvent(event);}
         static void updater(void* data, sint32 count)
         {((GenericView*) data)->m_api->update(count);}
 
@@ -681,6 +713,7 @@
             setAttribute(Qt::WA_NoSystemBackground);
             setAttribute(Qt::WA_AcceptTouchEvents);
             setMouseTracking(true);
+            setFocusPolicy(Qt::ClickFocus);
             setAutoBufferSwap(false);
             setAutoFillBackground(false);
         }
@@ -761,6 +794,8 @@
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
+        void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyPressEvent(event);}
+        void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyReleaseEvent(event);}
         static void updater(void* data, sint32 count)
         {((MainViewGL*) data)->m_api->update(count);}
 
@@ -794,6 +829,7 @@
             setAttribute(Qt::WA_NoSystemBackground);
             setAttribute(Qt::WA_AcceptTouchEvents);
             setMouseTracking(true);
+            setFocusPolicy(Qt::ClickFocus);
             setAutoFillBackground(false);
         }
 
@@ -836,6 +872,8 @@
         void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseMoveEvent(event);}
         void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE {m_api->mouseReleaseEvent(event);}
         void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE {m_api->wheelEvent(event);}
+        void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyPressEvent(event);}
+        void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE {m_api->keyReleaseEvent(event);}
         static void updater(void* data, sint32 count)
         {((MainViewMDI*) data)->m_api->update(count);}
 
@@ -1612,6 +1650,10 @@
     public:
         WebViewPrivate(QWidget* parent = nullptr) : QWebEngineView(parent), mHandle(h_web::null())
         {
+            mCb = nullptr;
+            mData = nullptr;
+            setMouseTracking(true);
+            connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlEvent(QUrl)));
         }
         virtual ~WebViewPrivate()
         {
@@ -1629,8 +1671,17 @@
             mHandle.set_buf(nullptr);
         }
 
+    private slots:
+        virtual void urlEvent(const QUrl& url)
+        {
+            if(mCb)
+                mCb(mData, "UrlChanged", url.url().toUtf8().constData());
+        }
+
     public:
         h_web mHandle;
+        Platform::Web::EventCB mCb;
+        payload mData;
     };
 
     class WebPrivate
@@ -1664,6 +1715,37 @@
             {
                 mView.resize(width, height);
                 mLastImage = QImage(width, height, QImage::Format_ARGB32);
+            }
+        }
+        void SetCallback(Platform::Web::EventCB cb, payload data)
+        {
+            mView.mCb = cb;
+            mView.mData = data;
+        }
+        void SendTouchEvent(TouchType type, sint32 x, sint32 y)
+        {
+            QMouseEvent::Type CurType = QMouseEvent::None;
+            switch(type)
+            {
+            case TT_Moving: CurType = QMouseEvent::MouseMove; break;
+            case TT_Press: CurType = QMouseEvent::MouseButtonPress; break;
+            case TT_Dragging: CurType = QMouseEvent::MouseMove; break;
+            case TT_Release: CurType = QMouseEvent::MouseButtonRelease; break;
+            default: BLIK_ASSERT("해당 case가 준비되지 않았습니다", false);
+            }
+            QMouseEvent NewEvent(CurType, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            Q_FOREACH(QObject* obj, mView.page()->view()->children())
+            {
+                if(qobject_cast<QWidget*>(obj))
+                    QApplication::sendEvent(obj, &NewEvent);
+            }
+        }
+        void SendKeyEvent(sint32 code, chars text, bool pressed)
+        {
+            if(auto CurWidget = mView.focusProxy())
+            {
+                QKeyEvent NewEvent((pressed)? QKeyEvent::KeyPress : QKeyEvent::KeyRelease, code, Qt::NoModifier, text);
+                QApplication::sendEvent(CurWidget, &NewEvent);
             }
         }
         const QPixmap GetPixmap()

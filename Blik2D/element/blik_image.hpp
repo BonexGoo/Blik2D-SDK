@@ -24,9 +24,10 @@ namespace BLIK
         bool LoadBitmapFromBits(bytes bits, sint32 width, sint32 height, sint32 bitcount, bool flip);
         bool LoadUIBitmap(id_bitmap_read bitmap);
         void Crear();
-        id_bitmap CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const;
+        id_bitmap CopiedBitmap(sint32 l = 0, sint32 t = 0, sint32 r = -1, sint32 b = -1) const;
         void ChangeToMagentaAlpha();
         void RestoreFromMagentaAlpha();
+        void ReplaceAlphaChannelBy(id_bitmap_read src);
 
     public:
         inline bool HasBitmap() const {return (m_bitmap != nullptr);}

@@ -5,7 +5,7 @@
 namespace BLIK
 {
     BLIK_DECLARE_HANDLE(h_view);
-    enum TouchType {
+    enum TouchType {TT_Null,
         // 일반
         TT_Moving, TT_Press, TT_Dragging, TT_Release,
         // 마우스휠
@@ -47,5 +47,6 @@ namespace BLIK
         virtual void OnTick();
         virtual void OnRender(sint32 width, sint32 height, float l, float t, float r, float b);
         virtual void OnTouch(TouchType type, sint32 id, sint32 x, sint32 y);
+        virtual void OnKey(sint32 code, chars text, bool pressed);
     };
 }

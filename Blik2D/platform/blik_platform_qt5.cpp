@@ -2158,9 +2158,10 @@
         ////////////////////////////////////////////////////////////////////////////////
         // WEB
         ////////////////////////////////////////////////////////////////////////////////
-        h_web Platform::Web::Create(chars url, sint32 width, sint32 height)
+        h_web Platform::Web::Create(chars url, sint32 width, sint32 height, EventCB cb, payload data)
         {
             WebPrivate* NewWeb = (WebPrivate*) Buffer::Alloc<WebPrivate>(BLIK_DBG 1);
+            if(cb) NewWeb->SetCallback(cb, data);
             NewWeb->Resize(width, height);
             NewWeb->Reload(url);
 
@@ -2184,6 +2185,18 @@
         {
             if(WebPrivate* CurWeb = (WebPrivate*) web.get())
                 CurWeb->Resize(width, height);
+        }
+
+        void Platform::Web::SendTouchEvent(h_web web, TouchType type, sint32 x, sint32 y)
+        {
+            if(WebPrivate* CurWeb = (WebPrivate*) web.get())
+                CurWeb->SendTouchEvent(type, x, y);
+        }
+
+        void Platform::Web::SendKeyEvent(h_web web, sint32 code, chars text, bool pressed)
+        {
+            if(WebPrivate* CurWeb = (WebPrivate*) web.get())
+                CurWeb->SendKeyEvent(code, text, pressed);
         }
 
         id_image_read Platform::Web::GetScreenshotImage(h_web web)

@@ -361,7 +361,7 @@ namespace BLIK
         return YAlignCode;
     }
 
-    haschild ZayPanel::icon(const Image& image, UIAlign align)
+    haschild ZayPanel::icon(const Image& image, UIAlign align, bool visible)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -369,22 +369,25 @@ namespace BLIK
         const float DstX = ((XAlignCode == 0)? 0 : ((XAlignCode == 1)? (LastClip.Width() - image.GetWidth()) * 0.5f : LastClip.Width() - image.GetWidth()));
         const float DstY = ((YAlignCode == 0)? 0 : ((YAlignCode == 1)? (LastClip.Height() - image.GetHeight()) * 0.5f : LastClip.Height() - image.GetHeight()));
 
-        const Color& LastColor = m_stack_color[-1];
-        Platform::Graphics::DrawImage(image.GetImage(LastColor),
-            0, 0, image.GetImageWidth(), image.GetImageHeight(),
-            LastClip.l + DstX - image.L(), LastClip.t + DstY - image.T(),
-            image.GetImageWidth(), image.GetImageHeight());
+        if(visible)
+        {
+            const Color& LastColor = m_stack_color[-1];
+            Platform::Graphics::DrawImage(image.GetImage(LastColor),
+                0, 0, image.GetImageWidth(), image.GetImageHeight(),
+                LastClip.l + DstX - image.L(), LastClip.t + DstY - image.T(),
+                image.GetImageWidth(), image.GetImageHeight());
+        }
 
         if(image.HasChild())
         {
             m_child_image = &image;
-            m_child_guide = Rect(DstX, DstY, image.GetWidth() - DstX, image.GetHeight() - DstY);
+            m_child_guide = Rect(Point(LastClip.l + DstX, LastClip.t + DstY), Size(image.GetWidth(), image.GetHeight()));
             return haschild_ok;
         }
         return haschild_null;
     }
 
-    haschild ZayPanel::icon(float x, float y, const Image& image, UIAlign align)
+    haschild ZayPanel::icon(float x, float y, const Image& image, UIAlign align, bool visible)
     {
         const Clip& LastClip = m_stack_clip[-1];
         const sint32 XAlignCode = GetXAlignCode(align);
@@ -392,16 +395,19 @@ namespace BLIK
         const float DstX = ((XAlignCode == 0)? x : ((XAlignCode == 1)? x - image.GetWidth() * 0.5f : x - image.GetWidth()));
         const float DstY = ((YAlignCode == 0)? y : ((YAlignCode == 1)? y - image.GetHeight() * 0.5f : y - image.GetHeight()));
 
-        const Color& LastColor = m_stack_color[-1];
-        Platform::Graphics::DrawImage(image.GetImage(LastColor),
-            0, 0, image.GetImageWidth(), image.GetImageHeight(),
-            LastClip.l + DstX - image.L(), LastClip.t + DstY - image.T(),
-            image.GetImageWidth(), image.GetImageHeight());
+        if(visible)
+        {
+            const Color& LastColor = m_stack_color[-1];
+            Platform::Graphics::DrawImage(image.GetImage(LastColor),
+                0, 0, image.GetImageWidth(), image.GetImageHeight(),
+                LastClip.l + DstX - image.L(), LastClip.t + DstY - image.T(),
+                image.GetImageWidth(), image.GetImageHeight());
+        }
 
         if(image.HasChild())
         {
             m_child_image = &image;
-            m_child_guide = Rect(DstX, DstY, image.GetWidth() - DstX, image.GetHeight() - DstY);
+            m_child_guide = Rect(Point(LastClip.l + DstX, LastClip.t + DstY), Size(image.GetWidth(), image.GetHeight()));
             return haschild_ok;
         }
         return haschild_null;
@@ -437,21 +443,24 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ZayPanel::stretch(const Image& image, bool rebuild)
+    haschild ZayPanel::stretch(const Image& image, bool rebuild, bool visible)
     {
         const Clip& LastClip = m_stack_clip[-1];
-        const float XRate = LastClip.Width() / image.GetWidth();
-        const float YRate = LastClip.Height() / image.GetHeight();
-        const float DstX = -image.L() * XRate;
-        const float DstY = -image.T() * YRate;
-        const sint32 DstWidth = (sint32) (image.GetImageWidth() * XRate);
-        const sint32 DstHeight = (sint32) (image.GetImageHeight() * YRate);
-        const sint32 ImageWidth = (rebuild)? DstWidth : image.GetImageWidth();
-        const sint32 ImageHeight = (rebuild)? DstHeight : image.GetImageHeight();
+        if(visible)
+        {
+            const float XRate = LastClip.Width() / image.GetWidth();
+            const float YRate = LastClip.Height() / image.GetHeight();
+            const float DstX = -image.L() * XRate;
+            const float DstY = -image.T() * YRate;
+            const sint32 DstWidth = (sint32) (image.GetImageWidth() * XRate);
+            const sint32 DstHeight = (sint32) (image.GetImageHeight() * YRate);
+            const sint32 ImageWidth = (rebuild)? DstWidth : image.GetImageWidth();
+            const sint32 ImageHeight = (rebuild)? DstHeight : image.GetImageHeight();
 
-        const Color& LastColor = m_stack_color[-1];
-        Platform::Graphics::DrawImage(image.GetImage(LastColor, ImageWidth, ImageHeight),
-            0, 0, ImageWidth, ImageHeight, LastClip.l + DstX, LastClip.t + DstY, DstWidth, DstHeight);
+            const Color& LastColor = m_stack_color[-1];
+            Platform::Graphics::DrawImage(image.GetImage(LastColor, ImageWidth, ImageHeight),
+                0, 0, ImageWidth, ImageHeight, LastClip.l + DstX, LastClip.t + DstY, DstWidth, DstHeight);
+        }
 
         if(image.HasChild())
         {
@@ -477,10 +486,10 @@ namespace BLIK
         return haschild_null;
     }
 
-    haschild ZayPanel::ninepatch(const Image& image)
+    haschild ZayPanel::ninepatch(const Image& image, bool visible)
     {
         const Clip& LastClip = m_stack_clip[-1];
-
+        if(visible)
         if(image.UpdatePatchBy(LastClip.Width(), LastClip.Height()))
         {
             const sint32* PatchSrcX = image.PatchSrcXArray();
@@ -1110,6 +1119,16 @@ namespace BLIK
 
         if(NeedUpdate)
             m_class->invalidate();
+    }
+
+    void ZayView::OnKey(sint32 code, chars text, bool pressed)
+    {
+        m_ref_func->m_bind(m_class);
+        pointers in;
+        in.AtAdding() = (void*) &code;
+        in.AtAdding() = (void*) text;
+        m_ref_func->m_command(CT_Signal, (pressed)? "KeyPress" : "KeyRelease", in, nullptr);
+        m_ref_func->m_bind(nullptr);
     }
 
     void ZayView::_gesture(GestureType type, sint32 x, sint32 y)

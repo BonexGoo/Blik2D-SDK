@@ -1,6 +1,8 @@
 ﻿#include <blik.hpp>
 #include "blik_view.hpp"
 
+#include <platform/blik_platform.hpp>
+
 namespace BLIK
 {
     View::View()
@@ -13,7 +15,6 @@ namespace BLIK
 
     View* View::Creator(chars viewclass)
     {
-        BLIK_ASSERT("뷰생성기가 없습니다\nPlatform::SetViewCreator를 이용하세요", false);
         return new View();
     }
 
@@ -100,9 +101,29 @@ namespace BLIK
 
     void View::OnRender(sint32 width, sint32 height, float l, float t, float r, float b)
     {
+        Platform::Graphics::SetScissor(0, 0, width, height);
+        Platform::Graphics::SetColor(0xFF, 0xFF, 0xFF, 0xFF);
+        Platform::Graphics::SetFont("Arial", 10);
+        Platform::Graphics::SetZoom(1);
+
+        Platform::Graphics::SetColor(0x00, 0x00, 0x00, 0x00);
+        Platform::Graphics::FillRect(l, t, r - l, b - t);
+
+        Platform::Graphics::SetColor(0xFF, 0x00, 0x00, 0x80);
+        Platform::Graphics::DrawRect(l + 1, t + 1, r - l - 2, b - t - 2, 1);
+        Platform::Graphics::DrawLine(Point(l, t), Point(r, b), 1);
+        Platform::Graphics::DrawLine(Point(r, t), Point(l, b), 1);
+
+        Platform::Graphics::SetColor(0xFF, 0x00, 0x00, 0xFF);
+        Platform::Graphics::DrawString(l, t, r - l, b - t,
+            "뷰생성기가 없습니다.\nPlatform::SetViewCreator를 사용하세요.", UIFA_CenterMiddle, UIFE_Right);
     }
 
     void View::OnTouch(TouchType type, sint32 id, sint32 x, sint32 y)
+    {
+    }
+
+    void View::OnKey(sint32 code, chars text, bool pressed)
     {
     }
 }

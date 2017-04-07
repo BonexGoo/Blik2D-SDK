@@ -1266,7 +1266,7 @@
         ////////////////////////////////////////////////////////////////////////////////
         // WEB
         ////////////////////////////////////////////////////////////////////////////////
-        h_web Platform::Web::Create(chars url, sint32 width, sint32 height)
+        h_web Platform::Web::Create(chars url, sint32 width, sint32 height, EventCB cb, payload data)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
             return h_web::null();
@@ -1283,6 +1283,16 @@
         }
 
         void Platform::Web::Resize(h_web web, sint32 width, sint32 height)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Web::SendTouchEvent(h_web web, TouchType type, sint32 x, sint32 y)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Web::SendKeyEvent(h_web web, sint32 code, chars text, bool pressed)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }

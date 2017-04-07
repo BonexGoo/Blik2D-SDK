@@ -149,7 +149,7 @@
 
 namespace BLIK
 {
-    enum CommandType {CT_Create, CT_CanQuit, CT_Destroy, CT_Size, CT_Tick};
+    enum CommandType {CT_Create, CT_CanQuit, CT_Destroy, CT_Size, CT_Tick, CT_Signal};
     enum GestureType {
         // 일반
         GT_Null, GT_Moving, GT_MovingLosed, GT_Pressed,
@@ -260,13 +260,13 @@ namespace BLIK
         void polygon(Points p) const;
         void polyline(Points p, float thick) const;
         void polybezier(Points p, float thick, bool showfirst, bool showlast) const;
-        haschild icon(const Image& image, UIAlign align);
-        haschild icon(float x, float y, const Image& image, UIAlign align); // 중점식
+        haschild icon(const Image& image, UIAlign align, bool visible = true);
+        haschild icon(float x, float y, const Image& image, UIAlign align, bool visible = true); // 중점식
         haschild iconNative(id_image_read image, UIAlign align);
         haschild iconNative(float x, float y, id_image_read image, UIAlign align); // 중점식
-        haschild stretch(const Image& image, bool rebuild);
+        haschild stretch(const Image& image, bool rebuild, bool visible = true);
         haschild stretchNative(id_image_read image) const;
-        haschild ninepatch(const Image& image);
+        haschild ninepatch(const Image& image, bool visible = true);
         void pattern(const Image& image, UIAlign align, bool reversed_xorder = false, bool reversed_yorder = false) const;
         bool text(chars string, UIFontAlign align, UIFontElide elide = UIFE_None) const;
         void text(float x, float y, chars string, UIFontAlign align) const; // 중점식
@@ -553,6 +553,7 @@ namespace BLIK
         void OnTick() override;
         void OnRender(sint32 width, sint32 height, float l, float t, float r, float b) override;
         void OnTouch(TouchType type, sint32 id, sint32 x, sint32 y) override;
+        void OnKey(sint32 code, chars text, bool pressed) override;
 
     private:
         void _gesture(GestureType type, sint32 x, sint32 y);

@@ -24,7 +24,9 @@ namespace BLIK
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Create, id_curl, void)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Clone, id_curl, id_curl)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Release, void, id_curl)
-    BLIK_DECLARE_ADDON_FUNCTION(Curl, Request, chars, id_curl, chars, String*, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestString, chars, id_curl, chars, chars)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestBytes, bytes, id_curl, chars, sint32*, chars)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, id_curl, chars, sint32, chars)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, ServiceRequest, chars, id_curl, chars, chars)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, SendStream, void, id_curl, chars, chars, CurlReadCB, payload)
 
@@ -33,7 +35,9 @@ namespace BLIK
         Core_AddOn_Curl_Create() = Customized_AddOn_Curl_Create;
         Core_AddOn_Curl_Clone() = Customized_AddOn_Curl_Clone;
         Core_AddOn_Curl_Release() = Customized_AddOn_Curl_Release;
-        Core_AddOn_Curl_Request() = Customized_AddOn_Curl_Request;
+        Core_AddOn_Curl_RequestString() = Customized_AddOn_Curl_RequestString;
+        Core_AddOn_Curl_RequestBytes() = Customized_AddOn_Curl_RequestBytes;
+        Core_AddOn_Curl_RequestRedirectUrl() = Customized_AddOn_Curl_RequestRedirectUrl;
         Core_AddOn_Curl_ServiceRequest() = Customized_AddOn_Curl_ServiceRequest;
         Core_AddOn_Curl_SendStream() = Customized_AddOn_Curl_SendStream;
 
@@ -55,7 +59,7 @@ namespace BLIK
 static size_t CurlWriteToResult(char* ptr, size_t size, size_t nitems, void* outstream)
 {
     size_t realsize = size * nitems;
-    *((String*) outstream) = String((chars) ptr, realsize);
+    *((String*) outstream) += String((chars) ptr, realsize);
     return realsize;
 }
 
@@ -70,6 +74,14 @@ static size_t CurlWriteForAssert(char* ptr, size_t size, size_t nitems, void* ou
 {
     size_t realsize = size * nitems;
     BLIK_ASSERT((chars) ptr, false);
+    return realsize;
+}
+
+static size_t CurlWriteToUint08s(char* ptr, size_t size, size_t nitems, void* outstream)
+{
+    size_t realsize = size * nitems;
+    uint08s& Result = *((uint08s*) outstream);
+    Memory::Copy(Result.AtDumpingAdded(realsize), ptr, realsize);
     return realsize;
 }
 
@@ -109,18 +121,24 @@ namespace BLIK
         }
     }
 
-    chars Customized_AddOn_Curl_Request(id_curl curl, chars url, String* redirect_url, sint32 successcode)
+    static uint08s _RequestCore(id_curl curl, chars url, chars postdata, String* redirect_url, sint32 successcode)
     {
-        if(!curl) return "";
+        static uint08s Result;
+        Result.SubtractionAll();
+        if(!curl) return Result;
         CURL* CurCurl = ((CurlStruct*) curl)->mId;
 
-        static String Result;
-        Result = "";
         curl_easy_setopt(CurCurl, CURLOPT_URL, url);
         curl_easy_setopt(CurCurl, CURLOPT_SSL_VERIFYPEER, 0L);
-        curl_easy_setopt(CurCurl, CURLOPT_POST, 0);
+        if(postdata)
+        {
+            curl_easy_setopt(CurCurl, CURLOPT_POST, 1);
+            curl_easy_setopt(CurCurl, CURLOPT_POSTFIELDS , postdata);
+            curl_easy_setopt(CurCurl, CURLOPT_POSTFIELDSIZE, blik_strlen(postdata));
+        }
+        else curl_easy_setopt(CurCurl, CURLOPT_POST, 0);
         curl_easy_setopt(CurCurl, CURLOPT_WRITEDATA, &Result);
-        curl_easy_setopt(CurCurl, CURLOPT_WRITEFUNCTION, CurlWriteToResult);
+        curl_easy_setopt(CurCurl, CURLOPT_WRITEFUNCTION, CurlWriteToUint08s);
 
         String Host;
         for(chars iurl = url + 2, ibegin = nullptr; true; ++iurl)
@@ -156,7 +174,8 @@ namespace BLIK
         cheader = curl_slist_append(cheader, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.0.3705)");
         cheader = curl_slist_append(cheader, String::Format("Host: %s", (chars) Host));
         cheader = curl_slist_append(cheader, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        cheader = curl_slist_append(cheader, "Accept-Language: en-US,en;q=0.5");
+        //cheader = curl_slist_append(cheader, "Accept-Language: en-US,en;q=0.5");
+        cheader = curl_slist_append(cheader, "Accept-Language: ko-kr,ko;q=0.8,en-us;q=0.5,en;q=0.3");
         cheader = curl_slist_append(cheader, "Connection: keep-alive");
         cheader = curl_slist_append(cheader, String::Format("Referer: %s", (chars) Referer));
         cheader = curl_slist_append(cheader, "Content-Type: application/x-www-form-urlencoded");
@@ -176,6 +195,32 @@ namespace BLIK
                 *redirect_url = location;
             }
         }
+        return Result;
+    }
+
+    chars Customized_AddOn_Curl_RequestString(id_curl curl, chars url, chars postdata)
+    {
+        static String Result;
+        uint08s RequestResult = _RequestCore(curl, url, postdata, nullptr, 0);
+        if(RequestResult.Count() == 0) return "";
+
+        Result = String((chars) RequestResult.AtDumping(0, 1), RequestResult.Count());
+        return Result;
+    }
+
+    bytes Customized_AddOn_Curl_RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata)
+    {
+        static uint08s Result;
+        Result = _RequestCore(curl, url, postdata, nullptr, 0);
+        if(getsize) *getsize = Result.Count();
+        return Result.AtDumping(0, 1);
+    }
+
+    chars Customized_AddOn_Curl_RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata)
+    {
+        static String Result;
+        Result = "";
+        _RequestCore(curl, url, postdata, &Result, successcode);
         return Result;
     }
 

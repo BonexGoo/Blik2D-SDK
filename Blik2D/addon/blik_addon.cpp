@@ -59,7 +59,9 @@ namespace BLIK
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Create, id_curl, return nullptr, void)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Clone, id_curl, return nullptr, id_curl)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Release, void, return, id_curl)
-    BLIK_DEFINE_ADDON_FUNCTION(Curl, Request, chars, return "", id_curl, chars, String*, sint32)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestString, chars, return "", id_curl, chars, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestBytes, bytes, return nullptr, id_curl, chars, sint32*, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, return "", id_curl, chars, sint32, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, ServiceRequest, chars, return "", id_curl, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, SendStream, void, return, id_curl, chars, chars, CurlReadCB, payload)
 
@@ -72,8 +74,14 @@ namespace BLIK
     void AddOn::Curl::Release(id_curl curl)
     {Core_AddOn_Curl_Release()(curl);}
 
-    chars AddOn::Curl::Request(id_curl curl, chars url, String* redirect_url, sint32 successcode)
-    {return Core_AddOn_Curl_Request()(curl, url, redirect_url, successcode);}
+    chars AddOn::Curl::RequestString(id_curl curl, chars url, chars postdata)
+    {return Core_AddOn_Curl_RequestString()(curl, url, postdata);}
+
+    bytes AddOn::Curl::RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata)
+    {return Core_AddOn_Curl_RequestBytes()(curl, url, getsize, postdata);}
+
+    chars AddOn::Curl::RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata)
+    {return Core_AddOn_Curl_RequestRedirectUrl()(curl, url, successcode, postdata);}
 
     chars AddOn::Curl::ServiceRequest(id_curl curl, chars service, chars arg)
     {return Core_AddOn_Curl_ServiceRequest()(curl, service, arg);}

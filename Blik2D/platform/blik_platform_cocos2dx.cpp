@@ -1540,7 +1540,7 @@
         ////////////////////////////////////////////////////////////////////////////////
         // WEB
         ////////////////////////////////////////////////////////////////////////////////
-        h_web Platform::Web::Create(chars url, sint32 width, sint32 height)
+        h_web Platform::Web::Create(chars url, sint32 width, sint32 height, EventCB cb, payload data)
         {
             BLIK_ASSERT("Further development is needed.", false);
             return h_web::null();
@@ -1557,6 +1557,16 @@
         }
 
         void Platform::Web::Resize(h_web web, sint32 width, sint32 height)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        void Platform::Web::SendTouchEvent(h_web web, TouchType type, sint32 x, sint32 y)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        void Platform::Web::SendKeyEvent(h_web web, sint32 code, chars text, bool pressed)
         {
             BLIK_ASSERT("Further development is needed.", false);
         }

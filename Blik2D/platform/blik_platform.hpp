@@ -1257,15 +1257,20 @@ namespace BLIK
         class Web
         {
         public:
+            typedef bool (*EventCB)(payload, chars, chars);
+
+        public:
             /*!
             \brief 웹핸들 할당
             \param url : 로드할 웹주소
             \param width : 웹페이지 가로길이(px)
             \param height : 웹페이지 세로길이(px)
+            \param cb : 콜백함수
+            \param data : 콜백함수에 전달할 데이터
             \return 웹핸들
             \see Release
             */
-            static h_web Create(chars url, sint32 width, sint32 height);
+            static h_web Create(chars url, sint32 width, sint32 height, EventCB cb = nullptr, payload data = nullptr);
 
             /*!
             \brief 웹핸들 반환
@@ -1289,7 +1294,23 @@ namespace BLIK
             */
             static void Resize(h_web web, sint32 width, sint32 height);
 
-            //static void SendTouchEvent(h_web web, );
+            /*!
+            \brief 웹페이지에 터치이벤트 전달
+            \param web : 해당 웹핸들
+            \param type : 터치타입
+            \param x : 좌측위치(px)
+            \param y : 상단위치(px)
+            */
+            static void SendTouchEvent(h_web web, TouchType type, sint32 x, sint32 y);
+
+            /*!
+            \brief 웹페이지에 키이벤트 전달
+            \param web : 해당 웹핸들
+            \param code : 키코드
+            \param text : 키문자열
+            \param pressed : 눌려짐 여부
+            */
+            static void SendKeyEvent(h_web web, sint32 code, chars text, bool pressed);
 
             /*!
             \brief 웹페이지 스크린샷 이미지 얻기

@@ -473,6 +473,8 @@ namespace BLIK
 
     id_bitmap Image::CopiedBitmap(sint32 l, sint32 t, sint32 r, sint32 b) const
     {
+        if(r == -1) r = Bmp::GetWidth(m_bitmap);
+        if(b == -1) b = Bmp::GetHeight(m_bitmap);
         return (m_bitmap)? Bmp::Copy(m_bitmap, l, t, r, b) : nullptr;
     }
 
@@ -486,6 +488,35 @@ namespace BLIK
     {
         if(!m_bitmap) return;
         Bmp::ChangeColor(m_bitmap, 0x00FF00FF, 0x00000000);
+    }
+
+    void Image::ReplaceAlphaChannelBy(id_bitmap_read src)
+    {
+        BLIK_ASSERT("src가 없거나 32비트 비트맵이 아닙니다", src && Bmp::GetBitCount(src) == 32);
+        if(!m_bitmap || Bmp::GetBitCount(m_bitmap) != 32) return;
+
+        const sint32 DstWidth = Bmp::GetWidth(m_bitmap);
+        const sint32 DstHeight = Bmp::GetHeight(m_bitmap);
+        auto DstBits = (Bmp::bitmappixel*) Bmp::GetBits(m_bitmap);
+        const sint32 SrcWidth = Bmp::GetWidth(src);
+        const sint32 SrcHeight = Bmp::GetHeight(src);
+        auto SrcBits = (const Bmp::bitmappixel*) Bmp::GetBits(src);
+
+        if(DstWidth == SrcWidth && DstHeight == SrcHeight)
+        {
+            for(sint32 y = 0; y < DstHeight; ++y)
+            for(sint32 x = 0; x < DstWidth; ++x)
+            {
+                sint32 CurIndex = x + y * DstWidth;
+                DstBits[CurIndex].a = SrcBits[CurIndex].a;
+            }
+        }
+        else
+        {
+            for(sint32 y = 0; y < DstHeight; ++y)
+            for(sint32 x = 0; x < DstWidth; ++x)
+                DstBits[x + y * DstWidth].a = SrcBits[(x * SrcWidth / DstWidth) + (y * SrcHeight / DstHeight) * SrcWidth].a;
+        }
     }
 
     sint32 Image::GetImageWidth() const
