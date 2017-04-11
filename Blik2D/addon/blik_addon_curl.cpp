@@ -24,9 +24,9 @@ namespace BLIK
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Create, id_curl, void)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Clone, id_curl, id_curl)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, Release, void, id_curl)
-    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestString, chars, id_curl, chars, chars)
-    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestBytes, bytes, id_curl, chars, sint32*, chars)
-    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, id_curl, chars, sint32, chars)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestString, chars, id_curl, chars, chars, chars)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestBytes, bytes, id_curl, chars, sint32*, chars, chars)
+    BLIK_DECLARE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, id_curl, chars, sint32, chars, chars)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, ServiceRequest, chars, id_curl, chars, chars)
     BLIK_DECLARE_ADDON_FUNCTION(Curl, SendStream, void, id_curl, chars, chars, CurlReadCB, payload)
 
@@ -121,7 +121,7 @@ namespace BLIK
         }
     }
 
-    static uint08s _RequestCore(id_curl curl, chars url, chars postdata, String* redirect_url, sint32 successcode)
+    static uint08s _RequestCore(id_curl curl, chars url, chars postdata, chars headerdata, String* redirect_url, sint32 successcode)
     {
         static uint08s Result;
         Result.SubtractionAll();
@@ -174,11 +174,11 @@ namespace BLIK
         cheader = curl_slist_append(cheader, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.0.3705)");
         cheader = curl_slist_append(cheader, String::Format("Host: %s", (chars) Host));
         cheader = curl_slist_append(cheader, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        //cheader = curl_slist_append(cheader, "Accept-Language: en-US,en;q=0.5");
         cheader = curl_slist_append(cheader, "Accept-Language: ko-kr,ko;q=0.8,en-us;q=0.5,en;q=0.3");
         cheader = curl_slist_append(cheader, "Connection: keep-alive");
         cheader = curl_slist_append(cheader, String::Format("Referer: %s", (chars) Referer));
         cheader = curl_slist_append(cheader, "Content-Type: application/x-www-form-urlencoded");
+        if(headerdata) cheader = curl_slist_append(cheader, headerdata);
         curl_easy_setopt(CurCurl, CURLOPT_HTTPHEADER, cheader);
 
         CURLcode res = curl_easy_perform(CurCurl);
@@ -198,29 +198,29 @@ namespace BLIK
         return Result;
     }
 
-    chars Customized_AddOn_Curl_RequestString(id_curl curl, chars url, chars postdata)
+    chars Customized_AddOn_Curl_RequestString(id_curl curl, chars url, chars postdata, chars headerdata)
     {
         static String Result;
-        uint08s RequestResult = _RequestCore(curl, url, postdata, nullptr, 0);
+        uint08s RequestResult = _RequestCore(curl, url, postdata, headerdata, nullptr, 0);
         if(RequestResult.Count() == 0) return "";
 
         Result = String((chars) RequestResult.AtDumping(0, 1), RequestResult.Count());
         return Result;
     }
 
-    bytes Customized_AddOn_Curl_RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata)
+    bytes Customized_AddOn_Curl_RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata, chars headerdata)
     {
         static uint08s Result;
-        Result = _RequestCore(curl, url, postdata, nullptr, 0);
+        Result = _RequestCore(curl, url, postdata, headerdata, nullptr, 0);
         if(getsize) *getsize = Result.Count();
         return Result.AtDumping(0, 1);
     }
 
-    chars Customized_AddOn_Curl_RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata)
+    chars Customized_AddOn_Curl_RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata, chars headerdata)
     {
         static String Result;
         Result = "";
-        _RequestCore(curl, url, postdata, &Result, successcode);
+        _RequestCore(curl, url, postdata, headerdata, &Result, successcode);
         return Result;
     }
 

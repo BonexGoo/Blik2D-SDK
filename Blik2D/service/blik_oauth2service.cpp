@@ -7,12 +7,9 @@
 
 namespace BLIK
 {
-    ////////////////////////////////////////////////////////////////////////////////
-    // Google+
-    ////////////////////////////////////////////////////////////////////////////////
-    class OAuth2GoogleService : public OAuth2Service
+    class OAuth2ServiceImpl : public OAuth2Service
     {
-    private:
+    protected:
         class Data
         {
         public:
@@ -46,17 +43,17 @@ namespace BLIK
             id_bitmap mPictureClipper;
         };
 
-    public:
-        OAuth2GoogleService()
+    protected:
+        OAuth2ServiceImpl(buffer gift)
         {
-            mShare = Share::Create(Buffer::Alloc<Data>(BLIK_DBG 1));
+            mShare = Share::Create(gift);
         }
-        ~OAuth2GoogleService() override
+        ~OAuth2ServiceImpl() override
         {
             Share::Remove(mShare);
         }
 
-    public:
+    private:
         void Signin(chars option, id_bitmap clipper) override
         {
             Context ClientInfo(ST_Json, SO_OnlyReference, option);
@@ -65,14 +62,7 @@ namespace BLIK
             Bmp::Remove(data().mPictureClipper);
             data().mPictureClipper = clipper;
 
-            const String QueryUrl = String::Format(
-                "https://" "accounts.google.com/o/oauth2/auth?"
-                "client_id=%s&"
-                "redirect_uri=http://" "localhost/oauth2callback&"
-                "scope=https://" "www.googleapis.com/auth/plus.me&"
-                "response_type=code&"
-                "access_type=offline", (chars) data_const().mClientId);
-            String ResultUrl = AddOn::Curl::RequestRedirectUrl(data().mCurl, QueryUrl, 302);
+            String ResultUrl = AddOn::Curl::RequestRedirectUrl(data().mCurl, SigninCore(data_const().mClientId), 302);
             data().mWeb = Platform::Web::Create(ResultUrl, 0, 0, OnEvent, (payload) this);
             data().mNeedDestroyWeb = false;
         }
@@ -123,70 +113,23 @@ namespace BLIK
         }
 
     private:
-        inline Data& data() {return mShare->At<Data>(0);}
-        inline const Data& data_const() const {return mShare->At<Data>(0);}
-
-    private:
         static bool OnEvent(payload self, chars type, chars text)
         {
-            auto Self = (OAuth2GoogleService*) self;
+            auto Self = (OAuth2ServiceImpl*) self;
             if(!String::Compare(type, "UrlChanged"))
             {
-                chars GoogleCheckUrl = "http://" "localhost/oauth2callback?";
-                static const sint32 GoogleCheckUrlLen = blik_strlen(GoogleCheckUrl);
-                if(!String::Compare(text, GoogleCheckUrl, GoogleCheckUrlLen))
+                chars CallbackUrl = "http://" "localhost/oauth2callback?";
+                static const sint32 CallbackUrlLen = blik_strlen(CallbackUrl);
+                if(!String::Compare(text, CallbackUrl, CallbackUrlLen))
                 {
                     // 코드 얻기
-                    String Code = text + GoogleCheckUrlLen;
+                    String Code = text + CallbackUrlLen;
                     const sint32 FindBegin = Code.Find(0, "code=");
                     if(FindBegin != -1) Code = Code.Right(Code.Length() - (FindBegin + 5));
                     const sint32 FindEnd = Code.Find(0, "&");
                     if(FindEnd != -1) Code = Code.Left(FindEnd);
 
-                    // 접근토큰/갱신토큰 얻기
-                    const String PostData = String::Format(
-                        "code=%s&"
-                        "client_id=%s&"
-                        "client_secret=%s&"
-                        "redirect_uri=http://" "localhost/oauth2callback&"
-                        "grant_type=authorization_code",
-                        (chars) Code, (chars) Self->data_const().mClientId, (chars) Self->data_const().mClientSecret);
-                    chars ResultA = AddOn::Curl::RequestString(Self->data().mCurl,
-                        "https://" "accounts.google.com/o/oauth2/token", PostData);
-                    const Context ResultAJson(ST_Json, SO_OnlyReference, ResultA);
-                    Self->data().mAccessToken = ResultAJson("access_token").GetString();
-                    Self->data().mRefreshToken = ResultAJson("refresh_token").GetString();
-
-                    // 회원정보 얻기
-                    // ※ https://developers.google.com/apis-explorer/?hl=ko#p/plus/v1/ 에 방문하여 슬라이드를 ON으로 변경
-                    chars ResultB = AddOn::Curl::RequestString(Self->data().mCurl, String::Format(
-                        "https://" "www.googleapis.com/plus/v1/people/me?access_token=%s", (chars) Self->data().mAccessToken));
-                    const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
-                    Self->data().mName = ResultBJson("displayName").GetString();
-                    Self->data().mComment = String::Format("팔로워 %d명 - %s",
-                        (sint32) ResultBJson("circledByCount").GetInt(), (chars) ResultBJson("tagline").GetString());
-
-                    // 사진 얻기
-                    if(chars PictureUrl = ResultBJson("image")("url").GetString(nullptr))
-                    {
-                        sint32 GetSize = 0;
-                        bytes ResultC = AddOn::Curl::RequestBytes(Self->data().mCurl, PictureUrl, &GetSize);
-                        id_bitmap NewBitmap = AddOn::Jpg::ToBmp(ResultC, GetSize);
-                        Self->data().mPicture.LoadBitmap(NewBitmap);
-                        if(Self->data().mPictureClipper)
-                            Self->data().mPicture.ReplaceAlphaChannelBy(Self->data().mPictureClipper);
-                        Bmp::Remove(NewBitmap);
-                    }
-
-                    // 배경 얻기
-                    if(chars BackgroundUrl = ResultBJson("cover")("coverPhoto")("url").GetString(nullptr))
-                    {
-                        sint32 GetSize = 0;
-                        bytes ResultC = AddOn::Curl::RequestBytes(Self->data().mCurl, BackgroundUrl, &GetSize);
-                        id_bitmap NewBitmap = AddOn::Jpg::ToBmp(ResultC, GetSize);
-                        Self->data().mBackground.LoadBitmap(NewBitmap);
-                        Bmp::Remove(NewBitmap);
-                    }
+                    Self->OnEventCore(Code);
 
                     // 웹의 제거
                     Self->data().mNeedDestroyWeb = true;
@@ -195,19 +138,212 @@ namespace BLIK
             }
             return false;
         }
+
+    protected:
+        void ReloadPicture(chars url)
+        {
+            if(url)
+            {
+                sint32 GetSize = 0;
+                bytes Result = AddOn::Curl::RequestBytes(data().mCurl, url, &GetSize);
+                id_bitmap NewBitmap = AddOn::Jpg::ToBmp(Result, GetSize);
+                data().mPicture.LoadBitmap(NewBitmap);
+                if(data().mPictureClipper)
+                    data().mPicture.ReplaceAlphaChannelBy(data().mPictureClipper);
+                Bmp::Remove(NewBitmap);
+            }
+        }
+        void ReloadBackground(chars url)
+        {
+            if(url)
+            {
+                sint32 GetSize = 0;
+                bytes Result = AddOn::Curl::RequestBytes(data().mCurl, url, &GetSize);
+                id_bitmap NewBitmap = AddOn::Jpg::ToBmp(Result, GetSize);
+                data().mBackground.LoadBitmap(NewBitmap);
+                Bmp::Remove(NewBitmap);
+            }
+        }
+
+    private:
+        virtual String SigninCore(chars clientId) = 0;
+        virtual void OnEventCore(chars code) = 0;
+
+    protected:
+        inline Data& data() {return mShare->At<Data>(0);}
+        inline const Data& data_const() const {return mShare->At<Data>(0);}
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Google+
+    ////////////////////////////////////////////////////////////////////////////////
+    class OAuth2GoogleService : public OAuth2ServiceImpl
+    {
+    public:
+        OAuth2GoogleService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
+        {
+        }
+        ~OAuth2GoogleService() override
+        {
+        }
+
+    private:
+        String SigninCore(chars clientId) override
+        {
+            return String::Format(
+                "https://" "accounts.google.com/o/oauth2/auth?"
+                "client_id=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "scope=https://" "www.googleapis.com/auth/plus.me&"
+                "response_type=code&"
+                "access_type=offline", clientId);
+        }
+        void OnEventCore(chars code) override
+        {
+            // 접근토큰/갱신토큰 얻기
+            const String PostData = String::Format(
+                "code=%s&"
+                "client_id=%s&"
+                "client_secret=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "grant_type=authorization_code",
+                code, (chars) data_const().mClientId, (chars) data_const().mClientSecret);
+            chars ResultA = AddOn::Curl::RequestString(data().mCurl,
+                "https://" "accounts.google.com/o/oauth2/token", PostData);
+            const Context ResultAJson(ST_Json, SO_OnlyReference, ResultA);
+            data().mAccessToken = ResultAJson("access_token").GetString();
+            data().mRefreshToken = ResultAJson("refresh_token").GetString();
+
+            // 회원정보 얻기(https://developers.google.com/apis-explorer/?hl=ko#p/plus/v1/ 에 방문하여 슬라이드를 ON으로 변경)
+            chars ResultB = AddOn::Curl::RequestString(data().mCurl, String::Format(
+                "https://" "www.googleapis.com/plus/v1/people/me?access_token=%s",
+                (chars) data_const().mAccessToken));
+            const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
+            data().mName = ResultBJson("displayName").GetString();
+            data().mComment = String::Format("팔로워 %d명 - %s",
+                (sint32) ResultBJson("circledByCount").GetInt(), (chars) ResultBJson("tagline").GetString());
+
+            // 사진/배경 얻기
+            ReloadPicture(ResultBJson("image")("url").GetString(nullptr));
+            ReloadBackground(ResultBJson("cover")("coverPhoto")("url").GetString(nullptr));
+        }
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     // Facebook
     ////////////////////////////////////////////////////////////////////////////////
-    class OAuth2FacebookService : public OAuth2Service
+    class OAuth2FacebookService : public OAuth2ServiceImpl
     {
     public:
-        OAuth2FacebookService()
+        OAuth2FacebookService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
         {
         }
         ~OAuth2FacebookService() override
         {
+        }
+
+    private:
+        String SigninCore(chars clientId) override
+        {
+            // 스코프는 App Review에서 변경, developers.facebook.com/apps/[앱ID]/review-status
+            return String::Format(
+                "https://" "www.facebook.com/dialog/oauth?"
+                "client_id=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "scope=public_profile,user_photos", clientId);
+        }
+        void OnEventCore(chars code) override
+        {
+            // 접근토큰 얻기
+            const String Url = String::Format(
+                "https://" "graph.facebook.com/oauth/access_token?"
+                "client_id=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "client_secret=%s&"
+                "code=%s",
+                (chars) data_const().mClientId, (chars) data_const().mClientSecret, code);
+            chars ResultA = AddOn::Curl::RequestString(data().mCurl, Url);
+            const Context ResultAJson(ST_Json, SO_OnlyReference, ResultA);
+            data().mAccessToken = ResultAJson("access_token").GetString();
+
+            // 회원정보 얻기
+            chars ResultB = AddOn::Curl::RequestString(data().mCurl, String::Format(
+                "https://" "graph.facebook.com/me?access_token=%s&"
+                "fields=id,name,picture,cover,context",
+                (chars) data().mAccessToken));
+            const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
+            data().mName = ResultBJson("name").GetString();
+            data().mComment = String::Format("좋아요 총 %d건",
+                (sint32) ResultBJson("context")("mutual_likes")("summary")("total_count").GetInt());
+
+            // 사진/배경 얻기
+            ReloadPicture(ResultBJson("picture")("data")("url").GetString(nullptr));
+            ReloadBackground(ResultBJson("cover")("source").GetString(nullptr));
+        }
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Kakao
+    ////////////////////////////////////////////////////////////////////////////////
+    class OAuth2KakaoService : public OAuth2ServiceImpl
+    {
+    public:
+        OAuth2KakaoService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
+        {
+        }
+        ~OAuth2KakaoService() override
+        {
+        }
+
+    private:
+        String SigninCore(chars clientId) override
+        {
+            // 사이트 도메인과 Redirect Path를 선행하여 수정할 것(https://developers.kakao.com/apps/[앱번호]/settings/general)
+            return String::Format(
+                "https://" "kauth.kakao.com/oauth/authorize?"
+                "client_id=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "response_type=code", clientId);
+        }
+        void OnEventCore(chars code) override
+        {
+            // 접근토큰 얻기
+            const String PostData = String::Format(
+                "grant_type=authorization_code&"
+                "client_id=%s&"
+                "redirect_uri=http://" "localhost/oauth2callback&"
+                "code=%s",
+                (chars) data_const().mClientId, code);
+            chars ResultA = AddOn::Curl::RequestString(data().mCurl,
+                "https://" "kauth.kakao.com/oauth/token", PostData);
+            const Context ResultAJson(ST_Json, SO_OnlyReference, ResultA);
+            data().mAccessToken = ResultAJson("access_token").GetString();
+            data().mRefreshToken = ResultAJson("refresh_token").GetString();
+
+            // 회원정보 얻기
+            //chars ResultB = AddOn::Curl::RequestString(data().mCurl,
+            //    "https://" "kapi.kakao.com/v1/api/talk/profile", nullptr,
+            //    String::Format("Authorization: Bearer %s", (chars) data().mAccessToken));
+            //const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
+            //data().mName = ResultBJson("nickName").GetString();
+            // 사진/배경 얻기
+            //ReloadPicture(ResultBJson("thumbnailURL").GetString(nullptr));
+
+            // 회원정보 얻기
+            chars ResultB = AddOn::Curl::RequestString(data().mCurl,
+                "https://" "kapi.kakao.com/v1/api/story/profile", nullptr,
+                String::Format("Authorization: Bearer %s", (chars) data().mAccessToken));
+            const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
+            data().mName = ResultBJson("nickName").GetString();
+            chars BirthType = "";
+            if(!String::Compare(ResultBJson("birthdayType").GetString(), "SOLAR")) BirthType = "(양력)";
+            else if(!String::Compare(ResultBJson("birthdayType").GetString(), "LUNAR")) BirthType = "(음력)";
+            const sint32 BirthDay = (sint32) ResultBJson("birthday").GetInt();
+            data().mComment = String::Format("생일%s %d월 %d일", BirthType, BirthDay / 100, BirthDay % 100);
+
+            // 사진/배경 얻기
+            ReloadPicture(ResultBJson("thumbnailURL").GetString(nullptr));
+            ReloadBackground(ResultBJson("bgImageURL").GetString(nullptr));
         }
     };
 
@@ -242,6 +378,7 @@ namespace BLIK
             Strings Collector;
             Collector.AtAdding() = "Google+";
             Collector.AtAdding() = "Facebook";
+            Collector.AtAdding() = "Kakao";
             return Collector;
         }();
         return Services;
@@ -253,6 +390,8 @@ namespace BLIK
             return OAuth2GoogleService();
         if(!String::CompareNoCase(service, "Facebook"))
             return OAuth2FacebookService();
+        if(!String::CompareNoCase(service, "Kakao"))
+            return OAuth2KakaoService();
         return OAuth2Service();
     }
 }
