@@ -640,7 +640,7 @@
                 NeedSetRandom = false;
                 qsrand((uint32) (CurrentTimeMS() & 0xFFFFFFFF));
             }
-            return (qrand() & 0xFFFFFFFF);
+            return (qrand() & 0xFFFF) | ((qrand() & 0xFFFF) << 16);
         }
 
         void Platform::Utility::Sleep(sint32 ms, bool caninput)
