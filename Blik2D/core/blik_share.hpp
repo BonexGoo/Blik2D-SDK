@@ -21,11 +21,14 @@ namespace BLIK
         chars Type() const;
         sblock TypeID() const;
         const Share* Clone() const;
-        sint32 Count() const;
         template<typename TYPE>
         TYPE& At(sint32 index) const
-        {return Buffer::At<TYPE>(data, index);}
+        {return Buffer::At<TYPE>(mData, index);}
         buffer CopiedBuffer() const;
+
+    public:
+        inline sint32 count() const {return mValidCount;}
+        inline const buffer const_data() const {return mData;}
 
     private:
         Share(buffer gift);
@@ -37,8 +40,8 @@ namespace BLIK
         static sint32& _DebugShareCount();
 
     private:
-        mutable sint32 sharecount;
-        sint32 validcount;
-        buffer data;
+        mutable sint32 mShareCount;
+        sint32 mValidCount;
+        buffer mData;
     };
 }

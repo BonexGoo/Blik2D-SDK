@@ -35,4 +35,3 @@ namespace BLIK
         const Share* mShare;
     };
 }
-   

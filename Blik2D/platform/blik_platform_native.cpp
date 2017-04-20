@@ -516,7 +516,7 @@
             return 0;
         }
 
-        uint64 Platform::Utility::CurrentTimeMS()
+        uint64 Platform::Utility::CurrentTimeMs()
         {
             #if BLIK_WINDOWS
                 FILETIME FileTime;
@@ -1612,16 +1612,10 @@
             return false;
         }
 
-        bytes Platform::Microphone::GetSoundData(id_microphone microphone)
+        bytes Platform::Microphone::GetSoundData(id_microphone microphone, sint32* length, uint64* timems)
         {
             BLIK_ASSERT("Further development is needed.", false);
             return nullptr;
-        }
-
-        sint32 Platform::Microphone::GetSoundDataLength(id_microphone microphone)
-        {
-            BLIK_ASSERT("Further development is needed.", false);
-            return 0;
         }
     }
 

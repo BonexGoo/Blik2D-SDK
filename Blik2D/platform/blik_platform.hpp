@@ -378,7 +378,7 @@ namespace BLIK
             \brief 현재시간 구하기
             \return 현재시간(ms)
             */
-            static uint64 CurrentTimeMS();
+            static uint64 CurrentTimeMs();
 
             /*!
             \brief 클럭의 기준시각변경
@@ -1556,18 +1556,12 @@ namespace BLIK
             /*!
             \brief 포커싱된 사운드데이터 반환
             \param microphone : 마이크ID
+            \param length : 사운드데이터의 크기(바이트단위)
+            \param timems : 사운드데이터 발생시각
             \return 사운드데이터(audio/pcm)
             \see TryNextSound
             */
-            static bytes GetSoundData(id_microphone microphone);
-
-            /*!
-            \brief 포커싱된 사운드데이터의 크기 반환
-            \param microphone : 마이크ID
-            \return 사운드데이터의 크기(바이트단위)
-            \see TryNextSound
-            */
-            static sint32 GetSoundDataLength(id_microphone microphone);
+            static bytes GetSoundData(id_microphone microphone, sint32* length = nullptr, uint64* timems = nullptr);
         };
     };
 }

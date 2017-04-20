@@ -242,6 +242,7 @@ namespace BLIK
     BLIK_DECLARE_ID(id_server);
     BLIK_DECLARE_ID(id_serial);
     BLIK_DECLARE_ID(id_bitmap);
+    BLIK_DECLARE_ID(id_flash);
     BLIK_DECLARE_ID(id_image);
     BLIK_DECLARE_ID(id_surface);
     BLIK_DECLARE_ID(id_clock);

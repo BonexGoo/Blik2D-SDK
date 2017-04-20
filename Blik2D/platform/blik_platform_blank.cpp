@@ -450,7 +450,7 @@
             return 0;
         }
 
-        uint64 Platform::Utility::CurrentTimeMS()
+        uint64 Platform::Utility::CurrentTimeMs()
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
             return EpochToWindow(0);
@@ -1475,16 +1475,10 @@
             return false;
         }
 
-        bytes Platform::Microphone::GetSoundData(id_microphone microphone)
+        bytes Platform::Microphone::GetSoundData(id_microphone microphone, sint32* length, uint64* timems)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
             return nullptr;
-        }
-
-        sint32 Platform::Microphone::GetSoundDataLength(id_microphone microphone)
-        {
-            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-            return 0;
         }
     }
 

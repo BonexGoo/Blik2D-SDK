@@ -23,7 +23,7 @@ namespace BLIK
         public:
             static id_acc Create(sint32 bitrate, sint32 channel, sint32 samplerate);
             static void Release(id_acc acc);
-            static id_share Encode(id_acc acc, bytes pcm, sint32 length);
+            static void EncodeTo(id_acc acc, bytes pcm, sint32 length, id_flash flash, uint64 timems);
         };
 
         //! \brief ALPR연동
@@ -46,17 +46,16 @@ namespace BLIK
             static chars RequestString(id_curl curl, chars url, chars postdata = nullptr, chars headerdata = nullptr);
             static bytes RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata = nullptr, chars headerdata = nullptr);
             static chars RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata = nullptr, chars headerdata = nullptr);
-            static chars ServiceRequest(id_curl curl, chars service, chars arg);
-            static void SendStream(id_curl curl, chars service, chars key, CurlReadCB cb, payload data);
+            static void SendStream(id_curl curl, chars url, CurlReadCB cb, payload data);
         };
 
         //! \brief H264연동
         class H264
         {
         public:
-            static id_h264 Create(sint32 width, sint32 height);
+            static id_h264 Create(sint32 width, sint32 height, bool fastmode);
             static void Release(id_h264 h264);
-            static id_share Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac = nullptr);
+            static void EncodeTo(id_h264 h264, const uint32* rgba, id_flash flash, uint64 timems);
         };
 
         //! \brief GIT연동

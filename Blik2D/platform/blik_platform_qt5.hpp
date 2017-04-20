@@ -2892,7 +2892,7 @@
                     mCaptureOrder = CaptureOrder_NeedStop;
                 mUpdateForImage = true;
                 mUpdateForBitmap = true;
-                mUpdateTimeMS = Platform::Utility::CurrentTimeMS();
+                mUpdateTimeMS = Platform::Utility::CurrentTimeMs();
             }
             Mutex::Unlock(mMutex);
         }
@@ -3180,11 +3180,32 @@
         Q_OBJECT
 
     private:
+        class Data
+        {
+        public:
+            Data() {}
+            ~Data() {}
+        public:
+            Data(const Data& rhs) {operator=(rhs);}
+            Data& operator=(const Data& rhs)
+            {
+                mPcm = rhs.mPcm;
+                mTimeMs = rhs.mTimeMs;
+                return *this;
+            }
+            operator void*() const {return nullptr;}
+            bool operator!() const {return (mPcm.Count() == 0);}
+        public:
+            uint08s mPcm;
+            uint64 mTimeMs;
+        };
+
+    private:
         QAudioRecorder* mRecorder;
         QAudioEncoderSettings mAudioSettings;
         const sint32 mMaxQueueCount;
-        Queue<uint08s> mDataQueue;
-        uint08s mLastData;
+        Queue<Data> mDataQueue;
+        Data mLastData;
 
     public:
         static Strings GetList(String* spec)
@@ -3303,8 +3324,11 @@
             }
             return false;
         }
-        inline const uint08s& GetLastData() const
-        {return mLastData;}
+        const uint08s& GetLastData(uint64* timems) const
+        {
+            if(timems) *timems = mLastData.mTimeMs;
+            return mLastData.mPcm;
+        }
         const QAudioEncoderSettings& GetAudioSettings() const
         {return mAudioSettings;}
 
@@ -3317,8 +3341,9 @@
             // 데이터적재
             if(buffer.isValid())
             {
-                uint08s NewData;
-                Memory::Copy(NewData.AtDumpingAdded(buffer.byteCount()), buffer.constData(), buffer.byteCount());
+                Data NewData;
+                Memory::Copy(NewData.mPcm.AtDumpingAdded(buffer.byteCount()), buffer.constData(), buffer.byteCount());
+                NewData.mTimeMs = Platform::Utility::CurrentTimeMs();
                 mDataQueue.Enqueue(NewData);
             }
         }

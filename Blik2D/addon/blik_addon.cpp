@@ -24,7 +24,7 @@ namespace BLIK
     static void Aac_Error() {BLIK_ASSERT("Aac애드온이 준비되지 않았습니다", false);}
     BLIK_DEFINE_ADDON_FUNCTION(Aac, Create, id_acc, return nullptr, sint32, sint32, sint32)
     BLIK_DEFINE_ADDON_FUNCTION(Aac, Release, void, return, id_acc)
-    BLIK_DEFINE_ADDON_FUNCTION(Aac, Encode, id_share, return nullptr, id_acc, bytes, sint32)
+    BLIK_DEFINE_ADDON_FUNCTION(Aac, EncodeTo, void, return, id_acc, bytes, sint32, id_flash, uint64)
 
     id_acc AddOn::Aac::Create(sint32 bitrate, sint32 channel, sint32 samplerate)
     {return Core_AddOn_Aac_Create()(bitrate, channel, samplerate);}
@@ -32,8 +32,8 @@ namespace BLIK
     void AddOn::Aac::Release(id_acc acc)
     {Core_AddOn_Aac_Release()(acc);}
 
-    id_share AddOn::Aac::Encode(id_acc acc, bytes pcm, sint32 length)
-    {return Core_AddOn_Aac_Encode()(acc, pcm, length);}
+    void AddOn::Aac::EncodeTo(id_acc acc, bytes pcm, sint32 length, id_flash flash, uint64 timems)
+    {Core_AddOn_Aac_EncodeTo()(acc, pcm, length, flash, timems);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void Alpr_Error() {BLIK_ASSERT("Alpr애드온이 준비되지 않았습니다", false);}
@@ -62,8 +62,7 @@ namespace BLIK
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestString, chars, return "", id_curl, chars, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestBytes, bytes, return nullptr, id_curl, chars, sint32*, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, return "", id_curl, chars, sint32, chars, chars)
-    BLIK_DEFINE_ADDON_FUNCTION(Curl, ServiceRequest, chars, return "", id_curl, chars, chars)
-    BLIK_DEFINE_ADDON_FUNCTION(Curl, SendStream, void, return, id_curl, chars, chars, CurlReadCB, payload)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, SendStream, void, return, id_curl, chars, CurlReadCB, payload)
 
     id_curl AddOn::Curl::Create(void)
     {return Core_AddOn_Curl_Create()();}
@@ -83,26 +82,23 @@ namespace BLIK
     chars AddOn::Curl::RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata, chars headerdata)
     {return Core_AddOn_Curl_RequestRedirectUrl()(curl, url, successcode, postdata, headerdata);}
 
-    chars AddOn::Curl::ServiceRequest(id_curl curl, chars service, chars arg)
-    {return Core_AddOn_Curl_ServiceRequest()(curl, service, arg);}
-
-    void AddOn::Curl::SendStream(id_curl curl, chars service, chars key, CurlReadCB cb, payload data)
-    {return Core_AddOn_Curl_SendStream()(curl, service, key, cb, data);}
+    void AddOn::Curl::SendStream(id_curl curl, chars url, CurlReadCB cb, payload data)
+    {return Core_AddOn_Curl_SendStream()(curl, url, cb, data);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void H264_Error() {BLIK_ASSERT("H264애드온이 준비되지 않았습니다", false);}
-    BLIK_DEFINE_ADDON_FUNCTION(H264, Create, id_h264, return nullptr, sint32, sint32)
+    BLIK_DEFINE_ADDON_FUNCTION(H264, Create, id_h264, return nullptr, sint32, sint32, bool)
     BLIK_DEFINE_ADDON_FUNCTION(H264, Release, void, return, id_h264)
-    BLIK_DEFINE_ADDON_FUNCTION(H264, Encode, id_share, return nullptr, id_h264, const uint32*, bool, uint64, id_share)
+    BLIK_DEFINE_ADDON_FUNCTION(H264, EncodeTo, void, return, id_h264, const uint32*, id_flash, uint64)
 
-    id_h264 AddOn::H264::Create(sint32 width, sint32 height)
-    {return Core_AddOn_H264_Create()(width, height);}
+    id_h264 AddOn::H264::Create(sint32 width, sint32 height, bool fastmode)
+    {return Core_AddOn_H264_Create()(width, height, fastmode);}
 
     void AddOn::H264::Release(id_h264 h264)
     {Core_AddOn_H264_Release()(h264);}
 
-    id_share AddOn::H264::Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac)
-    {return Core_AddOn_H264_Encode()(h264, rgba, chunking, ms, aac);}
+    void AddOn::H264::EncodeTo(id_h264 h264, const uint32* rgba, id_flash flash, uint64 timems)
+    {return Core_AddOn_H264_EncodeTo()(h264, rgba, flash, timems);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void Git_Error() {BLIK_ASSERT("Git애드온이 준비되지 않았습니다", false);}

@@ -73,7 +73,7 @@ namespace BLIK
         */
         Object& operator=(id_share_read rhs)
         {
-            BLIK_ASSERT("공유ID가 배열로 구성되어서 복사할 수 없습니다", ((Share*) rhs)->Count() == 1);
+            BLIK_ASSERT("공유ID가 배열로 구성되어서 복사할 수 없습니다", ((Share*) rhs)->count() == 1);
             Share::Remove(share);
             share = ((Share*) rhs)->Clone();
             return *this;
@@ -86,7 +86,7 @@ namespace BLIK
         */
         Object& operator=(id_cloned_share_read rhs)
         {
-            BLIK_ASSERT("공유ID가 배열로 구성되어서 복사할 수 없습니다", ((Share*) rhs)->Count() == 1);
+            BLIK_ASSERT("공유ID가 배열로 구성되어서 복사할 수 없습니다", ((Share*) rhs)->count() == 1);
             Share::Remove(share);
             share = (Share*) rhs;
             return *this;

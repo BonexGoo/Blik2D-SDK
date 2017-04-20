@@ -10,19 +10,20 @@ bool __LINK_ADDON_AAC__() {return true;} // 링크옵션 /OPT:NOREF가 안되서
 #include "blik_addon_aac.hpp"
 
 #include <addon/blik_addon.hpp>
+#include <format/blik_flv.hpp>
 
 // 등록과정
 namespace BLIK
 {
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Create, id_acc, sint32, sint32, sint32)
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Release, void, id_acc)
-    BLIK_DECLARE_ADDON_FUNCTION(Aac, Encode, id_share, id_acc, bytes, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(Aac, EncodeTo, void, id_acc, bytes, sint32, id_flash, uint64)
 
     static autorun Bind_AddOn_Aac()
     {
         Core_AddOn_Aac_Create() = Customized_AddOn_Aac_Create;
         Core_AddOn_Aac_Release() = Customized_AddOn_Aac_Release;
-        Core_AddOn_Aac_Encode() = Customized_AddOn_Aac_Encode;
+        Core_AddOn_Aac_EncodeTo() = Customized_AddOn_Aac_EncodeTo;
         return true;
     }
     static autorun _ = Bind_AddOn_Aac();
@@ -45,11 +46,11 @@ namespace BLIK
         delete OldEncoder;
     }
 
-    id_share Customized_AddOn_Aac_Encode(id_acc acc, bytes pcm, sint32 length)
+    void Customized_AddOn_Aac_EncodeTo(id_acc acc, bytes pcm, sint32 length, id_flash flash, uint64 timems)
     {
         BaseEncoderAac* CurEncoder = (BaseEncoderAac*) acc;
-        if(!CurEncoder) return uint08s();
-        return CurEncoder->Encode(pcm, length);
+        if(CurEncoder)
+            return CurEncoder->EncodeTo(pcm, length, flash, timems);
     }
 }
 
@@ -105,10 +106,10 @@ BaseEncoderAac::~BaseEncoderAac()
         aacEncClose(mEncoder);
 }
 
-id_share BaseEncoderAac::Encode(bytes pcm, sint32 length)
+void BaseEncoderAac::EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 timems)
 {
-    static uint08s Result;
-    Result.SubtractionAll();
+    static uint08s Contents, Chunk;
+    Contents.SubtractionAll();
 
     while(true)
     {
@@ -154,9 +155,25 @@ id_share BaseEncoderAac::Encode(bytes pcm, sint32 length)
         length -= in_size;
         if(out_args.numOutBytes == 0)
             break;
-        Memory::Copy(Result.AtDumpingAdded(out_args.numOutBytes), outbuf, out_args.numOutBytes);
+        Memory::Copy(Contents.AtDumpingAdded(out_args.numOutBytes), outbuf, out_args.numOutBytes);
     }
-    return Result;
+
+    if(sint32 CurAacSize = Contents.Count())
+    {
+        bytes CurAacPtr = Contents.AtDumping(0, CurAacSize);
+        const sint32 AacHeadSize = 7;
+        while(AacHeadSize < CurAacSize)
+        {
+            Chunk.SubtractionAll();
+            Memory::Copy(Chunk.AtDumpingAdded(2), "\xaf\x01", 2);
+            const sint32 CurChunkSize = (((CurAacPtr[4] & 0xFF) << 4) | ((CurAacPtr[5] & 0xF0) >> 4)) / 2;
+            const sint32 CurContentSize = CurChunkSize - AacHeadSize;
+            Memory::Copy(Chunk.AtDumpingAdded(CurContentSize), &CurAacPtr[AacHeadSize], CurContentSize);
+            Flv::AddChunk(flash, 0x08, &Chunk[0], Chunk.Count(), timems); // audio
+            CurAacPtr += CurChunkSize;
+            CurAacSize -= CurChunkSize;
+        }
+    }
 }
 
 #endif

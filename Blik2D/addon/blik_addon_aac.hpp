@@ -11,7 +11,7 @@ class BaseEncoderAac
 public:
     BaseEncoderAac(sint32 bitrate, sint32 channel, sint32 samplerate);
     ~BaseEncoderAac();
-    id_share Encode(bytes pcm, sint32 length);
+    void EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 timems);
 
 public:
     inline bool IsValid() const

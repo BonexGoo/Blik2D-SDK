@@ -10,8 +10,8 @@ ZAY_VIEW_API OnCommand(CommandType type, chars topic, id_share in, id_cloned_sha
     if(type == CT_Tick)
     {
         // 맵갱신을 인지하여 리로드
-        static uint64 LastUpdateCheckTime = Platform::Utility::CurrentTimeMS();
-        uint64 CurUpdateCheckTime = Platform::Utility::CurrentTimeMS();
+        static uint64 LastUpdateCheckTime = Platform::Utility::CurrentTimeMs();
+        uint64 CurUpdateCheckTime = Platform::Utility::CurrentTimeMs();
         if(LastUpdateCheckTime + 1000 < CurUpdateCheckTime)
         {
             LastUpdateCheckTime = CurUpdateCheckTime;

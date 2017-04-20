@@ -12,14 +12,13 @@ public:
     typedef void (*EncodeFrameCB)(const SFrameBSInfo& frameInfo);
 
 public:
-    BaseEncoderH264(sint32 width, sint32 height);
+    BaseEncoderH264(sint32 width, sint32 height, bool fastmode);
     ~BaseEncoderH264();
-    id_share Encode(const uint32* rgba, bool chunking, uint64 ms, id_share aac);
+    void EncodeTo(const uint32* rgba, id_flash flash, uint64 timems);
 
 private:
     ISVCEncoder* mEncoder;
     uint08s mFrame;
     SSourcePicture mPic;
     SFrameBSInfo mInfo;
-    uint64 mBeginTimeMs;
 };

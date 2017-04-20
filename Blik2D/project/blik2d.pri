@@ -143,9 +143,11 @@ SOURCES += ../../Blik2D/element/blik_vector.cpp
 # FORMAT
 ###########################################################
 HEADERS += ../../Blik2D/format/blik_bmp.hpp
+HEADERS += ../../Blik2D/format/blik_flv.hpp
 HEADERS += ../../Blik2D/format/blik_png.hpp
 HEADERS += ../../Blik2D/format/blik_zen.hpp
 SOURCES += ../../Blik2D/format/blik_bmp.cpp
+SOURCES += ../../Blik2D/format/blik_flv.cpp
 SOURCES += ../../Blik2D/format/blik_png.cpp
 SOURCES += ../../Blik2D/format/blik_zen.cpp
 
@@ -175,10 +177,12 @@ HEADERS += ../../Blik2D/service/blik_batchbuilder.hpp
 HEADERS += ../../Blik2D/service/blik_boxr.hpp
 HEADERS += ../../Blik2D/service/blik_brii.hpp
 HEADERS += ../../Blik2D/service/blik_oauth2service.hpp
+HEADERS += ../../Blik2D/service/blik_streamingservice.hpp
 HEADERS += ../../Blik2D/service/blik_zay.hpp
 SOURCES += ../../Blik2D/service/blik_asyncfilemanager.cpp
 SOURCES += ../../Blik2D/service/blik_batchbuilder.cpp
 SOURCES += ../../Blik2D/service/blik_boxr.cpp
 SOURCES += ../../Blik2D/service/blik_brii.cpp
 SOURCES += ../../Blik2D/service/blik_oauth2service.cpp
+SOURCES += ../../Blik2D/service/blik_streamingservice.cpp
 SOURCES += ../../Blik2D/service/blik_zay.cpp

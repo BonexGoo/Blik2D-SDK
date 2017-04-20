@@ -68,6 +68,7 @@
     <ClCompile Include="..\element\blik_tween.cpp" />
     <ClCompile Include="..\element\blik_vector.cpp" />
     <ClCompile Include="..\format\blik_bmp.cpp" />
+    <ClCompile Include="..\format\blik_flv.cpp" />
     <ClCompile Include="..\format\blik_png.cpp" />
     <ClCompile Include="..\format\blik_zen.cpp" />
     <ClCompile Include="..\platform\android\OpenGLES_Functions.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="..\service\blik_boxr.cpp" />
     <ClCompile Include="..\service\blik_brii.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
+    <ClCompile Include="..\service\blik_streamingservice.cpp" />
     <ClCompile Include="..\service\blik_zay.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -147,6 +149,7 @@
     <ClInclude Include="..\element\blik_tween.hpp" />
     <ClInclude Include="..\element\blik_vector.hpp" />
     <ClInclude Include="..\format\blik_bmp.hpp" />
+    <ClInclude Include="..\format\blik_flv.hpp" />
     <ClInclude Include="..\format\blik_png.hpp" />
     <ClInclude Include="..\format\blik_zen.hpp" />
     <ClInclude Include="..\platform\android\OpenGLES_Functions.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="..\service\blik_boxr.hpp" />
     <ClInclude Include="..\service\blik_brii.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
+    <ClInclude Include="..\service\blik_streamingservice.hpp" />
     <ClInclude Include="..\service\blik_zay.hpp" />
     <CustomBuild Include="..\platform\blik_platform_qt5.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

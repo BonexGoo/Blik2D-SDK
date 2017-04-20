@@ -11,20 +11,21 @@ bool __LINK_ADDON_H264__() {return true;} // 링크옵션 /OPT:NOREF가 안되�
 
 #include <addon/blik_addon.hpp>
 #include <format/blik_bmp.hpp>
+#include <format/blik_flv.hpp>
 #include <platform/blik_platform.hpp>
 
 // 등록과정
 namespace BLIK
 {
-    BLIK_DECLARE_ADDON_FUNCTION(H264, Create, id_h264, sint32, sint32)
+    BLIK_DECLARE_ADDON_FUNCTION(H264, Create, id_h264, sint32, sint32, bool)
     BLIK_DECLARE_ADDON_FUNCTION(H264, Release, void, id_h264)
-    BLIK_DECLARE_ADDON_FUNCTION(H264, Encode, id_share, id_h264, const uint32*, bool, uint64, id_share)
+    BLIK_DECLARE_ADDON_FUNCTION(H264, EncodeTo, void, id_h264, const uint32*, id_flash flash, uint64 timems)
 
     static autorun Bind_AddOn_H264()
     {
         Core_AddOn_H264_Create() = Customized_AddOn_H264_Create;
         Core_AddOn_H264_Release() = Customized_AddOn_H264_Release;
-        Core_AddOn_H264_Encode() = Customized_AddOn_H264_Encode;
+        Core_AddOn_H264_EncodeTo() = Customized_AddOn_H264_EncodeTo;
         return true;
     }
     static autorun _ = Bind_AddOn_H264();
@@ -33,9 +34,9 @@ namespace BLIK
 // 구현부
 namespace BLIK
 {
-    id_h264 Customized_AddOn_H264_Create(sint32 width, sint32 height)
+    id_h264 Customized_AddOn_H264_Create(sint32 width, sint32 height, bool fastmode)
     {
-        BaseEncoderH264* NewEncoder = new BaseEncoderH264(width, height);
+        BaseEncoderH264* NewEncoder = new BaseEncoderH264(width, height, fastmode);
         return (id_h264) NewEncoder;
     }
 
@@ -45,15 +46,15 @@ namespace BLIK
         delete OldEncoder;
     }
 
-    id_share Customized_AddOn_H264_Encode(id_h264 h264, const uint32* rgba, bool chunking, uint64 ms, id_share aac)
+    void Customized_AddOn_H264_EncodeTo(id_h264 h264, const uint32* rgba, id_flash flash, uint64 timems)
     {
         BaseEncoderH264* CurEncoder = (BaseEncoderH264*) h264;
-        if(!CurEncoder) return uint08s();
-        return CurEncoder->Encode(rgba, chunking, ms, aac);
+        if(CurEncoder)
+            return CurEncoder->EncodeTo(rgba, flash, timems);
     }
 }
 
-BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height)
+BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height, bool fastmode)
 {
     mEncoder = nullptr;
     int rv = WelsCreateSVCEncoder(&mEncoder);
@@ -70,7 +71,7 @@ BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height)
     param.fMaxFrameRate              = 60.0f;                // input frame rate
     param.iTargetBitrate             = 4 * width * height;   // target bitrate desired
     param.iMaxBitrate                = UNSPECIFIED_BIT_RATE;
-    param.iRCMode                    = RC_QUALITY_MODE;      // rc mode control
+    param.iRCMode                    = (fastmode)? RC_BITRATE_MODE : RC_QUALITY_MODE;
     param.iTemporalLayerNum          = 3;                    // layer number at temporal level
     param.iSpatialLayerNum           = 1;                    // layer number at spatial level
     param.bEnableDenoise             = 0;                    // denoise control
@@ -82,7 +83,7 @@ BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height)
     param.uiIntraPeriod              = 320;                  // period of Intra frame
     param.eSpsPpsIdStrategy          = CONSTANT_ID;
     param.bPrefixNalAddingCtrl       = 0;
-    param.iComplexityMode            = MEDIUM_COMPLEXITY;
+    param.iComplexityMode            = (fastmode)? LOW_COMPLEXITY : MEDIUM_COMPLEXITY;
     param.bSimulcastAVC              = false;
     param.iEntropyCodingModeFlag     = 1;                    // 0:CAVLC  1:CABAC.
     for (int i = 0; i < param.iSpatialLayerNum; i++)
@@ -110,7 +111,6 @@ BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height)
     mPic.pData[2] = mPic.pData[1] + width * height / 4;
 
     memset(&mInfo, 0, sizeof(mInfo));
-    mBeginTimeMs = 0;
 }
 
 BaseEncoderH264::~BaseEncoderH264()
@@ -210,148 +210,74 @@ static void WriteScriptDataString(uint08s& dst, chars name, chars value)
     WriteScriptDataImpl(dst, value);
 }
 
-id_share BaseEncoderH264::Encode(const uint32* rgba, bool chunking, uint64 ms, id_share aac)
+void BaseEncoderH264::EncodeTo(const uint32* rgba, id_flash flash, uint64 timems)
 {
-    static uint08s Result, Chunk;
-    Result.SubtractionAll();
-
-    if(rgba)
+    uint08* yplane = mPic.pData[0];
+    uint08* uplane = mPic.pData[1];
+    uint08* vplane = mPic.pData[2];
+    for(sint32 i = 0, iend = mPic.iPicWidth * mPic.iPicHeight; i < iend; ++i)
     {
-        uint08* yplane = mPic.pData[0];
-        uint08* uplane = mPic.pData[1];
-        uint08* vplane = mPic.pData[2];
-        for(sint32 i = 0, iend = mPic.iPicWidth * mPic.iPicHeight; i < iend; ++i)
+        Bmp::bitmappixel& color = *((Bmp::bitmappixel*) rgba++);
+        *(yplane++) = ((66 * color.r + 129 * color.g + 25 * color.b) >> 8) + 16;
+        if(!((i / mPic.iPicWidth) & 1) && !(i & 1))
         {
-            Bmp::bitmappixel& color = *((Bmp::bitmappixel*) rgba++);
-            *(yplane++) = ((66 * color.r + 129 * color.g + 25 * color.b) >> 8) + 16;
-            if(!((i / mPic.iPicWidth) & 1) && !(i & 1))
-            {
-                *(uplane++) = ((-38 * color.r + -74 * color.g + 112 * color.b) >> 8) + 128;
-                *(vplane++) = ((112 * color.r + -94 * color.g + -18 * color.b) >> 8) + 128;
-            }
+            *(uplane++) = ((-38 * color.r + -74 * color.g + 112 * color.b) >> 8) + 128;
+            *(vplane++) = ((112 * color.r + -94 * color.g + -18 * color.b) >> 8) + 128;
         }
+    }
 
-        int rv = mEncoder->EncodeFrame(&mPic, &mInfo);
-        BLIK_ASSERT("EncodeFrame이 실패하였습니다", rv == cmResultSuccess);
+    int rv = mEncoder->EncodeFrame(&mPic, &mInfo);
+    BLIK_ASSERT("EncodeFrame이 실패하였습니다", rv == cmResultSuccess);
 
-        if(rv == cmResultSuccess && mInfo.eFrameType != videoFrameTypeSkip)
+    static uint08s Chunk;
+    if(rv == cmResultSuccess && mInfo.eFrameType != videoFrameTypeSkip)
+    {
+        for(sint32 i = 0; i < mInfo.iLayerNum; ++i)
         {
-            for(sint32 i = 0; i < mInfo.iLayerNum; ++i)
+            const SLayerBSInfo& CurLayer = mInfo.sLayerInfo[i];
+            sint32 BufSize = 0;
+            for(sint32 j = 0; j < CurLayer.iNalCount; ++j)
+                BufSize += CurLayer.pNalLengthInByte[j];
+
+            // Video태그헤더(5)
+            Chunk.SubtractionAll();
+            const bool IsInterframe = (CurLayer.eFrameType == videoFrameTypeI);
+            const bool IsNALU = (CurLayer.uiLayerType == VIDEO_CODING_LAYER);
+            Chunk.AtAdding() = (IsInterframe)? 0x27 : 0x17; // 1_:keyframe, 2_:interframe, _7:AVC
+            Chunk.AtAdding() = (IsNALU)? 0x01 : 0x00; // AVC NALU, AVC sequence header
+            Memory::Copy(Chunk.AtDumpingAdded(3), GetBE3(0), 3); // CompositionTime
+
+            // 태그데이터
+            if(IsNALU)
             {
-                const SLayerBSInfo& CurLayer = mInfo.sLayerInfo[i];
-                sint32 BufSize = 0;
-                for(sint32 j = 0; j < CurLayer.iNalCount; ++j)
-                    BufSize += CurLayer.pNalLengthInByte[j];
-                if(chunking)
-                {
-                    Chunk.SubtractionAll();
-                    const bool IsInterframe = (CurLayer.eFrameType == videoFrameTypeI);
-                    const bool IsNALU = (CurLayer.uiLayerType == VIDEO_CODING_LAYER);
-
-                    // Video태그헤더(5)
-                    Chunk.AtAdding() = (IsInterframe)? 0x27 : 0x17; // 1_:keyframe, 2_:interframe, _7:AVC
-                    Chunk.AtAdding() = (IsNALU)? 0x01 : 0x00; // AVC NALU, AVC sequence header
-                    Memory::Copy(Chunk.AtDumpingAdded(3), GetBE3(0), 3); // CompositionTime
-
-                    // 태그데이터
-                    if(IsNALU)
-                    {
-                        Memory::Copy(Chunk.AtDumpingAdded(4), GetBE4(BufSize), 4); // NALU Size
-                        Memory::Copy(Chunk.AtDumpingAdded(BufSize), CurLayer.pBsBuf, BufSize); // NALU
-                        WriteTag(Result, 0x09, ms - mBeginTimeMs, Chunk); // video
-                    }
-                    else
-                    {
-                        BLIK_ASSERT("AVC sequence header는 iNalCount가 2여야만 합니다", CurLayer.iNalCount == 2);
-                        const sint32 SPSBegin = 4;
-                        const sint32 SPSEnd = CurLayer.pNalLengthInByte[0];
-                        const sint32 PPSBegin = SPSEnd + 4;
-                        const sint32 PPSEnd = SPSEnd + CurLayer.pNalLengthInByte[1];
-                        Chunk.AtAdding() = 0x01; // Configuration Version
-                        Chunk.AtAdding() = CurLayer.pBsBuf[5]; // AVCProfile-Indication
-                        Chunk.AtAdding() = CurLayer.pBsBuf[6]; // AVCProfile-Compatibility
-                        Chunk.AtAdding() = CurLayer.pBsBuf[7]; // AVCLevel-Indication
-                        Chunk.AtAdding() = 0xFF; // lengthSizeMinusOne
-                        // SPS
-                        Chunk.AtAdding() = 0xE1; // SPS Number
-                        Memory::Copy(Chunk.AtDumpingAdded(2), GetBE2(SPSEnd - SPSBegin), 2); // Size
-                        Memory::Copy(Chunk.AtDumpingAdded(SPSEnd - SPSBegin), &CurLayer.pBsBuf[SPSBegin], SPSEnd - SPSBegin);
-                        // PPS
-                        Chunk.AtAdding() = 0x01; // PPS Number
-                        Memory::Copy(Chunk.AtDumpingAdded(2), GetBE2(PPSEnd - PPSBegin), 2); // Size
-                        Memory::Copy(Chunk.AtDumpingAdded(PPSEnd - PPSBegin), &CurLayer.pBsBuf[PPSBegin], PPSEnd - PPSBegin);
-                        WriteTag(Result, 0x09, ms - mBeginTimeMs, Chunk); // video
-
-                        // 오디오태그 헤더정보 삽입
-                        Chunk.SubtractionAll();
-                        // 0001 0... .... .... : AAC low complexity
-                        // .... .010 0... .... : 44100 hz
-                        // .... .... .001 0... : 2 channel
-                        // .... .... .... .0.. : 1024 sample
-                        // .... .... .... ..0. : depends on core coder
-                        // .... .... .... ...0 : extension flag
-                        // 1    2    1    0
-                        Memory::Copy(Chunk.AtDumpingAdded(4), "\xaf\x00" "\x12\x10", 4);
-                        WriteTag(Result, 0x08, ms - mBeginTimeMs, Chunk); // audio
-                    }
-                }
-                else Memory::Copy(Result.AtDumpingAdded(BufSize), CurLayer.pBsBuf, BufSize);
+                Memory::Copy(Chunk.AtDumpingAdded(4), GetBE4(BufSize), 4); // NALU Size
+                Memory::Copy(Chunk.AtDumpingAdded(BufSize), CurLayer.pBsBuf, BufSize); // NALU
+                Flv::AddChunk(flash, 0x09, &Chunk[0], Chunk.Count(), timems); // video
             }
-        }
-
-        // 오디오태그 삽입
-        if(chunking && aac)
-        {
-            uint08s CurAac(aac);
-            if(sint32 CurAacSize = CurAac.Count())
+            else
             {
-                bytes CurAacPtr = CurAac.AtDumping(0, CurAacSize);
-                const sint32 AACHeadSize = 7;
-                while(AACHeadSize < CurAacSize)
-                {
-                    Chunk.SubtractionAll();
-                    Memory::Copy(Chunk.AtDumpingAdded(2), "\xaf\x01", 2);
-                    const sint32 CurChunkSize = (((CurAacPtr[4] & 0xFF) << 4) | ((CurAacPtr[5] & 0xF0) >> 4)) / 2;
-                    const sint32 CurContentSize = CurChunkSize - AACHeadSize;
-                    Memory::Copy(Chunk.AtDumpingAdded(CurContentSize), &CurAacPtr[AACHeadSize], CurContentSize);
-                    WriteTag(Result, 0x08, ms - mBeginTimeMs, Chunk); // audio
-                    CurAacPtr += CurChunkSize;
-                    CurAacSize -= CurChunkSize;
-                }
+                BLIK_ASSERT("AVC sequence header는 iNalCount가 2여야만 합니다", CurLayer.iNalCount == 2);
+                const sint32 SPSBegin = 4;
+                const sint32 SPSEnd = CurLayer.pNalLengthInByte[0];
+                const sint32 PPSBegin = SPSEnd + 4;
+                const sint32 PPSEnd = SPSEnd + CurLayer.pNalLengthInByte[1];
+                Chunk.AtAdding() = 0x01; // Configuration Version
+                Chunk.AtAdding() = CurLayer.pBsBuf[5]; // AVCProfile-Indication
+                Chunk.AtAdding() = CurLayer.pBsBuf[6]; // AVCProfile-Compatibility
+                Chunk.AtAdding() = CurLayer.pBsBuf[7]; // AVCLevel-Indication
+                Chunk.AtAdding() = 0xFF; // lengthSizeMinusOne
+                // SPS
+                Chunk.AtAdding() = 0xE1; // SPS Number
+                Memory::Copy(Chunk.AtDumpingAdded(2), GetBE2(SPSEnd - SPSBegin), 2); // Size
+                Memory::Copy(Chunk.AtDumpingAdded(SPSEnd - SPSBegin), &CurLayer.pBsBuf[SPSBegin], SPSEnd - SPSBegin);
+                // PPS
+                Chunk.AtAdding() = 0x01; // PPS Number
+                Memory::Copy(Chunk.AtDumpingAdded(2), GetBE2(PPSEnd - PPSBegin), 2); // Size
+                Memory::Copy(Chunk.AtDumpingAdded(PPSEnd - PPSBegin), &CurLayer.pBsBuf[PPSBegin], PPSEnd - PPSBegin);
+                Flv::AddChunk(flash, 0x09, &Chunk[0], Chunk.Count(), timems); // video
             }
         }
     }
-    else if(chunking)
-    {
-        // flv header
-        Memory::Copy(Result.AtDumpingAdded(3), "FLV", 3); // Signature
-        Result.AtAdding() = 0x01; // FLV Version
-        Result.AtAdding() = 0x01 | 0x04; // Video + Audio
-        Memory::Copy(Result.AtDumpingAdded(4), GetBE4(9), 4); // DataOffset
-        Memory::Copy(Result.AtDumpingAdded(4), GetBE4(0), 4); // PreviousTagSize0
-        // metaData
-        Chunk.SubtractionAll();
-        Chunk.AtAdding() = 0x02; // 스트링데이터ID
-        WriteScriptDataECMA(Chunk, "onMetaData", 13);
-        WriteScriptDataNumber(Chunk, "duration", 0); // YouTube에는 없어도 되는 정보
-        WriteScriptDataNumber(Chunk, "width", mPic.iPicWidth);
-        WriteScriptDataNumber(Chunk, "height", mPic.iPicHeight);
-        WriteScriptDataNumber(Chunk, "videodatarate", 781.25);
-        WriteScriptDataNumber(Chunk, "framerate", 1000);
-        WriteScriptDataNumber(Chunk, "videocodecid", 7); // FLV_CODECID_H264: 7
-        WriteScriptDataNumber(Chunk, "audiodatarate", 128);
-        WriteScriptDataNumber(Chunk, "audiosamplerate", 44100);
-        WriteScriptDataNumber(Chunk, "audiosamplesize", 16);
-        WriteScriptDataBoolean(Chunk, "stereo", true);
-        WriteScriptDataNumber(Chunk, "audiocodecid", 10); // FLV_CODECID_AAC: 10
-        WriteScriptDataString(Chunk, "encoder", "Lavf53.24.2");
-        WriteScriptDataNumber(Chunk, "filesize", 0); // YouTube에는 없어도 되는 정보
-        Memory::Copy(Chunk.AtDumpingAdded(3), GetBE3(9), 3); // scriptdata endcode: always 9
-        WriteTag(Result, 0x12, 0, Chunk); // script
-        // 인코딩시작시간
-        mBeginTimeMs = ms;
-    }
-    return Result;
 }
 
 #endif

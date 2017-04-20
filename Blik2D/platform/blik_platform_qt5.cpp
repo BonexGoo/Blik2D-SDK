@@ -638,7 +638,7 @@
             if(NeedSetRandom)
             {
                 NeedSetRandom = false;
-                qsrand((uint32) (CurrentTimeMS() & 0xFFFFFFFF));
+                qsrand((uint32) (CurrentTimeMs() & 0xFFFFFFFF));
             }
             return (qrand() & 0xFFFF) | ((qrand() & 0xFFFF) << 16);
         }
@@ -676,7 +676,7 @@
             return (uint64) QThread::currentThreadId();
         }
 
-        uint64 Platform::Utility::CurrentTimeMS()
+        uint64 Platform::Utility::CurrentTimeMs()
         {
             return EpochToWindow(QDateTime::currentMSecsSinceEpoch());
         }
@@ -2423,20 +2423,13 @@
             return CurMicrophone->TryLastData();
         }
 
-        bytes Platform::Microphone::GetSoundData(id_microphone microphone)
+        bytes Platform::Microphone::GetSoundData(id_microphone microphone, sint32* length, uint64* timems)
         {
             if(!microphone) return nullptr;
             MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
-            const auto& LastData = CurMicrophone->GetLastData();
+            const auto& LastData = CurMicrophone->GetLastData(timems);
+            if(length) *length = LastData.Count();
             return (0 < LastData.Count())? &LastData[0] : nullptr;
-        }
-
-        sint32 Platform::Microphone::GetSoundDataLength(id_microphone microphone)
-        {
-            if(!microphone) return 0;
-            MicrophoneClass* CurMicrophone = (MicrophoneClass*) microphone;
-            const auto& LastData = CurMicrophone->GetLastData();
-            return LastData.Count();
         }
     }
 

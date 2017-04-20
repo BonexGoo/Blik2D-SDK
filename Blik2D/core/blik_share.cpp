@@ -23,31 +23,31 @@ namespace BLIK
     {
         if(share)
         {
-            if(1 < share->sharecount) // 독립
+            if(1 < share->mShareCount) // 독립
             {
                 --_DebugShareCount();
-                --share->sharecount;
+                --share->mShareCount;
                 // 사본화, 전체삭제의 경우에는 예외
                 share = new Share(*share, mincount, mincount != -2);
             }
-            if(share->validcount < mincount) // 확장
+            if(share->mValidCount < mincount) // 확장
             {
                 Share* wshare = (Share*) share;
-                wshare->validcount = mincount;
-                sint32 count = Math::Max(1, Buffer::CountOf(share->data));
+                wshare->mValidCount = mincount;
+                sint32 count = Math::Max(1, Buffer::CountOf(share->mData));
                 while(count < mincount) count <<= 1;
-                wshare->data = Buffer::Realloc(BLIK_DBG share->data, count);
+                wshare->mData = Buffer::Realloc(BLIK_DBG share->mData, count);
             }
-            else if(mincount == -1 && 0 < share->validcount) // 후미삭제
+            else if(mincount == -1 && 0 < share->mValidCount) // 후미삭제
             {
                 Share* wshare = (Share*) share;
-                Buffer::ResetOne(wshare->data, --wshare->validcount);
+                Buffer::ResetOne(wshare->mData, --wshare->mValidCount);
             }
-            else if(mincount == -2 && 0 < share->validcount) // 전체삭제
+            else if(mincount == -2 && 0 < share->mValidCount) // 전체삭제
             {
                 Share* wshare = (Share*) share;
-                wshare->validcount = 0;
-                Buffer::ResetAll(wshare->data);
+                wshare->mValidCount = 0;
+                Buffer::ResetAll(wshare->mData);
             }
         }
         return share;
@@ -58,7 +58,7 @@ namespace BLIK
         if(share)
         {
             --_DebugShareCount();
-            if(--share->sharecount == 0)
+            if(--share->mShareCount == 0)
                 delete share;
             share = nullptr;
         }
@@ -74,70 +74,65 @@ namespace BLIK
 
     chars Share::Type() const
     {
-        return Buffer::NameOf(data);
+        return Buffer::NameOf(mData);
     }
 
     sblock Share::TypeID() const
     {
-        return Buffer::TypeOf(data);
+        return Buffer::TypeOf(mData);
     }
 
     const Share* Share::Clone() const
     {
         ++_DebugShareCount();
-        ++sharecount;
+        ++mShareCount;
         return this;
-    }
-
-    sint32 Share::Count() const
-    {
-        return validcount;
     }
 
     buffer Share::CopiedBuffer() const
     {
-        const sint32 count = Buffer::CountOf(data);
-        buffer NewBuffer = Buffer::AllocBySample(BLIK_DBG count, data);
-        Buffer::Copy(NewBuffer, 0, data, 0, count);
+        const sint32 count = Buffer::CountOf(mData);
+        buffer NewBuffer = Buffer::AllocBySample(BLIK_DBG count, mData);
+        Buffer::Copy(NewBuffer, 0, mData, 0, count);
         return NewBuffer;
     }
 
     Share::Share(buffer gift)
     {
         ++_DebugShareCount();
-        sharecount = 1;
-        validcount = Buffer::CountOf(gift);
-        data = gift;
+        mShareCount = 1;
+        mValidCount = Buffer::CountOf(gift);
+        mData = gift;
     }
 
     Share::Share(const buffer& sample, sint32 mincount)
     {
         ++_DebugShareCount();
-        sharecount = 1;
-        validcount = 0;
-        data = Buffer::AllocBySample(BLIK_DBG mincount, sample);
+        mShareCount = 1;
+        mValidCount = 0;
+        mData = Buffer::AllocBySample(BLIK_DBG mincount, sample);
     }
 
     Share::Share(const Share& rhs, sint32 mincount, bool duplicate)
     {
-        const sint32 rhscount = Buffer::CountOf(rhs.data);
+        const sint32 rhscount = Buffer::CountOf(rhs.mData);
         const sint32 maxcount = (rhscount > mincount)? rhscount : mincount;
 
         ++_DebugShareCount();
-        sharecount = 1;
-        validcount = 0;
-        data = Buffer::AllocBySample(BLIK_DBG maxcount, rhs.data);
+        mShareCount = 1;
+        mValidCount = 0;
+        mData = Buffer::AllocBySample(BLIK_DBG maxcount, rhs.mData);
 
         if(duplicate) // 사본으로 구성
         {
-            validcount = rhs.validcount;
-            Buffer::Copy(data, 0, rhs.data, 0, validcount);
+            mValidCount = rhs.mValidCount;
+            Buffer::Copy(mData, 0, rhs.mData, 0, mValidCount);
         }
     }
 
     Share::~Share()
     {
-        Buffer::Free(data);
+        Buffer::Free(mData);
     }
 
     sint32& Share::_DebugShareCount()

@@ -13,7 +13,7 @@ namespace BLIK
         */
         void Clear()
         {
-            if(0 < share->Count())
+            if(0 < share->count())
             {
                 Share::Remove(share);
                 share = Share::Create(SampleBuffer(), MINCOUNT);
@@ -42,7 +42,7 @@ namespace BLIK
         \brief 논리부정연산에 대한 처리
         \return 데이터가 존재하지 않으면 true
         */
-        bool operator!() const {return (share->Count() == 0);}
+        bool operator!() const {return (share->count() == 0);}
 
         /*!
         \brief 복사
@@ -63,8 +63,8 @@ namespace BLIK
         */
         const TYPE& operator[](sint32 index) const
         {
-            if(index < 0) index = share->Count() + index;
-            BLIK_ASSERT("배열범위를 초과한 인덱스입니다", 0 <= index && index < share->Count());
+            if(index < 0) index = share->count() + index;
+            BLIK_ASSERT("배열범위를 초과한 인덱스입니다", 0 <= index && index < share->count());
             return share->At<TYPE>(index);
         }
 
@@ -75,8 +75,8 @@ namespace BLIK
         */
         TYPE& At(sint32 index)
         {
-            if(index < 0) index = share->Count() + index;
-            BLIK_ASSERT("배열범위를 초과한 인덱스입니다", 0 <= index && index < share->Count());
+            if(index < 0) index = share->count() + index;
+            BLIK_ASSERT("배열범위를 초과한 인덱스입니다", 0 <= index && index < share->count());
             share = Share::CopyOnWrite(share, 0);
             return share->At<TYPE>(index);
         }
@@ -87,7 +87,7 @@ namespace BLIK
         */
         TYPE& AtAdding()
         {
-            const sint32 index = share->Count();
+            const sint32 index = share->count();
             share = Share::CopyOnWrite(share, index + 1);
             return share->At<TYPE>(index);
         }
@@ -105,7 +105,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 네이티브용 쓰기접근
+        \brief 저수준식 쓰기접근
         \param index : 시작인덱스
         \param length : 시작인덱스로부터 보장길이
         \return 해당 객체의 포인터
@@ -118,13 +118,13 @@ namespace BLIK
         }
 
         /*!
-        \brief 네이티브용 추가형 쓰기접근
+        \brief 저수준식 추가형 쓰기접근
         \param length : 후미로부터 추가할 길이
         \return 해당 객체의 포인터
         */
         TYPE* AtDumpingAdded(sint32 length)
         {
-            const sint32 index = share->Count();
+            const sint32 index = share->count();
             share = Share::CopyOnWrite(share, index + length);
             return &share->At<TYPE>(index);
         }
@@ -135,7 +135,7 @@ namespace BLIK
         */
         bool SubtractionOne()
         {
-            if(share->Count() == 0) return false;
+            if(share->count() == 0) return false;
             share = Share::CopyOnWrite(share, -1);
             return true;
         }
@@ -146,7 +146,7 @@ namespace BLIK
         */
         bool SubtractionAll()
         {
-            if(share->Count() == 0) return false;
+            if(share->count() == 0) return false;
             share = Share::CopyOnWrite(share, -2);
             return true;
         }
@@ -175,7 +175,7 @@ namespace BLIK
         */
         sint32 Count() const
         {
-            return share->Count();
+            return share->count();
         }
 
         /*!
