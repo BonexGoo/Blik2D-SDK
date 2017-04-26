@@ -15,10 +15,10 @@ namespace BLIK
                 sint32 mWaitingBitmapCount; // 인코딩 대기중인 비트맵원본 수량
                 sint32 mWaitingPcmCount; // 인코딩 대기중인 사운드원본 수량
                 sint32 mUnsentFrameCount; // 전송 대기중인 Flv프레임 수량
-                sint32 mSleepTimeMs; // 전송원활 상황에 따른 슬립조절
-                sint32 mAacEncodingTimeMs; // Aac인코딩시간
-                sint32 mFlvEncodingTimeMs; // Flv인코딩시간
-                sint32 mReportTimeMs; // 전체작업시간
+                sint32 mSleepTimeMsec; // 전송원활 상황에 따른 슬립조절
+                sint32 mAacEncodingTimeMsec; // Aac인코딩시간
+                sint32 mFlvEncodingTimeMsec; // Flv인코딩시간
+                sint32 mReportTimeMsec; // 전체작업시간
             };
 
         public:
@@ -47,7 +47,7 @@ namespace BLIK
     public:
         void InitForBroadcast(chars servicename, chars streamkey);
         void InitForRecord();
-        sint32 GetBroadcastState(uint64& beginTimeMs, sint64& sendedBytes) const;
+        sint32 GetBroadcastState(uint64& beginTimeMsec, sint64& sendedBytes) const;
 
     public:
         inline chars service_name() const {return mServiceName;}

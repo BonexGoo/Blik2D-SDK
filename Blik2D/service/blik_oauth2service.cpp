@@ -37,6 +37,7 @@ namespace BLIK
             String mAccessToken;
             String mRefreshToken;
             String mName;
+            String mServiceId;
             String mComment;
             Image mPicture;
             Image mBackground;
@@ -50,7 +51,6 @@ namespace BLIK
         }
         ~OAuth2ServiceImpl() override
         {
-            Share::Remove(mShare);
         }
 
     private:
@@ -66,19 +66,24 @@ namespace BLIK
             data().mWeb = Platform::Web::Create(ResultUrl, 0, 0, OnEvent, (payload) this);
             data().mNeedDestroyWeb = false;
         }
-        bool IsSigning() override
+        bool IsSigning(bool needDestroy, bool* destroyResult = nullptr) override
         {
-            if(data().mNeedDestroyWeb)
+            if(needDestroy)
             {
-                data().mNeedDestroyWeb = false;
-                Platform::Web::Release(data().mWeb);
-                return false;
+                if(data().mNeedDestroyWeb)
+                {
+                    data().mNeedDestroyWeb = false;
+                    Platform::Web::Release(data().mWeb);
+                    if(destroyResult) *destroyResult = true;
+                    return false;
+                }
+                else if(destroyResult) *destroyResult = false;
             }
             return (data_const().mWeb.get() != nullptr);
         }
         id_image_read GetWebImage(sint32 width, sint32 height) override
         {
-            if(IsSigning())
+            if(IsSigning(false))
             {
                 Platform::Web::Resize(data().mWeb, width, height);
                 return Platform::Web::GetScreenshotImage(data().mWeb);
@@ -87,27 +92,31 @@ namespace BLIK
         }
         void SendTouchToWeb(TouchType type, sint32 x, sint32 y) override
         {
-            if(IsSigning())
+            if(IsSigning(false))
                 Platform::Web::SendTouchEvent(data().mWeb, type, x, y);
         }
         void SendKeyToWeb(sint32 code, chars text, bool pressed) override
         {
-            if(IsSigning())
+            if(IsSigning(false))
                 Platform::Web::SendKeyEvent(data().mWeb, code, text, pressed);
         }
-        const String& GetName() override
+        const String& GetName() const override
         {
             return data_const().mName;
         }
-        const String& GetComment() override
+        const String& GetServiceId() const override
+        {
+            return data_const().mServiceId;
+        }
+        const String& GetComment() const override
         {
             return data_const().mComment;
         }
-        const Image& GetPicture() override
+        const Image& GetPicture() const override
         {
             return data_const().mPicture;
         }
-        const Image& GetBackground() override
+        const Image& GetBackground() const override
         {
             return data_const().mBackground;
         }
@@ -220,6 +229,7 @@ namespace BLIK
                 (chars) data_const().mAccessToken));
             const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
             data().mName = ResultBJson("displayName").GetString();
+            data().mServiceId = String("google_") + ResultBJson("id").GetString();
             data().mComment = String::Format("팔로워 %d명 - %s",
                 (sint32) ResultBJson("circledByCount").GetInt(), (chars) ResultBJson("tagline").GetString());
 
@@ -273,6 +283,7 @@ namespace BLIK
                 (chars) data().mAccessToken));
             const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
             data().mName = ResultBJson("name").GetString();
+            data().mServiceId = String("facebook_") + ResultBJson("id").GetString();
             data().mComment = String::Format("좋아요 총 %d건",
                 (sint32) ResultBJson("context")("mutual_likes")("summary")("total_count").GetInt());
 
@@ -321,15 +332,6 @@ namespace BLIK
             data().mRefreshToken = ResultAJson("refresh_token").GetString();
 
             // 회원정보 얻기
-            //chars ResultB = AddOn::Curl::RequestString(data().mCurl,
-            //    "https://" "kapi.kakao.com/v1/api/talk/profile", nullptr,
-            //    String::Format("Authorization: Bearer %s", (chars) data().mAccessToken));
-            //const Context ResultBJson(ST_Json, SO_OnlyReference, ResultB);
-            //data().mName = ResultBJson("nickName").GetString();
-            // 사진/배경 얻기
-            //ReloadPicture(ResultBJson("thumbnailURL").GetString(nullptr));
-
-            // 회원정보 얻기
             chars ResultB = AddOn::Curl::RequestString(data().mCurl,
                 "https://" "kapi.kakao.com/v1/api/story/profile", nullptr,
                 String::Format("Authorization: Bearer %s", (chars) data().mAccessToken));
@@ -344,6 +346,13 @@ namespace BLIK
             // 사진/배경 얻기
             ReloadPicture(ResultBJson("thumbnailURL").GetString(nullptr));
             ReloadBackground(ResultBJson("bgImageURL").GetString(nullptr));
+
+            // ID정보 얻기
+            chars ResultC = AddOn::Curl::RequestString(data().mCurl,
+                "https://" "kapi.kakao.com/v1/user/me", nullptr,
+                String::Format("Authorization: Bearer %s", (chars) data().mAccessToken));
+            const Context ResultCJson(ST_Json, SO_OnlyReference, ResultC);
+            data().mServiceId = String("kakao_") + ResultCJson("id").GetString();
         }
     };
 
@@ -361,6 +370,7 @@ namespace BLIK
 
     OAuth2Service::~OAuth2Service()
     {
+        Share::Remove(mShare);
     }
 
     OAuth2Service& OAuth2Service::operator=(const OAuth2Service& rhs)

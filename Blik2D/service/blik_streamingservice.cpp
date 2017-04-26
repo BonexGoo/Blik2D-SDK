@@ -65,7 +65,7 @@ public:
     CodecReceiver()
     {
         mKilled = false;
-        mBeginTimeMs = 0;
+        mBeginTimeMsec = 0;
     }
     virtual ~CodecReceiver()
     {
@@ -82,7 +82,7 @@ protected:
 public:
     bool mKilled;
     Queue<uint08s> mFrameQueue;
-    uint64 mBeginTimeMs;
+    uint64 mBeginTimeMsec;
 };
 
 class CodecBroadcastReceiver : public CodecReceiver
@@ -145,8 +145,8 @@ public:
 public:
     static size_t OnRead(void* ptr, size_t size, size_t nitems, payload data)
     {
-        uint64 BegineTime = Platform::Utility::CurrentTimeMs();
-        while(Platform::Utility::CurrentTimeMs() - BegineTime < 5000)
+        uint64 BegineTime = Platform::Utility::CurrentTimeMsec();
+        while(Platform::Utility::CurrentTimeMsec() - BegineTime < 5000)
         {
             bool IsKilled = false;
             size_t CopiedSize = 0;
@@ -326,7 +326,7 @@ namespace BLIK
         if(CodecS->mImageCodec && 0 < CodecS->mBitmapQueue.Count())
         {
             auto NewReport = (EncodingReport*) Buffer::Alloc<EncodingReport, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1);
-            const uint64 ReportBegin = Platform::Utility::CurrentTimeMs();
+            const uint64 ReportBegin = Platform::Utility::CurrentTimeMsec();
 
             NewReport->mWaitingBitmapCount = CodecS->mBitmapQueue.Count();
             NewReport->mWaitingPcmCount = CodecS->mPcmQueue.Count();
@@ -351,12 +351,12 @@ namespace BLIK
                 // 그에 따른 슬립조절
                 if(SumFrameQueueCount <= 1) SleepTime = Math::Max(5, SleepTime - 1);
                 else if(8 <= SumFrameQueueCount) SleepTime = Math::Min(SleepTime + 1, 1000);
-                NewReport->mSleepTimeMs = SleepTime;
+                NewReport->mSleepTimeMsec = SleepTime;
 
                 if(SumFrameQueueCount < 10) // 채널들의 송신상태가 원활
                 {
-                    NewReport->mFlvEncodingTimeMs = 0;
-                    NewReport->mAacEncodingTimeMs = 0;
+                    NewReport->mFlvEncodingTimeMsec = 0;
+                    NewReport->mAacEncodingTimeMsec = 0;
                     uint08s LastBitmapQueue, LastPcmQueue;
                     uint64 LastBitmapTimeMs = 0, LastPcmTimeMs = 0;
                     while(true)
@@ -374,24 +374,24 @@ namespace BLIK
                         // H264인코딩
                         if((LastBitmapTimeMs && !LastPcmTimeMs) || LastPcmTimeMs > LastBitmapTimeMs)
                         {
-                            const uint64 FlvEncodingBegin = Platform::Utility::CurrentTimeMs();
+                            const uint64 FlvEncodingBegin = Platform::Utility::CurrentTimeMsec();
                             const uint32* CurBitmapBits = (const uint32*) Bmp::GetBits((id_bitmap_read) &LastBitmapQueue[sizeof(uint64)]);
                             CodecS->mLastTimeMs = (CodecS->mLastTimeMs > LastBitmapTimeMs)? CodecS->mLastTimeMs : LastBitmapTimeMs;
                             AddOn::H264::EncodeTo(CodecS->mImageCodec, CurBitmapBits, CodecS->mFlash,
                                 CodecS->mLastTimeMs - CodecS->mFirstTimeMs);
-                            NewReport->mFlvEncodingTimeMs += (sint32) (Platform::Utility::CurrentTimeMs() - FlvEncodingBegin);
+                            NewReport->mFlvEncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - FlvEncodingBegin);
                             LastBitmapTimeMs = 0;
                         }
                         // AAC인코딩
                         else if((!LastBitmapTimeMs && LastPcmTimeMs) || LastPcmTimeMs < LastBitmapTimeMs)
                         {
-                            const uint64 AacEncodingBegin = Platform::Utility::CurrentTimeMs();
+                            const uint64 AacEncodingBegin = Platform::Utility::CurrentTimeMsec();
                             bytes CurPcm = &LastPcmQueue[sizeof(uint64)];
                             const sint32 CurPcmLength = LastPcmQueue.Count() - sizeof(uint64);
                             CodecS->mLastTimeMs = (CodecS->mLastTimeMs > LastPcmTimeMs)? CodecS->mLastTimeMs : LastPcmTimeMs;
                             AddOn::Aac::EncodeTo(CodecS->mSoundCodec, CurPcm, CurPcmLength, CodecS->mFlash,
                                 CodecS->mLastTimeMs - CodecS->mFirstTimeMs);
-                            NewReport->mAacEncodingTimeMs += (sint32) (Platform::Utility::CurrentTimeMs() - AacEncodingBegin);
+                            NewReport->mAacEncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - AacEncodingBegin);
                             LastPcmTimeMs = 0;
                         }
                         else if(!LastBitmapTimeMs && !LastPcmTimeMs)
@@ -415,8 +415,11 @@ namespace BLIK
                 }
             }
 
-            NewReport->mReportTimeMs = (sint32) (Platform::Utility::CurrentTimeMs() - ReportBegin);
+            NewReport->mReportTimeMsec = (sint32) (Platform::Utility::CurrentTimeMsec() - ReportBegin);
             answer.Enqueue((buffer) NewReport);
+            // answer의 보관상한선
+            while(64 < answer.Count())
+                Buffer::Free(answer.Dequeue());
         }
         return SleepTime;
     }
@@ -462,7 +465,7 @@ namespace BLIK
         {
             common_buffer = Buffer::Alloc<CodecBroadcastReceiver>(BLIK_DBG 1);
             auto NewCodec = (CodecBroadcastReceiver*) common_buffer;
-            NewCodec->mBeginTimeMs = Platform::Utility::CurrentTimeMs();
+            NewCodec->mBeginTimeMsec = Platform::Utility::CurrentTimeMsec();
             NewCodec->mServiceName = servicename;
             NewCodec->mStreamKey = streamkey;
         }
@@ -476,11 +479,11 @@ namespace BLIK
         {
             common_buffer = Buffer::Alloc<CodecRecordReceiver>(BLIK_DBG 1);
             auto NewCodec = (CodecRecordReceiver*) common_buffer;
-            NewCodec->mBeginTimeMs = Platform::Utility::CurrentTimeMs();
+            NewCodec->mBeginTimeMsec = Platform::Utility::CurrentTimeMsec();
         }
     }
 
-    sint32 StreamingService::GetBroadcastState(uint64& beginTimeMs, sint64& sendedBytes) const
+    sint32 StreamingService::GetBroadcastState(uint64& beginTimeMsec, sint64& sendedBytes) const
     {
         sint32 Result = 0;
         if(mTasking)
@@ -488,7 +491,7 @@ namespace BLIK
         if(Buffer::TypeCheck<CodecBroadcastReceiver, datatype_class_nomemcpy>(common_buffer))
         if(auto CodecR = (CodecBroadcastReceiver*) common_buffer)
         {
-            beginTimeMs = CodecR->mBeginTimeMs;
+            beginTimeMsec = CodecR->mBeginTimeMsec;
             sendedBytes = CodecR->mSendedBytes;
             Result = CodecR->mEpisodeNumber;
         }
@@ -510,7 +513,7 @@ namespace BLIK
             {
                 ServiceName = CodecR->mServiceName;
                 StreamKey = CodecR->mStreamKey;
-                CodecR->mBeginTimeMs = Platform::Utility::CurrentTimeMs();
+                CodecR->mBeginTimeMsec = Platform::Utility::CurrentTimeMsec();
                 CodecR->mSendedBytes = 0;
                 CodecR->mEpisodeNumber++;
             }

@@ -215,16 +215,16 @@
         ////////////////////////////////////////////////////////////////////////////////
         // PLATFORM
         ////////////////////////////////////////////////////////////////////////////////
-        void Platform::InitForGL()
+        void Platform::InitForGL(bool frameless)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
-            g_data->initForGL();
+            g_data->initForGL(frameless);
         }
 
-        void Platform::InitForMDI()
+        void Platform::InitForMDI(bool frameless)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
-            g_data->initForMDI();
+            g_data->initForMDI(frameless);
         }
 
         void Platform::SetViewCreator(View::CreatorCB creator)
@@ -638,7 +638,7 @@
             if(NeedSetRandom)
             {
                 NeedSetRandom = false;
-                qsrand((uint32) (CurrentTimeMs() & 0xFFFFFFFF));
+                qsrand((uint32) (CurrentTimeMsec() & 0xFFFFFFFF));
             }
             return (qrand() & 0xFFFF) | ((qrand() & 0xFFFF) << 16);
         }
@@ -676,7 +676,7 @@
             return (uint64) QThread::currentThreadId();
         }
 
-        uint64 Platform::Utility::CurrentTimeMs()
+        uint64 Platform::Utility::CurrentTimeMsec()
         {
             return EpochToWindow(QDateTime::currentMSecsSinceEpoch());
         }
@@ -684,6 +684,14 @@
         void Platform::Utility::SetClockBaseTime(chars timestring)
         {
             Clock::SetBaseTime(timestring);
+        }
+
+        id_clock Platform::Utility::CreateClock(sint32 year, sint32 month, sint32 day,
+            sint32 hour, sint32 min, sint32 sec, sint64 nsec)
+        {
+            buffer NewClock = Buffer::Alloc<Clock>(BLIK_DBG 1);
+            ((Clock*) NewClock)->SetClock(year, month, day, hour, min, sec, nsec);
+            return (id_clock) NewClock;
         }
 
         id_clock Platform::Utility::CreateCurrentClock()
@@ -715,6 +723,13 @@
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", dest);
             ((Clock*) dest)->AddLap(nsec);
+        }
+
+        uint64 Platform::Utility::GetClockMsec(id_clock clock)
+        {
+            BLIK_ASSERT("파라미터가 nullptr입니다", clock);
+            return ((const Clock*) clock)->GetTotalSec() * 1000 +
+                (uint64) (((const Clock*) clock)->GetNSecInSec() / 1000000);
         }
 
         void Platform::Utility::GetClockDetail(id_clock clock, sint64* nsec,

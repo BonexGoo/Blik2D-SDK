@@ -57,15 +57,25 @@ namespace BLIK
     ////////////////////////////////////////////////////////////////////////////////
     static void Curl_Error() {BLIK_ASSERT("Curl애드온이 준비되지 않았습니다", false);}
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Create, id_curl, return nullptr, void)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, CreateForUser, id_curl, return nullptr, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Clone, id_curl, return nullptr, id_curl)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, Release, void, return, id_curl)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestString, chars, return "", id_curl, chars, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestBytes, bytes, return nullptr, id_curl, chars, sint32*, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, RequestRedirectUrl, chars, return "", id_curl, chars, sint32, chars, chars)
     BLIK_DEFINE_ADDON_FUNCTION(Curl, SendStream, void, return, id_curl, chars, CurlReadCB, payload)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpUpload, bool, return false, id_curl, chars, chars, buffer)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpDownload, buffer, return nullptr, id_curl, chars, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpDelete, bool, return false, id_curl, chars, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpCreateFolder, bool, return false, id_curl, chars, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpDeleteFolder, bool, return false, id_curl, chars, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Curl, FtpSearch, sint32, return -1, id_curl, chars, chars, AddOn::Curl::SearchCB, payload)
 
     id_curl AddOn::Curl::Create(void)
     {return Core_AddOn_Curl_Create()();}
+
+    id_curl AddOn::Curl::CreateForUser(chars username, chars password)
+    {return Core_AddOn_Curl_CreateForUser()(username, password);}
 
     id_curl AddOn::Curl::Clone(id_curl curl)
     {return Core_AddOn_Curl_Clone()(curl);}
@@ -84,6 +94,24 @@ namespace BLIK
 
     void AddOn::Curl::SendStream(id_curl curl, chars url, CurlReadCB cb, payload data)
     {return Core_AddOn_Curl_SendStream()(curl, url, cb, data);}
+
+    bool AddOn::Curl::FtpUpload(id_curl curl, chars url, chars filename, buffer data)
+    {return Core_AddOn_Curl_FtpUpload()(curl, url, filename, data);}
+
+    buffer AddOn::Curl::FtpDownload(id_curl curl, chars url, chars filename)
+    {return Core_AddOn_Curl_FtpDownload()(curl, url, filename);}
+
+    bool AddOn::Curl::FtpDelete(id_curl curl, chars url, chars filename)
+    {return Core_AddOn_Curl_FtpDelete()(curl, url, filename);}
+
+    bool AddOn::Curl::FtpCreateFolder(id_curl curl, chars url, chars dirname)
+    {return Core_AddOn_Curl_FtpCreateFolder()(curl, url, dirname);}
+
+    bool AddOn::Curl::FtpDeleteFolder(id_curl curl, chars url, chars dirname)
+    {return Core_AddOn_Curl_FtpDeleteFolder()(curl, url, dirname);}
+
+    sint32 AddOn::Curl::FtpSearch(id_curl curl, chars url, chars dirname, SearchCB cb, payload data)
+    {return Core_AddOn_Curl_FtpSearch()(curl, url, dirname, cb, data);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void H264_Error() {BLIK_ASSERT("H264애드온이 준비되지 않았습니다", false);}

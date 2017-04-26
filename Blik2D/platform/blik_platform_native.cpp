@@ -157,14 +157,14 @@
         ////////////////////////////////////////////////////////////////////////////////
         // PLATFORM
         ////////////////////////////////////////////////////////////////////////////////
-        void Platform::InitForGL()
+        void Platform::InitForGL(bool frameless)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
 
             BLIK_ASSERT("Further development is needed.", false);
         }
 
-        void Platform::InitForMDI()
+        void Platform::InitForMDI(bool frameless)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
 
@@ -516,7 +516,7 @@
             return 0;
         }
 
-        uint64 Platform::Utility::CurrentTimeMs()
+        uint64 Platform::Utility::CurrentTimeMsec()
         {
             #if BLIK_WINDOWS
                 FILETIME FileTime;
@@ -533,6 +533,13 @@
         void Platform::Utility::SetClockBaseTime(chars timestring)
         {
             BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        id_clock Platform::Utility::CreateClock(sint32 year, sint32 month, sint32 day,
+            sint32 hour, sint32 min, sint32 sec, sint64 nsec)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return nullptr;
         }
 
         id_clock Platform::Utility::CreateCurrentClock()
@@ -565,6 +572,14 @@
             BLIK_ASSERT("파라미터가 nullptr입니다", dest);
 
             BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        uint64 Platform::Utility::GetClockMsec(id_clock clock)
+        {
+            BLIK_ASSERT("파라미터가 nullptr입니다", clock);
+
+            BLIK_ASSERT("Further development is needed.", false);
+            return 0;
         }
 
         void Platform::Utility::GetClockDetail(id_clock clock, sint64* nsec,

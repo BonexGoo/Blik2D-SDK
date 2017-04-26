@@ -40,13 +40,23 @@ namespace BLIK
         class Curl
         {
         public:
+            typedef void (*SearchCB)(payload data, chars name, sint32 size, id_clock clock);
+
+        public:
             static id_curl Create(void);
+            static id_curl CreateForUser(chars username, chars password);
             static id_curl Clone(id_curl curl);
             static void Release(id_curl curl);
             static chars RequestString(id_curl curl, chars url, chars postdata = nullptr, chars headerdata = nullptr);
             static bytes RequestBytes(id_curl curl, chars url, sint32* getsize, chars postdata = nullptr, chars headerdata = nullptr);
             static chars RequestRedirectUrl(id_curl curl, chars url, sint32 successcode, chars postdata = nullptr, chars headerdata = nullptr);
             static void SendStream(id_curl curl, chars url, CurlReadCB cb, payload data);
+            static bool FtpUpload(id_curl curl, chars url, chars filename, buffer data);
+            static buffer FtpDownload(id_curl curl, chars url, chars filename);
+            static bool FtpDelete(id_curl curl, chars url, chars filename);
+            static bool FtpCreateFolder(id_curl curl, chars url, chars dirname);
+            static bool FtpDeleteFolder(id_curl curl, chars url, chars dirname);
+            static sint32 FtpSearch(id_curl curl, chars url, chars dirname, SearchCB cb, payload data);
         };
 
         //! \brief H264연동

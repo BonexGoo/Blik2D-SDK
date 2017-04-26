@@ -935,18 +935,34 @@
         }
 
     public:
-        void initForGL()
+        void initForGL(bool frameless)
         {
             m_viewGL = new MainViewGL(m_parent);
             m_viewGL->m_api->renewParent(m_viewGL);
             m_parent->setCentralWidget(m_viewGL);
+            if(frameless)
+            {
+                #if BLIK_MAC_OSX
+                    m_parent->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+                #elif BLIK_WINDOWS
+                    m_parent->setWindowFlags(Qt::FramelessWindowHint);
+                #endif
+            }
         }
 
-        void initForMDI()
+        void initForMDI(bool frameless)
         {
             m_viewMDI = new MainViewMDI(m_parent);
             m_viewMDI->m_api->renewParent(m_viewMDI);
             m_parent->setCentralWidget(m_viewMDI);
+            if(frameless)
+            {
+                #if BLIK_MAC_OSX
+                    m_parent->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+                #elif BLIK_WINDOWS
+                    m_parent->setWindowFlags(Qt::FramelessWindowHint);
+                #endif
+            }
         }
 
         ViewAPI* getMainAPI()
@@ -1435,14 +1451,27 @@
         }
 
     public:
+        void SetClock(sint32 year, sint32 month, sint32 day, sint32 hour, sint32 min, sint32 sec, sint64 nsec)
+        {
+            QDateTime NewTime = QDateTime::fromString(
+                (chars) String::Format("%04d-%02d-%02d %02d:%02d:%02d",
+                year, month, day, hour, min, sec), "yyyy-MM-dd HH:mm:ss");
+            const sint64 LocalTimeMSecFromUtc = (sint64) (QDateTime::currentDateTime().utcOffset() * 1000);
+            const sint64 NewClockMSec = ((sint64) EpochToJulian(NewTime.toMSecsSinceEpoch())) + LocalTimeMSecFromUtc;
+            m_laptime = (NewClockMSec - GetTotalMSecFromJulianDay()) * 1000000 + nsec;
+        }
+
+    public:
         inline Clock& operator=(const Clock& rhs)
         {m_laptime = rhs.m_laptime; return *this;}
 
     public:
         inline sint64 GetLap() const {return m_laptime;}
         inline void AddLap(sint64 nsec) {m_laptime += nsec;}
-        inline sint64 GetTotalSec() const {return (GetTotalMSecFromJulianDay() + m_laptime / 1000000) / 1000;}
-        inline sint64 GetNSecInSec() const {return ((GetTotalMSecFromJulianDay() % 1000) * 1000000 + m_laptime) % 1000000000;}
+        inline sint64 GetTotalSec() const
+        {return GetTotalMSecFromJulianDay() / 1000 + m_laptime / 1000000000;}
+        inline sint64 GetNSecInSec() const
+        {return ((GetTotalMSecFromJulianDay() % 1000) * 1000000 + 1000000000 + (m_laptime % 1000000000)) % 1000000000;}
 
     public:
         static void SetBaseTime(chars timestring)
@@ -2847,7 +2876,7 @@
         uint08s mDecodedBits;
         bool mUpdateForImage;
         bool mUpdateForBitmap;
-        uint64 mUpdateTimeMS;
+        uint64 mUpdateTimeMsec;
         sint32 mPictureShotCount;
         sint32 mPreviewShotCount;
 
@@ -2861,7 +2890,7 @@
             mDecodedHeight = 0;
             mUpdateForImage = false;
             mUpdateForBitmap = false;
-            mUpdateTimeMS = 0;
+            mUpdateTimeMsec = 0;
             mPictureShotCount = 0;
             mPreviewShotCount = 0;
         }
@@ -2892,7 +2921,7 @@
                     mCaptureOrder = CaptureOrder_NeedStop;
                 mUpdateForImage = true;
                 mUpdateForBitmap = true;
-                mUpdateTimeMS = Platform::Utility::CurrentTimeMs();
+                mUpdateTimeMsec = Platform::Utility::CurrentTimeMsec();
             }
             Mutex::Unlock(mMutex);
         }
@@ -2980,7 +3009,7 @@
             uint64 Result = 0;
             Mutex::Lock(mMutex);
             {
-                Result = mUpdateTimeMS;
+                Result = mUpdateTimeMsec;
             }
             Mutex::Unlock(mMutex);
             return Result;
@@ -3190,14 +3219,14 @@
             Data& operator=(const Data& rhs)
             {
                 mPcm = rhs.mPcm;
-                mTimeMs = rhs.mTimeMs;
+                mTimeMsec = rhs.mTimeMsec;
                 return *this;
             }
             operator void*() const {return nullptr;}
             bool operator!() const {return (mPcm.Count() == 0);}
         public:
             uint08s mPcm;
-            uint64 mTimeMs;
+            uint64 mTimeMsec;
         };
 
     private:
@@ -3326,7 +3355,7 @@
         }
         const uint08s& GetLastData(uint64* timems) const
         {
-            if(timems) *timems = mLastData.mTimeMs;
+            if(timems) *timems = mLastData.mTimeMsec;
             return mLastData.mPcm;
         }
         const QAudioEncoderSettings& GetAudioSettings() const
@@ -3343,7 +3372,7 @@
             {
                 Data NewData;
                 Memory::Copy(NewData.mPcm.AtDumpingAdded(buffer.byteCount()), buffer.constData(), buffer.byteCount());
-                NewData.mTimeMs = Platform::Utility::CurrentTimeMs();
+                NewData.mTimeMsec = Platform::Utility::CurrentTimeMsec();
                 mDataQueue.Enqueue(NewData);
             }
         }

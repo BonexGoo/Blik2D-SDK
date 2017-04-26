@@ -59,7 +59,7 @@ namespace BLIK
     {
         m_valueStart = m_value;
         m_valueEnd = value;
-        m_timeStart = Platform::Utility::CurrentTimeMs();
+        m_timeStart = Platform::Utility::CurrentTimeMsec();
         m_timeEnd = m_timeStart + (uint64) (Math::MaxF(0, second) * 1000);
         m_needWakeUp = (m_value != m_valueEnd);
     }
@@ -73,7 +73,7 @@ namespace BLIK
     bool Tween1D::UpdateForRender()
     {
         m_needWakeUp = false;
-        const uint64 CurTime = Platform::Utility::CurrentTimeMs();
+        const uint64 CurTime = Platform::Utility::CurrentTimeMsec();
         const uint64 OldValue = m_value;
         if(m_timeEnd < CurTime) m_value = m_valueEnd;
         else if(CurTime < m_timeStart) m_value = m_valueStart;

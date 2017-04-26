@@ -37,12 +37,12 @@ namespace BLIK
         /*!
         \brief 플랫폼초기화(GL뷰)
         */
-        static void InitForGL();
+        static void InitForGL(bool frameless = false);
 
         /*!
         \brief 플랫폼초기화(MDI뷰)
         */
-        static void InitForMDI();
+        static void InitForMDI(bool frameless = false);
 
         /*!
         \brief 뷰생성기 설정
@@ -378,13 +378,27 @@ namespace BLIK
             \brief 현재시간 구하기
             \return 현재시간(ms)
             */
-            static uint64 CurrentTimeMs();
+            static uint64 CurrentTimeMsec();
 
             /*!
             \brief 클럭의 기준시각변경
             \param timestring : 변경할 시간("yyyy-MM-dd HH:mm:ss")
             */
             static void SetClockBaseTime(chars timestring);
+
+            /*!
+            \brief 임의시간으로 클럭생성
+            \param year : 연도(2014, 2015, 2016, ...)
+            \param month : 1년미만의 개월수(1 ~ 12)
+            \param day : 1개월미만의 일수(1 ~ 31)
+            \param hour : 1일미만의 시간(0 ~ 23)
+            \param min : 1시간미만의 분(0 ~ 59)
+            \param sec : 1분미만의 초(0 ~ 59)
+            \param nsec : 1초미만의 나노초(0 ~ 999,999,999)
+            \return 생성된 클럭
+            */
+            static id_clock CreateClock(sint32 year, sint32 month, sint32 day,
+                sint32 hour, sint32 min, sint32 sec, sint64 nsec);
 
             /*!
             \brief 현재시간으로 클럭생성
@@ -419,6 +433,13 @@ namespace BLIK
             \param nsec : 더하는 시간(ns)
             */
             static void AddClockNsec(id_clock dest, sint64 nsec);
+
+            /*!
+            \brief 클럭의 시간구하기
+            \param clock : 대상 클럭
+            \return 현재시간(ms)
+            */
+            static uint64 GetClockMsec(id_clock clock);
 
             /*!
             \brief 클럭의 세부정보

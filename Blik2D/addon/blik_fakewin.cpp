@@ -800,7 +800,7 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
 
     extern "C" void blik_fakewin_GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
     {
-        uint64 FileTime = 10 * 1000 * Platform::Utility::CurrentTimeMs();
+        uint64 FileTime = 10 * 1000 * Platform::Utility::CurrentTimeMsec();
         lpSystemTimeAsFileTime->dwHighDateTime = FileTime >> 32;
         lpSystemTimeAsFileTime->dwLowDateTime = FileTime & 0xFFFFFFFF;
     }
