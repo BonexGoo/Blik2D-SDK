@@ -625,17 +625,18 @@ namespace BLIK
         if(auto CurTouch = (ZayView::Touch*) m_ref_touch)
         {
             const Clip& LastClip = m_stack_clip[-1];
+            const float& LastZoom = m_stack_zoom[-1];
             const float HRate = LastClip.Width() / CurCollector->mWidth;
             const float VRate = LastClip.Height() / CurCollector->mHeight;
             for(sint32 i = 0, iend = CurCollector->mTouchRects.Count(); i < iend; ++i)
             {
                 const TouchRect& CurTouchRect = CurCollector->mTouchRects[i].ConstValue();
                 CurTouch->update(CurTouchRect.mName,
-                    LastClip.l + CurTouchRect.mL * HRate,
-                    LastClip.t + CurTouchRect.mT * VRate,
-                    LastClip.l + CurTouchRect.mR * HRate,
-                    LastClip.t + CurTouchRect.mB * VRate,
-                    CurTouchRect.mZoom, CurTouchRect.mCB, CurTouchRect.mHoverPass, &DirtyTest);
+                    LastClip.l + CurTouchRect.mL * CurTouchRect.mZoom * HRate,
+                    LastClip.t + CurTouchRect.mT * CurTouchRect.mZoom * VRate,
+                    LastClip.l + CurTouchRect.mR * CurTouchRect.mZoom * HRate,
+                    LastClip.t + CurTouchRect.mB * CurTouchRect.mZoom * VRate,
+                    LastZoom, CurTouchRect.mCB, CurTouchRect.mHoverPass, &DirtyTest);
             }
         }
         CurCollector->mRefTouch = m_ref_touch;

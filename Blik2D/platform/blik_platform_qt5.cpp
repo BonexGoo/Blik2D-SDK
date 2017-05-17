@@ -23,12 +23,14 @@
     {
         mIsSurfaceBinded = false;
         mSavedCanvas = nullptr;
+        mSavedZoom = 1.0f;
         mPainter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
     }
     CanvasClass::CanvasClass(QPaintDevice* device) : mIsTypeSurface(false)
     {
         mIsSurfaceBinded = false;
         mSavedCanvas = nullptr;
+        mSavedZoom = 1.0f;
         mPainter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
         BindCore(device);
     }
@@ -59,6 +61,8 @@
     {
         if(mSavedCanvas = ST())
         {
+            mSavedCanvas->mSavedZoom = mSavedCanvas->mPainter.matrix().m11();
+            mSavedCanvas->mSavedFont = mSavedCanvas->mPainter.font();
             mSavedCanvas->mSavedClipRect = mSavedCanvas->mPainter.clipBoundingRect();
             mSavedCanvas->mPainter.end();
         }
@@ -74,6 +78,8 @@
         if(ST() = mSavedCanvas)
         {
             mSavedCanvas->mPainter.begin(mSavedCanvas->mPainter.device());
+            Platform::Graphics::SetZoom(mSavedCanvas->mSavedZoom);
+            mSavedCanvas->mPainter.setFont(mSavedCanvas->mSavedFont);
             mSavedCanvas->mPainter.setClipRect(mSavedCanvas->mSavedClipRect);
         }
     }
@@ -252,79 +258,30 @@
         void Platform::SetWindowPos(sint32 x, sint32 y)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            g_window->move(x, y);
+            if(!Platform::Utility::IsFullScreen())
+                g_window->move(x, y);
         }
 
         void Platform::SetWindowSize(sint32 width, sint32 height)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            g_window->resize(width, height);
+            if(!Platform::Utility::IsFullScreen())
+                g_window->resize(width, height);
         }
 
-        void Platform::GetWindowRect(rect128& rect)
+        static rect128 g_LastNormalWindowRect = {-1, -1, -1, -1};
+        void Platform::GetWindowRect(rect128& rect, bool normally)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            rect.l = g_window->x();
-            rect.t = g_window->y();
-            rect.r = rect.l + g_window->width();
-            rect.b = rect.t + g_window->height();
-        }
-
-        bool Platform::GetScreenRect(rect128& rect)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-            sint32 NumScreens = QApplication::desktop()->numScreens();
-            if(NumScreens == 0)
-                rect.l = rect.t = rect.r = rect.b = 0;
+            if(Platform::Utility::IsFullScreen() && normally)
+                Memory::Copy(&rect, &g_LastNormalWindowRect, sizeof(rect128));
             else
             {
-                rect128 TotalRect = {10000, 10000, -10000, -10000};
-                for(sint32 i = 0; i < NumScreens; ++i)
-                {
-                    QRect GeometryRect = QApplication::desktop()->availableGeometry(i);
-                    TotalRect.l = Math::Min(TotalRect.l, GeometryRect.left());
-                    TotalRect.t = Math::Min(TotalRect.t, GeometryRect.top());
-                    TotalRect.r = Math::Max(TotalRect.r, GeometryRect.right());
-                    TotalRect.b = Math::Max(TotalRect.b, GeometryRect.bottom());
-                }
-                rect.l = TotalRect.l;
-                rect.t = TotalRect.t;
-                rect.r = TotalRect.r;
-                rect.b = TotalRect.b;
+                rect.l = g_window->x();
+                rect.t = g_window->y();
+                rect.r = rect.l + g_window->width();
+                rect.b = rect.t + g_window->height();
             }
-
-            #if BLIK_ANDROID
-                id_file_read Hdmi = Platform::File::OpenForRead("/sys/devices/virtual/switch/hdmi/state");
-                if(!Hdmi) Hdmi = Platform::File::OpenForRead("/sys/class/switch/hdmi/state");
-                if(Hdmi)
-                {
-                    sint32 Value = 0;
-                    Platform::File::Read(Hdmi, (uint08*) &Value, sizeof(sint32));
-                    const bool HasPhygicalMonitor = ((Value & 1) == 1);
-                    Platform::File::Close(Hdmi);
-                    return HasPhygicalMonitor;
-                }
-            #endif
-            return true;
-        }
-
-        id_image_read Platform::GetScreenshotImage(const rect128& rect)
-        {
-            static QPixmap ScreenshotPixmap;
-            ScreenshotPixmap = QGuiApplication::primaryScreen()->grabWindow(
-                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t);
-            return (id_image_read) &ScreenshotPixmap;
-        }
-
-        id_bitmap_read Platform::GetScreenshotBitmap(const rect128& rect, bool vflip)
-        {
-            static Image ScreenshotImage;
-            QImage CurImage = QGuiApplication::primaryScreen()->grabWindow(
-                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t).toImage();
-            CurImage = CurImage.convertToFormat(QImage::Format::Format_ARGB32);
-            ScreenshotImage.LoadBitmapFromBits(CurImage.constBits(), CurImage.width(), CurImage.height(),
-                CurImage.bitPlaneCount(), vflip);
-            return ScreenshotImage.GetBitmap();
         }
 
         void Platform::SetStatusText(chars text, UIStack stack)
@@ -632,12 +589,12 @@
         ////////////////////////////////////////////////////////////////////////////////
         // UTILITY
         ////////////////////////////////////////////////////////////////////////////////
-        static bool NeedSetRandom = true;
+        static bool g_NeedSetRandom = true;
         uint32 Platform::Utility::Random()
         {
-            if(NeedSetRandom)
+            if(g_NeedSetRandom)
             {
-                NeedSetRandom = false;
+                g_NeedSetRandom = false;
                 qsrand((uint32) (CurrentTimeMsec() & 0xFFFFFFFF));
             }
             return (qrand() & 0xFFFF) | ((qrand() & 0xFFFF) << 16);
@@ -656,9 +613,105 @@
             if(0 < SleepTime) QThread::msleep(SleepTime);
         }
 
+        void Platform::Utility::SetMinimize()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+
+            g_data->getMainWindow()->showMinimized();
+        }
+
+        void Platform::Utility::SetFullScreen()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+            if(IsFullScreen()) return;
+
+            Platform::GetWindowRect(g_LastNormalWindowRect);
+            g_data->getMainWindow()->showFullScreen();
+        }
+
+        bool Platform::Utility::IsFullScreen()
+        {
+            return (g_LastNormalWindowRect.l != -1 || g_LastNormalWindowRect.t != -1
+                || g_LastNormalWindowRect.r != -1 || g_LastNormalWindowRect.b != -1);
+        }
+
+        void Platform::Utility::SetNormalWindow()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+            if(!IsFullScreen()) return;
+
+            g_data->getMainWindow()->showNormal();
+            Platform::SetWindowPos(g_LastNormalWindowRect.l, g_LastNormalWindowRect.t);
+            Platform::SetWindowSize(g_LastNormalWindowRect.r - g_LastNormalWindowRect.l, g_LastNormalWindowRect.b - g_LastNormalWindowRect.t);
+            g_LastNormalWindowRect.l = g_LastNormalWindowRect.t = g_LastNormalWindowRect.r = g_LastNormalWindowRect.b = -1;
+        }
+
         void Platform::Utility::ExitProgram()
         {
             QApplication::quit();
+        }
+
+        bool Platform::Utility::GetScreenRect(rect128& rect)
+        {
+            sint32 NumScreens = QApplication::desktop()->numScreens();
+            if(NumScreens == 0)
+                rect.l = rect.t = rect.r = rect.b = 0;
+            else
+            {
+                rect128 TotalRect = {10000, 10000, -10000, -10000};
+                for(sint32 i = 0; i < NumScreens; ++i)
+                {
+                    QRect GeometryRect = QApplication::desktop()->availableGeometry(i);
+                    TotalRect.l = Math::Min(TotalRect.l, GeometryRect.left());
+                    TotalRect.t = Math::Min(TotalRect.t, GeometryRect.top());
+                    TotalRect.r = Math::Max(TotalRect.r, GeometryRect.right());
+                    TotalRect.b = Math::Max(TotalRect.b, GeometryRect.bottom());
+                }
+                rect.l = TotalRect.l;
+                rect.t = TotalRect.t;
+                rect.r = TotalRect.r;
+                rect.b = TotalRect.b;
+            }
+
+            #if BLIK_ANDROID
+                id_file_read Hdmi = Platform::File::OpenForRead("/sys/devices/virtual/switch/hdmi/state");
+                if(!Hdmi) Hdmi = Platform::File::OpenForRead("/sys/class/switch/hdmi/state");
+                if(Hdmi)
+                {
+                    sint32 Value = 0;
+                    Platform::File::Read(Hdmi, (uint08*) &Value, sizeof(sint32));
+                    const bool HasPhygicalMonitor = ((Value & 1) == 1);
+                    Platform::File::Close(Hdmi);
+                    return HasPhygicalMonitor;
+                }
+            #endif
+            return true;
+        }
+
+        id_image_read Platform::Utility::GetScreenshotImage(const rect128& rect)
+        {
+            static QPixmap ScreenshotPixmap;
+            ScreenshotPixmap = QGuiApplication::primaryScreen()->grabWindow(
+                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t);
+            return (id_image_read) &ScreenshotPixmap;
+        }
+
+        id_bitmap_read Platform::Utility::GetScreenshotBitmap(const rect128& rect, bool vflip)
+        {
+            static Image ScreenshotImage;
+            QImage CurImage = QGuiApplication::primaryScreen()->grabWindow(
+                0, rect.l, rect.t, rect.r - rect.l, rect.b - rect.t).toImage();
+            CurImage = CurImage.convertToFormat(QImage::Format::Format_ARGB32);
+            ScreenshotImage.LoadBitmapFromBits(CurImage.constBits(), CurImage.width(), CurImage.height(),
+                CurImage.bitPlaneCount(), vflip);
+            return ScreenshotImage.GetBitmap();
+        }
+
+        void Platform::Utility::GetCursorPos(point64& pos)
+        {
+            const QPoint& CursorPos = QCursor::pos();
+            pos.x = CursorPos.x();
+            pos.y = CursorPos.y();
         }
 
         sint64 Platform::Utility::CurrentAvailableMemory(sint64* totalbytes)

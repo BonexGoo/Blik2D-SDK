@@ -170,35 +170,11 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
-        void Platform::GetWindowRect(rect128& rect)
+        void Platform::GetWindowRect(rect128& rect, bool normally)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
 
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-        }
-
-        bool Platform::GetScreenRect(rect128& rect)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-
-            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-            return true;
-        }
-
-        id_image_read Platform::GetScreenshotImage(const rect128& rect)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-
-            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-            return nullptr;
-        }
-
-        id_bitmap_read Platform::GetScreenshotBitmap(const rect128& rect, bool vflip)
-        {
-            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
-
-            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
-            return nullptr;
         }
 
         void Platform::SetStatusText(chars text, UIStack stack)
@@ -429,7 +405,59 @@
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }
 
+        void Platform::Utility::SetMinimize()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        void Platform::Utility::SetFullScreen()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        bool Platform::Utility::IsFullScreen()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
+
+        void Platform::Utility::SetNormalWindow()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
         void Platform::Utility::ExitProgram()
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        bool Platform::Utility::GetScreenRect(rect128& rect)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return true;
+        }
+
+        id_image_read Platform::Utility::GetScreenshotImage(const rect128& rect)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        id_bitmap_read Platform::Utility::GetScreenshotBitmap(const rect128& rect, bool vflip)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        void Platform::Utility::GetCursorPos(point64& pos)
         {
             BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
         }

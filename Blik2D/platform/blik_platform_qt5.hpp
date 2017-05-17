@@ -90,6 +90,8 @@
         const bool mIsTypeSurface;
         bool mIsSurfaceBinded;
         CanvasClass* mSavedCanvas;
+        float mSavedZoom;
+        QFont mSavedFont;
         QRectF mSavedClipRect;
         QPainter mPainter;
         QColor mColor;
@@ -970,6 +972,11 @@
             BLIK_ASSERT("GL/MDI의 초기화가 되어있지 않습니다", m_viewGL || m_viewMDI);
             if(m_viewGL) return m_viewGL->m_api;
             return m_viewMDI->m_api;
+        }
+
+        QWidget* getMainWindow()
+        {
+            return m_parent;
         }
 
         QGLWidget* getGLWidget()

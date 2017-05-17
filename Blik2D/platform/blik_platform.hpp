@@ -80,30 +80,9 @@ namespace BLIK
         /*!
         \brief 윈도우영역 얻기
         \param rect : 윈도우영역(px)
+        \param normally : 전체화면화된 경우 노멀값을 사용할지의 여부
         */
-        static void GetWindowRect(rect128& rect);
-
-        /*!
-        \brief 스크린영역 얻기
-        \param rect : 스크린영역(px)
-        \return 물리적모니터 연결여부(HDMI접속상태등으로 판단)
-        */
-        static bool GetScreenRect(rect128& rect);
-
-        /*!
-        \brief 스크린샷 이미지 얻기
-        \param rect : 스크린영역(px)
-        \return 스크린샷 이미지(nullptr은 실패)
-        */
-        static id_image_read GetScreenshotImage(const rect128& rect);
-
-        /*!
-        \brief 스크린샷 비트맵 얻기
-        \param rect : 스크린영역(px)
-        \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
-        \return 스크린샷 비트맵(nullptr은 실패)
-        */
-        static id_bitmap_read GetScreenshotBitmap(const rect128& rect, bool vflip = true);
+        static void GetWindowRect(rect128& rect, bool normally = false);
 
         /*!
         \brief 상태창 설정
@@ -350,9 +329,57 @@ namespace BLIK
             static void Sleep(sint32 ms, bool caninput);
 
             /*!
-            \brief 프로그램종료
+            \brief 프로그램의 최소화
+            */
+            static void SetMinimize();
+
+            /*!
+            \brief 프로그램의 전체화면화
+            */
+            static void SetFullScreen();
+
+            /*!
+            \brief 프로그램의 전체화면화 여부
+            */
+            static bool IsFullScreen();
+
+            /*!
+            \brief 프로그램의 기본윈도우화
+            */
+            static void SetNormalWindow();
+
+            /*!
+            \brief 프로그램의 종료
             */
             static void ExitProgram();
+
+            /*!
+            \brief 스크린영역 얻기
+            \param rect : 스크린영역(px)
+            \return 물리적모니터 연결여부(HDMI접속상태등으로 판단)
+            */
+            static bool GetScreenRect(rect128& rect);
+
+            /*!
+            \brief 스크린샷 이미지 얻기
+            \param rect : 스크린영역(px)
+            \return 스크린샷 이미지(nullptr은 실패)
+            */
+            static id_image_read GetScreenshotImage(const rect128& rect);
+
+            /*!
+            \brief 스크린샷 비트맵 얻기
+            \param rect : 스크린영역(px)
+            \param vflip : 상하반전여부(일반적인 비트맵파일은 true)
+            \return 스크린샷 비트맵(nullptr은 실패)
+            */
+            static id_bitmap_read GetScreenshotBitmap(const rect128& rect, bool vflip = true);
+
+            /*!
+            \brief 커서위치 얻기
+            \param pos : 커서위치(px)
+            */
+            static void GetCursorPos(point64& pos);
 
             /*!
             \brief OS의 가용메모리현황
