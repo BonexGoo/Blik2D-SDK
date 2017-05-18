@@ -270,7 +270,10 @@ namespace BLIK
         }
     }
 
-    void StreamingService::Codec::AddFrame(id_bitmap_read bitmap, uint64 timems, id_microphone mic)
+    #define DS_BITRATE 128000
+    #define DS_CHANNEL 2
+    #define DS_SAMPLERATE 44100
+    void StreamingService::Codec::AddFrame(id_bitmap_read bitmap, uint64 timems, Queue<uint08s>* pcms)
     {
         BLIK_COMMON(mTasking, common_buffer)
         if(auto CodecS = (CodecSender*) common_buffer)
@@ -287,10 +290,7 @@ namespace BLIK
                 CodecS->mImageCodec = AddOn::H264::Create(Bmp::GetWidth(bitmap), Bmp::GetHeight(bitmap), true);
             // 사운드코덱 초기화
             if(!CodecS->mSoundCodec)
-                CodecS->mSoundCodec = AddOn::Aac::Create(
-                    Platform::Microphone::GetBitRate(mic),
-                    Platform::Microphone::GetChannel(mic),
-                    Platform::Microphone::GetSampleRate(mic));
+                CodecS->mSoundCodec = AddOn::Aac::Create(DS_BITRATE, DS_CHANNEL, DS_SAMPLERATE);
 
             // 비트맵을 현재시간과 함께 큐저장
             uint08s NewBitmap;
@@ -299,17 +299,10 @@ namespace BLIK
             Memory::Copy(NewBitmap.AtDumping(sizeof(uint64), NewBitmapSize), bitmap, NewBitmapSize);
             CodecS->mBitmapQueue.Enqueue(NewBitmap);
 
-            // 한 프레임동안 발생한 모든 사운드를 각 발생시간과 함께 큐저장
-            while(Platform::Microphone::TryNextSound(mic))
-            {
-                uint08s NewPcm;
-                sint32 PcmLength = 0;
-                uint64 PcmTimeMs = 0;
-                bytes Pcm = Platform::Microphone::GetSoundData(mic, &PcmLength, &PcmTimeMs);
-                Memory::Copy(NewPcm.AtDumping(0, sizeof(uint64) + PcmLength), &PcmTimeMs, sizeof(uint64));
-                Memory::Copy(NewPcm.AtDumping(sizeof(uint64), PcmLength), Pcm, PcmLength);
-                CodecS->mPcmQueue.Enqueue(NewPcm);
-            }
+            // 한 프레임동안 발생한 모든 사운드를 큐저장
+            if(pcms)
+            while(0 < pcms->Count())
+                CodecS->mPcmQueue.Enqueue(pcms->Dequeue());
         }
     }
 

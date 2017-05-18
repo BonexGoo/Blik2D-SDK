@@ -28,7 +28,7 @@ namespace BLIK
         public:
             void Bind(const StreamingService* service);
             void Unbind(const StreamingService* service);
-            void AddFrame(id_bitmap_read bitmap, uint64 timems, id_microphone mic);
+            void AddFrame(id_bitmap_read bitmap, uint64 timems, Queue<uint08s>* pcms);
             EncodingReport* GetReportOnce() const;
 
         private:
