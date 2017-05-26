@@ -43,8 +43,9 @@ namespace BLIK
         virtual id_image_read GetWebImage(sint32 width, sint32 height) {return nullptr;}
         virtual void SendTouchToWeb(TouchType type, sint32 x, sint32 y) {}
         virtual void SendKeyToWeb(sint32 code, chars text, bool pressed) {}
-        virtual const String& GetName() const {static const String _; return _;}
+        virtual chars GetServiceName() const {return "";}
         virtual const String& GetServiceId() const {static const String _; return _;}
+        virtual const String& GetName() const {static const String _; return _;}
         virtual const String& GetComment() const {static const String _; return _;}
         virtual const Image& GetPicture() const {static const Image _; return _;}
         virtual const Image& GetBackground() const {static const Image _; return _;}

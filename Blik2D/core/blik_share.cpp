@@ -91,9 +91,8 @@ namespace BLIK
 
     buffer Share::CopiedBuffer() const
     {
-        const sint32 count = Buffer::CountOf(mData);
-        buffer NewBuffer = Buffer::AllocBySample(BLIK_DBG count, mData);
-        Buffer::Copy(NewBuffer, 0, mData, 0, count);
+        buffer NewBuffer = Buffer::AllocBySample(BLIK_DBG mValidCount, mData);
+        Buffer::Copy(NewBuffer, 0, mData, 0, mValidCount);
         return NewBuffer;
     }
 

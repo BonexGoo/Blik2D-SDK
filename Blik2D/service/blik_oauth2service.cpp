@@ -36,8 +36,8 @@ namespace BLIK
             String mClientSecret;
             String mAccessToken;
             String mRefreshToken;
-            String mName;
             String mServiceId;
+            String mName;
             String mComment;
             Image mPicture;
             Image mBackground;
@@ -100,13 +100,17 @@ namespace BLIK
             if(IsSigning(false))
                 Platform::Web::SendKeyEvent(data().mWeb, code, text, pressed);
         }
-        const String& GetName() const override
+        chars GetServiceName() const override
         {
-            return data_const().mName;
+            return service_name();
         }
         const String& GetServiceId() const override
         {
             return data_const().mServiceId;
+        }
+        const String& GetName() const override
+        {
+            return data_const().mName;
         }
         const String& GetComment() const override
         {
@@ -181,6 +185,7 @@ namespace BLIK
     protected:
         inline Data& data() {return mShare->At<Data>(0);}
         inline const Data& data_const() const {return mShare->At<Data>(0);}
+        virtual chars service_name() const = 0;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +193,9 @@ namespace BLIK
     ////////////////////////////////////////////////////////////////////////////////
     class OAuth2GoogleService : public OAuth2ServiceImpl
     {
+    private:
+        chars service_name() const override {return "google";}
+
     public:
         OAuth2GoogleService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
         {
@@ -244,6 +252,9 @@ namespace BLIK
     ////////////////////////////////////////////////////////////////////////////////
     class OAuth2FacebookService : public OAuth2ServiceImpl
     {
+    private:
+        chars service_name() const override {return "facebook";}
+
     public:
         OAuth2FacebookService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
         {
@@ -298,6 +309,9 @@ namespace BLIK
     ////////////////////////////////////////////////////////////////////////////////
     class OAuth2KakaoService : public OAuth2ServiceImpl
     {
+    private:
+        chars service_name() const override {return "kakao";}
+
     public:
         OAuth2KakaoService() : OAuth2ServiceImpl(Buffer::Alloc<Data>(BLIK_DBG 1))
         {

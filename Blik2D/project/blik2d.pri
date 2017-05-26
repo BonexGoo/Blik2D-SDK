@@ -6,7 +6,7 @@ QT += widgets
 QT += multimedia
 QT += serialport
 android: QT += androidextras
-QT += webenginewidgets
+win32: QT += webenginewidgets
 
 CONFIG += c++11
 CONFIG += mobility
