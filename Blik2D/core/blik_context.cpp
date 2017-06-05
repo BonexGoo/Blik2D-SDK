@@ -496,6 +496,10 @@ namespace BLIK
 
     void Context::SaveJsonCore(sint32 tab, String name, String& dst, bool indexable, bool lastchild) const
     {
+        const bool HasNamableChild = (0 < m_namableChild.Count());
+        const bool HasIndexableChild = (0 < m_indexableChild.Count());
+        const bool HasChild = (HasNamableChild | HasIndexableChild);
+
         if(!indexable)
         {
             for(sint32 i = 0; i < tab; ++i)
@@ -503,10 +507,11 @@ namespace BLIK
             dst += '\"';
             dst += name;
             dst += "\":";
-            if(m_valueOffset)
+            if(!HasChild)
             {
-                dst += '\"';
-                dst.Add(m_valueOffset, m_valueLength);
+                dst += "\"";
+                if(m_valueOffset)
+                    dst.Add(m_valueOffset, m_valueLength);
                 dst += (lastchild)? "\"" : "\",";
             }
             dst += "\r\n";
@@ -520,9 +525,6 @@ namespace BLIK
             dst += (lastchild)? "\"" : "\",";
             dst += "\r\n";
         }
-
-        const bool HasNamableChild = (0 < m_namableChild.Count());
-        const bool HasIndexableChild = (0 < m_indexableChild.Count());
 
         if(HasNamableChild)
         {
@@ -538,7 +540,6 @@ namespace BLIK
                 dst += '\t';
             dst += (lastchild && !HasIndexableChild)? "}\r\n" : "},\r\n";
         }
-
         if(HasIndexableChild)
         {
             for(sint32 i = 0; i < tab; ++i)

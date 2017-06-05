@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include <addon/blik_fakewin.h>
 
+#if BLIK_WINDOWS
+    #define __x86__ // 32/64에서 모두 본 매크로가 필요
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // _BLIK_BATCH_COMMAND_ {"type" : "include-alias", "prm" : "BLIK_FDKAAC_", "restore-comment" : " //original-code:"}
 #define BLIK_FDKAAC_U_audio_h                         "addon/fdk-aac-0.1.4_for_blik/libSYS/include/audio.h"

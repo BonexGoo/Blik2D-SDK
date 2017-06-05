@@ -182,6 +182,13 @@ namespace BLIK
         */
         sint32 Length() const;
 
+        /*!
+        \brief CP949형 스트링으로 컨버팅하여 반환
+        \param urlcode : URL코드방식 여부
+        \return 생성된 버퍼
+        */
+        buffer MakeCp949(bool urlcode) const;
+
     public:
         /*!
         \brief swprintf식 객체생성
@@ -198,6 +205,15 @@ namespace BLIK
         \return 객체
         */
         static WString FromChars(chars text, sint32 length = -1);
+
+        /*!
+        \brief 컨버팅식 객체생성(CP949)
+        \param urlcode : URL코드방식 여부
+        \param text_cp949 : 컨버팅할 CP949형 스트링
+        \param length : 적용할 길이(-1이면 자동설정)
+        \return 객체
+        */
+        static WString FromCp949(bool urlcode, chars_cp949 text_cp949, sint32 length = -1);
 
         /*!
         \brief wcscmp식 비교

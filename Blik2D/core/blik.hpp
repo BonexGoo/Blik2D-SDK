@@ -17,6 +17,7 @@ namespace BLIK
     typedef unsigned long long                uint64;
     typedef const unsigned char*              bytes;
     typedef const char*                       chars;
+    typedef const char*                       chars_cp949;
     typedef const char*                       chars_endless;
     typedef const wchar_t*                    wchars;
     typedef const wchar_t*                    wchars_endless;

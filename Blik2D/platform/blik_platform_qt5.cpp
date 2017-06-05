@@ -1939,7 +1939,7 @@
             QAbstractSocket* m_socket;
         };
         static Map<SocketBox> SocketMap;
-        static uint32 LastSocketID = 0;
+        static ublock LastSocketID = 0;
 
         id_socket Platform::Socket::OpenForTcp()
         {
