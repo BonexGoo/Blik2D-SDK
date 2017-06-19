@@ -24,6 +24,7 @@ namespace BLIK
             static id_acc Create(sint32 bitrate, sint32 channel, sint32 samplerate);
             static void Release(id_acc acc);
             static void EncodeTo(id_acc acc, bytes pcm, sint32 length, id_flash flash, uint64 timems);
+            static void SilenceTo(id_acc acc, id_flash flash, uint64 timems);
         };
 
         //! \brief ALPR연동

@@ -13,7 +13,6 @@ public:
     {
         mFlash = nullptr;
         mFirstTimeMs = 0;
-        mLastTimeMs = 0;
         mImageCodec = nullptr;
         mSoundCodec = nullptr;
     }
@@ -31,7 +30,6 @@ public:
             mFlash = nullptr;
         }
         mFirstTimeMs = 0;
-        mLastTimeMs = 0;
         if(mImageCodec)
         {
             AddOn::H264::Release(mImageCodec);
@@ -42,21 +40,17 @@ public:
             AddOn::Aac::Release(mSoundCodec);
             mSoundCodec = nullptr;
         }
-        while(0 < mBitmapQueue.Count())
-            mBitmapQueue.Dequeue();
-        while(0 < mPcmQueue.Count())
-            mPcmQueue.Dequeue();
+        while(0 < mFrameQueue.Count())
+            mFrameQueue.Dequeue();
     }
 
 public:
     id_flash mFlash;
     uint64 mFirstTimeMs;
-    uint64 mLastTimeMs;
     id_h264 mImageCodec;
     id_acc mSoundCodec;
-    Queue<uint08s> mBitmapQueue;
-    Queue<uint08s> mPcmQueue;
-    Array<id_tasking, datatype_pod_canmemcpy> mReceivers;
+    Queue<StreamingService::Frame> mFrameQueue;
+    Array<Queue<uint08s>*, datatype_pod_canmemcpy> mFlvBitsQueueRefs;
 };
 
 class CodecReceiver
@@ -69,19 +63,19 @@ public:
     }
     virtual ~CodecReceiver()
     {
-        ResetFrameQueue();
+        ResetFlvBitsQueue();
     }
 
 protected:
-    void ResetFrameQueue()
+    void ResetFlvBitsQueue()
     {
-        while(0 < mFrameQueue.Count())
-            mFrameQueue.Dequeue();
+        while(0 < mFlvBitsQueue.Count())
+            mFlvBitsQueue.Dequeue();
     }
 
 public:
     bool mKilled;
-    Queue<uint08s> mFrameQueue;
+    Queue<uint08s> mFlvBitsQueue;
     uint64 mBeginTimeMsec;
 };
 
@@ -101,7 +95,7 @@ public:
 public:
     void Reset()
     {
-        ResetFrameQueue();
+        ResetFlvBitsQueue();
         mSavedFrame.Clear();
     }
 
@@ -145,8 +139,8 @@ public:
 public:
     static size_t OnRead(void* ptr, size_t size, size_t nitems, payload data)
     {
-        uint64 BegineTime = Platform::Utility::CurrentTimeMsec();
-        while(Platform::Utility::CurrentTimeMsec() - BegineTime < 5000)
+        uint64 BeginTime = Platform::Utility::CurrentTimeMsec();
+        while(Platform::Utility::CurrentTimeMsec() - BeginTime < 3000)
         {
             bool IsKilled = false;
             size_t CopiedSize = 0;
@@ -174,14 +168,15 @@ public:
                             break;
                         }
                     }
-                    if(0 < CodecR->mFrameQueue.Count())
-                        CurFrame = CodecR->mFrameQueue.Dequeue();
+                    if(0 < CodecR->mFlvBitsQueue.Count())
+                        CurFrame = CodecR->mFlvBitsQueue.Dequeue();
                     else break;
                     IsKilled = CodecR->mKilled;
                 }
             }
-            if(0 < CopiedSize || IsKilled)
-                return CopiedSize;
+            // 복사된 내용이 하나라도 있으면 송신
+            if(0 < CopiedSize || IsKilled) return CopiedSize;
+            // 복사된 내용이 하나도 없으면 스트리밍이 종료되기 때문에 3초까지 50ms단위로 기다림
             Platform::Utility::Sleep(50, false);
         }
         return 0;
@@ -196,30 +191,39 @@ class VideoSaver
 public:
     VideoSaver()
     {
-        mFile = nullptr;
+        mFlvFile = nullptr;
+        mLogFile = nullptr;
     }
     ~VideoSaver()
     {
-        Asset::Close(mFile);
+        Asset::Close(mFlvFile);
+        Asset::Close(mLogFile);
     }
 
 public:
     void Append(CodecRecordReceiver* receiver)
     {
-        if(!mFile) mFile = Asset::OpenForWrite("videoes/temp.flv", true);
-        while(0 < receiver->mFrameQueue.Count())
+        if(!mFlvFile) mFlvFile = Asset::OpenForWrite("videoes/temp.flv", true);
+        if(!mLogFile) mLogFile = Asset::OpenForWrite("videoes/temp.log", true);
+
+        while(0 < receiver->mFlvBitsQueue.Count())
         {
-            uint08s CurFrame = receiver->mFrameQueue.Dequeue();
-            if(0 < CurFrame.Count())
+            uint08s CurFlvBits = receiver->mFlvBitsQueue.Dequeue();
+            if(0 < CurFlvBits.Count())
             {
-                Asset::Write(mFile, &CurFrame[0], CurFrame.Count());
-                receiver->mSavedBytes += CurFrame.Count();
+                // Flv
+                Asset::Write(mFlvFile, &CurFlvBits[0], CurFlvBits.Count());
+                receiver->mSavedBytes += CurFlvBits.Count();
+                // Log
+                String NewLog = Flv::BuildLog(&CurFlvBits[0], CurFlvBits.Count());
+                Asset::Write(mLogFile, (bytes)(chars) NewLog, NewLog.Length());
             }
         }
     }
 
 public:
-    id_asset mFile;
+    id_asset mFlvFile;
+    id_asset mLogFile;
 };
 
 namespace BLIK
@@ -230,10 +234,14 @@ namespace BLIK
     StreamingService::Codec::Codec()
     {
         mTasking = Tasking::Create(OnCodecTask);
+        mNeedCreate = true;
+        mFrameQueueRef = nullptr;
         BLIK_COMMON(mTasking, common_buffer)
         {
             Buffer::Free(common_buffer);
             common_buffer = Buffer::Alloc<CodecSender>(BLIK_DBG 1);
+            if(auto CodecS = (CodecSender*) common_buffer)
+                mFrameQueueRef = &CodecS->mFrameQueue;
         }
     }
 
@@ -244,26 +252,37 @@ namespace BLIK
 
     void StreamingService::Codec::Bind(const StreamingService* service)
     {
+        Queue<uint08s>* CurFlvBitsQueue = nullptr;
+        BLIK_COMMON(service->mTasking, receiver_common_buffer)
+            if(auto CodecR = (CodecReceiver*) receiver_common_buffer)
+                CurFlvBitsQueue = &CodecR->mFlvBitsQueue;
+
         BLIK_COMMON(mTasking, common_buffer)
         if(auto CodecS = (CodecSender*) common_buffer)
         {
             CodecS->Reset();
-            CodecS->mReceivers.AtAdding() = service->mTasking;
+            CodecS->mFlvBitsQueueRefs.AtAdding() = CurFlvBitsQueue;
+            mNeedCreate = true;
         }
     }
 
     void StreamingService::Codec::Unbind(const StreamingService* service)
     {
+        Queue<uint08s>* CurFlvBitsQueue = nullptr;
+        BLIK_COMMON(service->mTasking, receiver_common_buffer)
+            if(auto CodecR = (CodecReceiver*) receiver_common_buffer)
+                CurFlvBitsQueue = &CodecR->mFlvBitsQueue;
+
         BLIK_COMMON(mTasking, common_buffer)
         if(auto CodecS = (CodecSender*) common_buffer)
         {
-            for(sint32 i = 0, iend = CodecS->mReceivers.Count(); i < iend; ++i)
+            for(sint32 i = 0, iend = CodecS->mFlvBitsQueueRefs.Count(); i < iend; ++i)
             {
-                if(CodecS->mReceivers[i] == service->mTasking)
+                if(CodecS->mFlvBitsQueueRefs[i] == CurFlvBitsQueue)
                 {
                     for(sint32 j = i; j < iend - 1; ++j)
-                        CodecS->mReceivers.At(j) = CodecS->mReceivers[j + 1];
-                    CodecS->mReceivers.SubtractionOne();
+                        CodecS->mFlvBitsQueueRefs.At(j) = CodecS->mFlvBitsQueueRefs[j + 1];
+                    CodecS->mFlvBitsQueueRefs.SubtractionOne();
                     break;
                 }
             }
@@ -273,37 +292,44 @@ namespace BLIK
     #define DS_BITRATE 128000
     #define DS_CHANNEL 2
     #define DS_SAMPLERATE 44100
-    void StreamingService::Codec::AddFrame(id_bitmap_read bitmap, uint64 timems, Queue<uint08s>* pcms)
+    void StreamingService::Codec::AddFrame(id_bitmap_read bitmap, uint64 bitmaptimems, Queue<uint08s>* pcms)
     {
-        BLIK_COMMON(mTasking, common_buffer)
-        if(auto CodecS = (CodecSender*) common_buffer)
+        if(mNeedCreate)
         {
-            // 플래시비디오 초기화
-            if(!CodecS->mFlash)
+            BLIK_COMMON(mTasking, common_buffer)
+            if(auto CodecS = (CodecSender*) common_buffer)
             {
-                CodecS->mFlash = Flv::Create(Bmp::GetWidth(bitmap), Bmp::GetHeight(bitmap));
-                CodecS->mFirstTimeMs = timems;
-                CodecS->mLastTimeMs = timems;
+                mNeedCreate = false;
+                // 플래시비디오 초기화
+                if(!CodecS->mFlash)
+                {
+                    CodecS->mFlash = Flv::Create(Bmp::GetWidth(bitmap), Bmp::GetHeight(bitmap));
+                    CodecS->mFirstTimeMs = bitmaptimems;
+                }
+                // 이미지코덱 초기화
+                if(!CodecS->mImageCodec)
+                    CodecS->mImageCodec = AddOn::H264::Create(Bmp::GetWidth(bitmap), Bmp::GetHeight(bitmap), true);//false);
+                // 사운드코덱 초기화
+                if(!CodecS->mSoundCodec)
+                    CodecS->mSoundCodec = AddOn::Aac::Create(DS_BITRATE, DS_CHANNEL, DS_SAMPLERATE);
             }
-            // 이미지코덱 초기화
-            if(!CodecS->mImageCodec)
-                CodecS->mImageCodec = AddOn::H264::Create(Bmp::GetWidth(bitmap), Bmp::GetHeight(bitmap), true);
-            // 사운드코덱 초기화
-            if(!CodecS->mSoundCodec)
-                CodecS->mSoundCodec = AddOn::Aac::Create(DS_BITRATE, DS_CHANNEL, DS_SAMPLERATE);
+        }
 
+        Frame NewFrame;
+        {
             // 비트맵을 현재시간과 함께 큐저장
             uint08s NewBitmap;
             const sint32 NewBitmapSize = Bmp::GetFileSizeWithoutBM(bitmap);
-            Memory::Copy(NewBitmap.AtDumping(0, sizeof(uint64) + NewBitmapSize), &timems, sizeof(uint64));
+            Memory::Copy(NewBitmap.AtDumping(0, sizeof(uint64) + NewBitmapSize), &bitmaptimems, sizeof(uint64));
             Memory::Copy(NewBitmap.AtDumping(sizeof(uint64), NewBitmapSize), bitmap, NewBitmapSize);
-            CodecS->mBitmapQueue.Enqueue(NewBitmap);
+            NewFrame.mBitmap = NewBitmap;
 
             // 한 프레임동안 발생한 모든 사운드를 큐저장
             if(pcms)
             while(0 < pcms->Count())
-                CodecS->mPcmQueue.Enqueue(pcms->Dequeue());
+                NewFrame.mPcms.AtAdding() = pcms->Dequeue();
         }
+        mFrameQueueRef->Enqueue(NewFrame);
     }
 
     StreamingService::Codec::EncodingReport* StreamingService::Codec::GetReportOnce() const
@@ -313,97 +339,86 @@ namespace BLIK
 
     sint32 StreamingService::Codec::OnCodecTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common)
     {
-        static sint32 SleepTime = 5;
+        static sint32 SleepTimeMsec = 20;
         BLIK_COMMON_TASK(common, common_buffer)
         if(auto CodecS = (CodecSender*) common_buffer)
-        if(CodecS->mImageCodec && 0 < CodecS->mBitmapQueue.Count())
+        if(0 < CodecS->mFrameQueue.Count())
         {
             auto NewReport = (EncodingReport*) Buffer::Alloc<EncodingReport, datatype_pod_canmemcpy_zeroset>(BLIK_DBG 1);
             const uint64 ReportBegin = Platform::Utility::CurrentTimeMsec();
 
-            NewReport->mWaitingBitmapCount = CodecS->mBitmapQueue.Count();
-            NewReport->mWaitingPcmCount = CodecS->mPcmQueue.Count();
-            // 비트맵과 사운드의 보관상한선
-            while(16 < CodecS->mBitmapQueue.Count())
-                CodecS->mBitmapQueue.Dequeue();
-            while(128 < CodecS->mPcmQueue.Count())
-                CodecS->mPcmQueue.Dequeue();
+            NewReport->mWaitingFrameCount = CodecS->mFrameQueue.Count();
+            // 프레임의 보관상한선
+            while(128 < CodecS->mFrameQueue.Count())
+                CodecS->mFrameQueue.Dequeue();
 
-            if(0 < CodecS->mReceivers.Count()) // 채널이 있다면
+            if(0 < CodecS->mFlvBitsQueueRefs.Count()) // Flv수신처가 있다면
             {
                 // 모든 채널들에 송신하지 못하고 쌓인 데이터량 수집
-                sint32 SumFrameQueueCount = 0;
-                for(sint32 i = 0, iend = CodecS->mReceivers.Count(); i < iend; ++i)
-                {
-                    BLIK_COMMON(CodecS->mReceivers[i], receiver_common_buffer)
-                    if(auto CodecR = (CodecReceiver*) receiver_common_buffer)
-                        SumFrameQueueCount += CodecR->mFrameQueue.Count();
-                }
-                NewReport->mUnsentFrameCount = SumFrameQueueCount;
+                sint32 SumFlvBitsQueueCount = 0;
+                for(sint32 i = 0, iend = CodecS->mFlvBitsQueueRefs.Count(); i < iend; ++i)
+                    SumFlvBitsQueueCount += CodecS->mFlvBitsQueueRefs[i]->Count();
+                NewReport->mUnsentFlvBitsCount = SumFlvBitsQueueCount;
 
                 // 그에 따른 슬립조절
-                if(SumFrameQueueCount <= 1) SleepTime = Math::Max(5, SleepTime - 1);
-                else if(8 <= SumFrameQueueCount) SleepTime = Math::Min(SleepTime + 1, 1000);
-                NewReport->mSleepTimeMsec = SleepTime;
+                const sint32 AvgFlvBitsQueueCount = SumFlvBitsQueueCount / CodecS->mFlvBitsQueueRefs.Count();
+                if(AvgFlvBitsQueueCount < 10) SleepTimeMsec = Math::Max(20, SleepTimeMsec - 1);
+                else SleepTimeMsec = Math::Min(SleepTimeMsec + 1, 1000);
+                NewReport->mSleepTimeMsec = SleepTimeMsec;
 
-                if(SumFrameQueueCount < 10) // 채널들의 송신상태가 원활
+                const sint64 MinCheck = (sint64) (Platform::Utility::CurrentTimeMsec() - 100);
+                sint32 FrameCount = CodecS->mFrameQueue.Count();
+                while(FrameCount--)
                 {
-                    NewReport->mFlvEncodingTimeMsec = 0;
-                    NewReport->mAacEncodingTimeMsec = 0;
-                    uint08s LastBitmapQueue, LastPcmQueue;
-                    uint64 LastBitmapTimeMs = 0, LastPcmTimeMs = 0;
-                    while(true)
+                    Frame CurFrameQueue = CodecS->mFrameQueue.Dequeue();
+                    const auto& CurBitmapWithTime = CurFrameQueue.mBitmap;
+                    uint64 CurFrameTimeMsec = *((uint64*) &CurBitmapWithTime[0]);
+                    const uint64 FlashTimeMsec = CurFrameTimeMsec - CodecS->mFirstTimeMs;
+                    const sint32 SpanValue = Math::Min((sint32) (MinCheck - (sint64) CurFrameTimeMsec), 1000);
+                    const sint32 RandValue = ((sint32) Platform::Utility::Random()) % 1000;
+                    // 100ms이전의 청크는 확율적으로 버림
+                    if(RandValue < SpanValue)
+                        NewReport->mDroppedChunkCount++;
+                    else
                     {
-                        if(!LastBitmapTimeMs && 0 < CodecS->mBitmapQueue.Count())
-                        {
-                            LastBitmapQueue = CodecS->mBitmapQueue.Dequeue();
-                            LastBitmapTimeMs = *((uint64*) &LastBitmapQueue[0]);
-                        }
-                        if(!LastPcmTimeMs && CodecS->mSoundCodec && 0 < CodecS->mPcmQueue.Count())
-                        {
-                            LastPcmQueue = CodecS->mPcmQueue.Dequeue();
-                            LastPcmTimeMs = *((uint64*) &LastPcmQueue[0]);
-                        }
+                        NewReport->mSendedChunkCount++;
                         // H264인코딩
-                        if((LastBitmapTimeMs && !LastPcmTimeMs) || LastPcmTimeMs > LastBitmapTimeMs)
+                        const uint64 H264EncodingBegin = Platform::Utility::CurrentTimeMsec();
+                        if(CodecS->mImageCodec)
                         {
-                            const uint64 FlvEncodingBegin = Platform::Utility::CurrentTimeMsec();
-                            const uint32* CurBitmapBits = (const uint32*) Bmp::GetBits((id_bitmap_read) &LastBitmapQueue[sizeof(uint64)]);
-                            CodecS->mLastTimeMs = (CodecS->mLastTimeMs > LastBitmapTimeMs)? CodecS->mLastTimeMs : LastBitmapTimeMs;
-                            AddOn::H264::EncodeTo(CodecS->mImageCodec, CurBitmapBits, CodecS->mFlash,
-                                CodecS->mLastTimeMs - CodecS->mFirstTimeMs);
-                            NewReport->mFlvEncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - FlvEncodingBegin);
-                            LastBitmapTimeMs = 0;
+                            bytes CurBitmap = &CurBitmapWithTime[sizeof(uint64)];
+                            const uint32* CurBitmapBits = (const uint32*) Bmp::GetBits((id_bitmap_read) CurBitmap);
+                            AddOn::H264::EncodeTo(CodecS->mImageCodec, CurBitmapBits, CodecS->mFlash, FlashTimeMsec);
                         }
-                        // AAC인코딩
-                        else if((!LastBitmapTimeMs && LastPcmTimeMs) || LastPcmTimeMs < LastBitmapTimeMs)
-                        {
-                            const uint64 AacEncodingBegin = Platform::Utility::CurrentTimeMsec();
-                            bytes CurPcm = &LastPcmQueue[sizeof(uint64)];
-                            const sint32 CurPcmLength = LastPcmQueue.Count() - sizeof(uint64);
-                            CodecS->mLastTimeMs = (CodecS->mLastTimeMs > LastPcmTimeMs)? CodecS->mLastTimeMs : LastPcmTimeMs;
-                            AddOn::Aac::EncodeTo(CodecS->mSoundCodec, CurPcm, CurPcmLength, CodecS->mFlash,
-                                CodecS->mLastTimeMs - CodecS->mFirstTimeMs);
-                            NewReport->mAacEncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - AacEncodingBegin);
-                            LastPcmTimeMs = 0;
-                        }
-                        else if(!LastBitmapTimeMs && !LastPcmTimeMs)
-                            break;
-                    }
+                        NewReport->mH264EncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - H264EncodingBegin);
 
-                    // 각 스트림에 전달
-                    sint32 VideoLength = 0;
-                    bytes Video = Flv::EmptyChunks(CodecS->mFlash, &VideoLength);
-                    if(0 < VideoLength)
-                    {
-                        uint08s ClonedFrame;
-                        Memory::Copy(ClonedFrame.AtDumpingAdded(VideoLength), Video, VideoLength);
-                        for(sint32 i = 0, iend = CodecS->mReceivers.Count(); i < iend; ++i)
+                        // AAC인코딩
+                        const uint64 AacEncodingBegin = Platform::Utility::CurrentTimeMsec();
+                        if(CodecS->mSoundCodec)
                         {
-                            BLIK_COMMON(CodecS->mReceivers[i], receiver_common_buffer)
-                            if(auto CodecR = (CodecReceiver*) receiver_common_buffer)
-                                CodecR->mFrameQueue.Enqueue(ClonedFrame);
+                            const auto& CurPcmsWithTime = CurFrameQueue.mPcms;
+                            if(CurPcmsWithTime.Count() == 0) // 사운드데이터가 없을 경우
+                                AddOn::Aac::SilenceTo(CodecS->mSoundCodec, CodecS->mFlash, FlashTimeMsec);
+                            else for(sint32 i = 0, iend = CurPcmsWithTime.Count(); i < iend; ++i)
+                            {
+                                bytes CurPcm = &CurPcmsWithTime[i][sizeof(uint64)];
+                                const sint32 CurPcmLength = CurPcmsWithTime[i].Count() - sizeof(uint64);
+                                AddOn::Aac::EncodeTo(CodecS->mSoundCodec, CurPcm, CurPcmLength, CodecS->mFlash, FlashTimeMsec);
+                            }
                         }
+                        NewReport->mAacEncodingTimeMsec += (sint32) (Platform::Utility::CurrentTimeMsec() - AacEncodingBegin);
+
+                        // 각 스트림에 배포
+                        sint32 VideoLength = 0;
+                        bytes Video = Flv::GetBits(CodecS->mFlash, &VideoLength);
+                        if(0 < VideoLength)
+                        {
+                            uint08s ClonedBits;
+                            Memory::Copy(ClonedBits.AtDumpingAdded(VideoLength), Video, VideoLength);
+                            for(sint32 i = 0, iend = CodecS->mFlvBitsQueueRefs.Count(); i < iend; ++i)
+                                CodecS->mFlvBitsQueueRefs[i]->Enqueue(ClonedBits);
+                        }
+                        Flv::Empty(CodecS->mFlash);
                     }
                 }
             }
@@ -411,10 +426,10 @@ namespace BLIK
             NewReport->mReportTimeMsec = (sint32) (Platform::Utility::CurrentTimeMsec() - ReportBegin);
             answer.Enqueue((buffer) NewReport);
             // answer의 보관상한선
-            while(64 < answer.Count())
+            while(128 < answer.Count())
                 Buffer::Free(answer.Dequeue());
         }
-        return SleepTime;
+        return SleepTimeMsec;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -501,7 +516,7 @@ namespace BLIK
         BLIK_COMMON_TASK(common, common_buffer)
         if(auto CodecR = (CodecBroadcastReceiver*) common_buffer)
         {
-            ValidService = (!CodecR->mKilled && 0 < CodecR->mFrameQueue.Count());
+            ValidService = (!CodecR->mKilled && 0 < CodecR->mFlvBitsQueue.Count());
             if(ValidService)
             {
                 ServiceName = CodecR->mServiceName;
@@ -539,7 +554,7 @@ namespace BLIK
 
         BLIK_COMMON_TASK(common, common_buffer)
         if(auto CodecR = (CodecRecordReceiver*) common_buffer)
-        if(!CodecR->mKilled && 0 < CodecR->mFrameQueue.Count())
+        if(!CodecR->mKilled && 0 < CodecR->mFlvBitsQueue.Count())
             CurSaver->Append(CodecR);
         return 500;
     }

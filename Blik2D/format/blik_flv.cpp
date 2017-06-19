@@ -4,7 +4,7 @@
 class FlvPrivate
 {
 public:
-    typedef Array<uint08, datatype_pod_canmemcpy, 256> Chunk;
+    typedef Array<uint08, datatype_pod_canmemcpy, 256> FlvBits;
 
 public:
     FlvPrivate() {}
@@ -17,25 +17,25 @@ public:
     {BLIK_ASSERT("잘못된 시나리오입니다", false); return *this;}
 
 public:
-    static void WriteECMA(Chunk& dst, chars name, sint32 value)
+    static void WriteECMA(FlvBits& dst, chars name, sint32 value)
     {
         WriteScriptData(dst, name);
         dst.AtAdding() = 0x08; // type: ecma
         Memory::Copy(dst.AtDumpingAdded(4), Flv::GetBE4(value), 4); // value
     }
-    static void WriteNumber(Chunk& dst, chars name, double value)
+    static void WriteNumber(FlvBits& dst, chars name, double value)
     {
         WriteScriptData(dst, name);
         dst.AtAdding() = 0x00; // type: number
         Memory::Copy(dst.AtDumpingAdded(8), Flv::GetBE8_Double(value), 8); // value
     }
-    static void WriteBoolean(Chunk& dst, chars name, bool value)
+    static void WriteBoolean(FlvBits& dst, chars name, bool value)
     {
         WriteScriptData(dst, name);
         dst.AtAdding() = 0x01; // type: boolean
         dst.AtAdding() = value; // value
     }
-    static void WriteString(Chunk& dst, chars name, chars value)
+    static void WriteString(FlvBits& dst, chars name, chars value)
     {
         WriteScriptData(dst, name);
         dst.AtAdding() = 0x02; // type: string
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    static void WriteScriptData(Chunk& dst, chars name)
+    static void WriteScriptData(FlvBits& dst, chars name)
     {
         const sint32 Length = blik_strlen(name);
         Memory::Copy(dst.AtDumpingAdded(2), Flv::GetBE2(Length), 2); // stringsize
@@ -51,7 +51,7 @@ private:
     }
 
 public:
-    Chunk mChunks;
+    FlvBits mBits;
 };
 
 namespace BLIK
@@ -59,7 +59,7 @@ namespace BLIK
     id_flash Flv::Create(sint32 width, sint32 height)
     {
         auto NewFlash = (FlvPrivate*) Buffer::Alloc<FlvPrivate>(BLIK_DBG 1);
-        FlvPrivate::Chunk& Dst = NewFlash->mChunks;
+        FlvPrivate::FlvBits& Dst = NewFlash->mBits;
 
         // flv header
         Memory::Copy(Dst.AtDumpingAdded(3), "FLV", 3); // Signature
@@ -69,24 +69,24 @@ namespace BLIK
         Memory::Copy(Dst.AtDumpingAdded(4), GetBE4(0), 4); // PreviousTagSize0
 
         // metaData
-        FlvPrivate::Chunk NewChunk;
-        NewChunk.AtAdding() = 0x02; // 스트링데이터ID
-        FlvPrivate::WriteECMA(NewChunk, "onMetaData", 13);
-        FlvPrivate::WriteNumber(NewChunk, "duration", 0); // YouTube에는 없어도 되는 정보
-        FlvPrivate::WriteNumber(NewChunk, "width", width);
-        FlvPrivate::WriteNumber(NewChunk, "height", height);
-        FlvPrivate::WriteNumber(NewChunk, "videodatarate", 781.25);
-        FlvPrivate::WriteNumber(NewChunk, "framerate", 1000);
-        FlvPrivate::WriteNumber(NewChunk, "videocodecid", 7); // FLV_CODECID_H264: 7
-        FlvPrivate::WriteNumber(NewChunk, "audiodatarate", 128);
-        FlvPrivate::WriteNumber(NewChunk, "audiosamplerate", 44100);
-        FlvPrivate::WriteNumber(NewChunk, "audiosamplesize", 16);
-        FlvPrivate::WriteBoolean(NewChunk, "stereo", true);
-        FlvPrivate::WriteNumber(NewChunk, "audiocodecid", 10); // FLV_CODECID_AAC: 10
-        FlvPrivate::WriteString(NewChunk, "encoder", "Lavf53.24.2");
-        FlvPrivate::WriteNumber(NewChunk, "filesize", 0); // YouTube에는 없어도 되는 정보
-        Memory::Copy(NewChunk.AtDumpingAdded(3), GetBE3(9), 3); // scriptdata endcode: always 9
-        AddChunk((id_flash) NewFlash, 0x12, &NewChunk[0], NewChunk.Count()); // script
+        FlvPrivate::FlvBits NewBits;
+        NewBits.AtAdding() = 0x02; // 스트링데이터ID
+        FlvPrivate::WriteECMA(NewBits, "onMetaData", 13);
+        FlvPrivate::WriteNumber(NewBits, "duration", 0); // YouTube에는 없어도 되는 정보
+        FlvPrivate::WriteNumber(NewBits, "width", width);
+        FlvPrivate::WriteNumber(NewBits, "height", height);
+        FlvPrivate::WriteNumber(NewBits, "videodatarate", 781.25);
+        FlvPrivate::WriteNumber(NewBits, "framerate", 1000);
+        FlvPrivate::WriteNumber(NewBits, "videocodecid", 7); // FLV_CODECID_H264: 7
+        FlvPrivate::WriteNumber(NewBits, "audiodatarate", 128);
+        FlvPrivate::WriteNumber(NewBits, "audiosamplerate", 44100);
+        FlvPrivate::WriteNumber(NewBits, "audiosamplesize", 16);
+        FlvPrivate::WriteBoolean(NewBits, "stereo", true);
+        FlvPrivate::WriteNumber(NewBits, "audiocodecid", 10); // FLV_CODECID_AAC: 10
+        FlvPrivate::WriteString(NewBits, "encoder", "Lavf53.24.2");
+        FlvPrivate::WriteNumber(NewBits, "filesize", 0); // YouTube에는 없어도 되는 정보
+        Memory::Copy(NewBits.AtDumpingAdded(3), GetBE3(9), 3); // scriptdata endcode: always 9
+        AddChunk((id_flash) NewFlash, 0x12, &NewBits[0], NewBits.Count()); // script
 
         // 0001 0... .... .... : AAC low complexity
         // .... .010 0... .... : 44100 hz
@@ -107,7 +107,7 @@ namespace BLIK
     void Flv::AddChunk(id_flash flash, uint08 type, bytes chunk, sint32 length, sint32 timestamp)
     {
         if(!flash) return;
-        FlvPrivate::Chunk& Dst = ((FlvPrivate*) flash)->mChunks;
+        FlvPrivate::FlvBits& Dst = ((FlvPrivate*) flash)->mBits;
 
         Dst.AtAdding() = type; // type
         Memory::Copy(Dst.AtDumpingAdded(3), GetBE3(length), 3); // datasize
@@ -118,13 +118,50 @@ namespace BLIK
         Memory::Copy(Dst.AtDumpingAdded(4), GetBE4(length + 11), 4); // chunk size match
     }
 
-    bytes Flv::EmptyChunks(id_flash flash, sint32* length)
+    void Flv::Empty(id_flash flash)
+    {
+        if(!flash) return;
+        ((FlvPrivate*) flash)->mBits.SubtractionAll();
+    }
+
+    bytes Flv::GetBits(id_flash_read flash, sint32* length)
     {
         if(!flash) return nullptr;
-        FlvPrivate::Chunk& Dst = ((FlvPrivate*) flash)->mChunks;
+        FlvPrivate::FlvBits& Dst = ((FlvPrivate*) flash)->mBits;
         if(length) *length = Dst.Count();
-        Dst.SubtractionAll(); // datatype_pod_canmemcpy타입은 내용을 지우지 않음
         return (bytes) ((Share*)(id_share) Dst)->const_data();
+    }
+
+    String Flv::BuildLog(bytes bits, sint32 length)
+    {
+        String LogCollector;
+        while(0 < length)
+        {
+            sint32 ChunkSize = 0;
+            if(bits[0] == (uint08) 'F' && bits[1] == (uint08) 'L' && bits[2] == (uint08) 'V')
+            {
+                ChunkSize = 13;
+                LogCollector += "[FLV]\r\n";
+            }
+            else
+            {
+                const sint32 DataSize = ((bits[1] & 0xFF) << 16) | ((bits[2] & 0xFF) << 8) | (bits[3] & 0xFF);
+                ChunkSize = 15 + DataSize;
+                switch(bits[0])
+                {
+                case 0x08: LogCollector += "[Audio: "; break;
+                case 0x09: LogCollector += "[Video: "; break;
+                case 0x12: LogCollector += "[MetaData: "; break;
+                default: LogCollector += "[Unknown: "; break;
+                }
+                const sint32 TimeStamp = ((bits[7] & 0xFF) << 24) | ((bits[4] & 0xFF) << 16) | ((bits[5] & 0xFF) << 8) | (bits[6] & 0xFF);
+                LogCollector += String::Format("0x%08X, %d Byte]\r\n", TimeStamp, DataSize);
+            }
+            bits += ChunkSize;
+            length -= ChunkSize;
+        }
+        BLIK_ASSERT("불완전한 청크가 존재합니다", length == 0);
+        return LogCollector;
     }
 
     static uint32 result_be2;

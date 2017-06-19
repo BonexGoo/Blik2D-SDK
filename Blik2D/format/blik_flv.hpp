@@ -12,7 +12,9 @@ namespace BLIK
 
     public:
         static void AddChunk(id_flash flash, uint08 type, bytes chunk, sint32 length, sint32 timestamp = 0);
-        static bytes EmptyChunks(id_flash flash, sint32* length = nullptr);
+        static void Empty(id_flash flash);
+        static bytes GetBits(id_flash_read flash, sint32* length = nullptr);
+        static String BuildLog(bytes bits, sint32 length);
 
     public:
         static const void* GetBE2(sint32 value);

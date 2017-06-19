@@ -25,6 +25,7 @@ namespace BLIK
     BLIK_DEFINE_ADDON_FUNCTION(Aac, Create, id_acc, return nullptr, sint32, sint32, sint32)
     BLIK_DEFINE_ADDON_FUNCTION(Aac, Release, void, return, id_acc)
     BLIK_DEFINE_ADDON_FUNCTION(Aac, EncodeTo, void, return, id_acc, bytes, sint32, id_flash, uint64)
+    BLIK_DEFINE_ADDON_FUNCTION(Aac, SilenceTo, void, return, id_acc, id_flash, uint64)
 
     id_acc AddOn::Aac::Create(sint32 bitrate, sint32 channel, sint32 samplerate)
     {return Core_AddOn_Aac_Create()(bitrate, channel, samplerate);}
@@ -34,6 +35,9 @@ namespace BLIK
 
     void AddOn::Aac::EncodeTo(id_acc acc, bytes pcm, sint32 length, id_flash flash, uint64 timems)
     {Core_AddOn_Aac_EncodeTo()(acc, pcm, length, flash, timems);}
+
+    void AddOn::Aac::SilenceTo(id_acc acc, id_flash flash, uint64 timems)
+    {Core_AddOn_Aac_SilenceTo()(acc, flash, timems);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void Alpr_Error() {BLIK_ASSERT("Alpr애드온이 준비되지 않았습니다", false);}

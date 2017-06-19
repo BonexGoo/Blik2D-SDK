@@ -18,12 +18,14 @@ namespace BLIK
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Create, id_acc, sint32, sint32, sint32)
     BLIK_DECLARE_ADDON_FUNCTION(Aac, Release, void, id_acc)
     BLIK_DECLARE_ADDON_FUNCTION(Aac, EncodeTo, void, id_acc, bytes, sint32, id_flash, uint64)
+    BLIK_DECLARE_ADDON_FUNCTION(Aac, SilenceTo, void, id_acc, id_flash, uint64)
 
     static autorun Bind_AddOn_Aac()
     {
         Core_AddOn_Aac_Create() = Customized_AddOn_Aac_Create;
         Core_AddOn_Aac_Release() = Customized_AddOn_Aac_Release;
         Core_AddOn_Aac_EncodeTo() = Customized_AddOn_Aac_EncodeTo;
+        Core_AddOn_Aac_SilenceTo() = Customized_AddOn_Aac_SilenceTo;
         return true;
     }
     static autorun _ = Bind_AddOn_Aac();
@@ -51,6 +53,13 @@ namespace BLIK
         BaseEncoderAac* CurEncoder = (BaseEncoderAac*) acc;
         if(CurEncoder)
             return CurEncoder->EncodeTo(pcm, length, flash, timems);
+    }
+
+    void Customized_AddOn_Aac_SilenceTo(id_acc acc, id_flash flash, uint64 timems)
+    {
+        BaseEncoderAac* CurEncoder = (BaseEncoderAac*) acc;
+        if(CurEncoder)
+            return CurEncoder->SilenceTo(flash, timems);
     }
 }
 
@@ -123,8 +132,8 @@ void BaseEncoderAac::EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 t
         sint32 in_identifier = IN_AUDIO_DATA;
         sint32 out_identifier = OUT_BITSTREAM_DATA;
         sint32 in_size = Math::Min(length, mChunkSize);
-        sint32 in_elem_size = 2;
         sint32 out_size = sizeof(outbuf);
+        sint32 in_elem_size = 2;
         sint32 out_elem_size = 1;
         if(in_size == 0)
             in_args.numInSamples = -1;
@@ -154,7 +163,7 @@ void BaseEncoderAac::EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 t
         pcm += in_size;
         length -= in_size;
         if(out_args.numOutBytes == 0)
-            break;
+            continue;
         Memory::Copy(Contents.AtDumpingAdded(out_args.numOutBytes), outbuf, out_args.numOutBytes);
     }
 
@@ -174,6 +183,12 @@ void BaseEncoderAac::EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 t
             CurAacSize -= CurChunkSize;
         }
     }
+}
+
+void BaseEncoderAac::SilenceTo(id_flash flash, uint64 timems)
+{
+    static const uint08 Silence[7056] = {0,};
+    EncodeTo(Silence, 7056, flash, timems);
 }
 
 #endif

@@ -12,6 +12,7 @@ public:
     BaseEncoderAac(sint32 bitrate, sint32 channel, sint32 samplerate);
     ~BaseEncoderAac();
     void EncodeTo(bytes pcm, sint32 length, id_flash flash, uint64 timems);
+    void SilenceTo(id_flash flash, uint64 timems);
 
 public:
     inline bool IsValid() const

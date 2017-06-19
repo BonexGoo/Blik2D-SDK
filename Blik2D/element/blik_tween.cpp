@@ -74,7 +74,7 @@ namespace BLIK
     {
         m_needWakeUp = false;
         const uint64 CurTime = Platform::Utility::CurrentTimeMsec();
-        const uint64 OldValue = m_value;
+        const float OldValue = m_value;
         if(m_timeEnd < CurTime) m_value = m_valueEnd;
         else if(CurTime < m_timeStart) m_value = m_valueStart;
         else m_value = m_valueStart + (m_valueEnd - m_valueStart)

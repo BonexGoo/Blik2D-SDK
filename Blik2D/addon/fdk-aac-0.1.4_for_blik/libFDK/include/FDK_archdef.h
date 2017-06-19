@@ -1,4 +1,4 @@
-﻿
+
 /* -----------------------------------------------------------------------------------------------------------
 Software License for The Fraunhofer FDK AAC Codec Library for Android
 
@@ -215,8 +215,7 @@ amm-info@iis.fraunhofer.de
 
 #else
 
-  // modified by BLIK: #warning
-  #error Please set architecture characterization defines for your platform (FDK_HIGH_PERFORMANCE)!
+  #warning  >>>> Please set architecture characterization defines for your platform (FDK_HIGH_PERFORMANCE)! <<<<
 
 #endif /* Architecture switches */
 

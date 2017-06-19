@@ -83,7 +83,7 @@ BaseEncoderH264::BaseEncoderH264(sint32 width, sint32 height, bool fastmode)
     param.uiIntraPeriod              = 320;                  // period of Intra frame
     param.eSpsPpsIdStrategy          = CONSTANT_ID;
     param.bPrefixNalAddingCtrl       = 0;
-    param.iComplexityMode            = (fastmode)? LOW_COMPLEXITY : MEDIUM_COMPLEXITY;
+    param.iComplexityMode            = (fastmode)? LOW_COMPLEXITY : HIGH_COMPLEXITY;
     param.bSimulcastAVC              = false;
     param.iEntropyCodingModeFlag     = 1;                    // 0:CAVLC  1:CABAC.
     for (int i = 0; i < param.iSpatialLayerNum; i++)
