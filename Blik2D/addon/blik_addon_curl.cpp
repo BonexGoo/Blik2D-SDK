@@ -528,10 +528,10 @@ namespace BLIK
                 StepInPart = 0;
                 if(cb)
                 {
-                    id_clock NewClock = Platform::Utility::CreateClock(
+                    id_clock NewClock = Platform::Clock::Create(
                         SavedYear, SavedMonth, SavedDay, SavedHour, SavedMin, 0, 0);
                     cb(data, CollectorInPart, SavedFilesize, NewClock);
-                    Platform::Utility::ReleaseClock(NewClock);
+                    Platform::Clock::Release(NewClock);
                 }
                 CollectorInPart = "";
             }

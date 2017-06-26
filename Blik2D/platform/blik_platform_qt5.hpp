@@ -1426,10 +1426,10 @@
         payload m_data;
     };
 
-    class Clock
+    class ClockClass
     {
     public:
-        Clock()
+        ClockClass()
         {
             m_prev = GetHead();
             m_next = m_prev->m_next;
@@ -1443,7 +1443,7 @@
             }
             m_laptime = GetTimer().nsecsElapsed();
         }
-        Clock(const Clock& rhs)
+        ClockClass(const ClockClass& rhs)
         {
             m_prev = GetHead();
             m_next = m_prev->m_next;
@@ -1451,7 +1451,7 @@
             m_next->m_prev = this;
             operator=(rhs);
         }
-        ~Clock()
+        ~ClockClass()
         {
             m_prev->m_next = m_next;
             m_next->m_prev = m_prev;
@@ -1469,7 +1469,7 @@
         }
 
     public:
-        inline Clock& operator=(const Clock& rhs)
+        inline ClockClass& operator=(const ClockClass& rhs)
         {m_laptime = rhs.m_laptime; return *this;}
 
     public:
@@ -1488,26 +1488,26 @@
             GetTotalMSecFromJulianDay() = ((sint64) EpochToJulian(CurrentTime.toMSecsSinceEpoch())) + LocalTimeMSecFromUtc;
 
             const sint64 ChangedNSec = GetTimer().restart() * 1000000;
-            Clock* CurNode = GetHead();
+            ClockClass* CurNode = GetHead();
             while((CurNode = CurNode->m_next) != GetHead())
                 CurNode->m_laptime -= ChangedNSec;
         }
 
     private:
-        static Clock* GetHead() {static Clock _(0); return &_;}
+        static ClockClass* GetHead() {static ClockClass _(0); return &_;}
         static QElapsedTimer& GetTimer() {static QElapsedTimer _; return _;}
         static sint64& GetTotalMSecFromJulianDay() {static sint64 _ = 0; return _;}
 
     private:
-        Clock(int) // Head전용
+        ClockClass(int) // Head전용
         {
             m_prev = this;
             m_next = this;
         }
 
     private:
-        Clock* m_prev;
-        Clock* m_next;
+        ClockClass* m_prev;
+        ClockClass* m_next;
         sint64 m_laptime;
     };
 

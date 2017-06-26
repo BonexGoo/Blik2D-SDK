@@ -224,7 +224,9 @@ namespace BLIK
         */
         static void PassAllViews(PassCB cb, payload data);
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 팝업개체지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Popup
         {
         public:
@@ -311,7 +313,9 @@ namespace BLIK
             static void HideToolTip();
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 유틸리티지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Utility
         {
         public:
@@ -408,10 +412,23 @@ namespace BLIK
             static uint64 CurrentTimeMsec();
 
             /*!
+            \brief 마지막 핫키를 반환(비워짐)
+            \return 키값(저장된 키값이 없으면 -1)
+            */
+            static sint32 LastHotKey();
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //! \brief 클록지원
+        ////////////////////////////////////////////////////////////////////////////////
+        class Clock
+        {
+        public:
+            /*!
             \brief 클럭의 기준시각변경
             \param timestring : 변경할 시간("yyyy-MM-dd HH:mm:ss")
             */
-            static void SetClockBaseTime(chars timestring);
+            static void SetBaseTime(chars timestring);
 
             /*!
             \brief 임의시간으로 클럭생성
@@ -424,27 +441,27 @@ namespace BLIK
             \param nsec : 1초미만의 나노초(0 ~ 999,999,999)
             \return 생성된 클럭
             */
-            static id_clock CreateClock(sint32 year, sint32 month, sint32 day,
+            static id_clock Create(sint32 year, sint32 month, sint32 day,
                 sint32 hour, sint32 min, sint32 sec, sint64 nsec);
 
             /*!
             \brief 현재시간으로 클럭생성
             \return 생성된 클럭
             */
-            static id_clock CreateCurrentClock();
+            static id_clock CreateAsCurrent();
 
             /*!
             \brief 해당 클럭을 복사
             \param clock : 복사할 클럭
             \return 생성된 클럭
             */
-            static id_clock CreateClonedClock(id_clock_read clock);
+            static id_clock CreateAsClone(id_clock_read clock);
 
             /*!
             \brief 클럭해제
             \param clock : 해제할 클럭
             */
-            static void ReleaseClock(id_clock clock);
+            static void Release(id_clock clock);
 
             /*!
             \brief 클럭간 거리구하기
@@ -452,21 +469,21 @@ namespace BLIK
             \param to : 목표 클럭
             \return 거리시간(ns)
             */
-            static sint64 GetClockPeriodNsec(id_clock_read from, id_clock_read to);
+            static sint64 GetPeriodNsec(id_clock_read from, id_clock_read to);
 
             /*!
             \brief 클럭에 시간더하기
             \param dest : 대상 클럭
             \param nsec : 더하는 시간(ns)
             */
-            static void AddClockNsec(id_clock dest, sint64 nsec);
+            static void AddNsec(id_clock dest, sint64 nsec);
 
             /*!
             \brief 클럭의 시간구하기
             \param clock : 대상 클럭
             \return 현재시간(ms)
             */
-            static uint64 GetClockMsec(id_clock clock);
+            static uint64 GetMsec(id_clock clock);
 
             /*!
             \brief 클럭의 세부정보
@@ -479,51 +496,60 @@ namespace BLIK
             \param month : 1년미만의 개월수(1 ~ 12)
             \param year : 연도(2014, 2015, 2016, ...)
             */
-            static void GetClockDetail(id_clock clock, sint64* nsec,
+            static void GetDetail(id_clock clock, sint64* nsec,
                 sint32* sec = nullptr, sint32* min = nullptr, sint32* hour = nullptr, sint32* day = nullptr, sint32* month = nullptr, sint32* year = nullptr);
+        };
 
+        ////////////////////////////////////////////////////////////////////////////////
+        //! \brief 옵션지원
+        ////////////////////////////////////////////////////////////////////////////////
+        class Option
+        {
+        public:
             /*!
             \brief 옵션플래그 설정하기
             \param name : 플래그명
             \param flag : 플래그값
             */
-            static void SetOptionFlag(chars name, bool flag);
+            static void SetFlag(chars name, bool flag);
 
             /*!
             \brief 옵션플래그 얻어오기
             \param name : 플래그명
             \return 플래그값(디폴트값은 false)
             */
-            static bool GetOptionFlag(chars name);
+            static bool GetFlag(chars name);
 
             /*!
             \brief 옵션플래그 리스팅
             \return 존재하는 모든 플래그명들
             */
-            static Strings GetOptionFlagNames();
+            static Strings GetFlagNames();
 
             /*!
             \brief 옵션페이로드 설정하기
             \param name : 페이로드명
             \param data : 데이터주소
             */
-            static void SetOptionPayload(chars name, payload data);
+            static void SetPayload(chars name, payload data);
 
             /*!
             \brief 옵션페이로드 얻어오기
             \param name : 페이로드명
             \return 데이터주소(디폴트값은 nullptr)
             */
-            static payload GetOptionPayload(chars name);
+            static payload GetPayload(chars name);
 
             /*!
             \brief 옵션페이로드 리스팅
             \return 존재하는 모든 페이로드명
             */
-            static Strings GetOptionPayloadNames();
+            static Strings GetPayloadNames();
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 그래픽스지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Graphics
         {
         public:
@@ -816,13 +842,14 @@ namespace BLIK
             static id_bitmap_read GetBitmapFromSurface(id_surface_read surface, bool vflip = true);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 파일지원
+        ////////////////////////////////////////////////////////////////////////////////
         class File
         {
         public:
             typedef void (*SearchCB)(chars, payload);
 
-        public:
             /*!
             \brief 파일존재여부 얻기
             \param filename : 파일명
@@ -1137,7 +1164,9 @@ namespace BLIK
             static const String& RootForData();
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 소켓지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Socket
         {
         public:
@@ -1229,7 +1258,9 @@ namespace BLIK
             static void* GetServByName(chars name, chars proto);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 서버지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Server
         {
         public:
@@ -1301,13 +1332,14 @@ namespace BLIK
             static bool SendToPeer(id_server server, sint32 peerid, const void* buffer, sint32 buffersize);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 웹지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Web
         {
         public:
             typedef bool (*EventCB)(payload, chars, chars);
 
-        public:
             /*!
             \brief 웹핸들 할당
             \param url : 로드할 웹주소
@@ -1376,7 +1408,9 @@ namespace BLIK
             static id_bitmap_read GetScreenshotBitmap(h_web web, bool vflip = true);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 시리얼통신지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Serial
         {
         public:
@@ -1456,7 +1490,9 @@ namespace BLIK
             static void WriteFlush(id_serial serial, sint32 type = 0);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 카메라지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Camera
         {
         public:
@@ -1546,7 +1582,9 @@ namespace BLIK
             static sint32 TotalPreviewShotCount(id_camera camera);
         };
 
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 마이크지원
+        ////////////////////////////////////////////////////////////////////////////////
         class Microphone
         {
         public:

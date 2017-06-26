@@ -112,7 +112,7 @@
                 MainWindow mainWindow;
                 g_window = &mainWindow;
 
-                Platform::Utility::SetOptionFlag("AssertPopup", BLIK_WINDOWS);
+                Platform::Option::SetFlag("AssertPopup", BLIK_WINDOWS);
                 PlatformInit();
                 #if BLIK_NEED_FULLSCREEN
                     mainWindow.showFullScreen();
@@ -121,7 +121,7 @@
                 #endif
                 result = app.exec();
                 PlatformQuit();
-                Platform::Utility::SetOptionFlag("AssertPopup", false);
+                Platform::Option::SetFlag("AssertPopup", false);
 
                 g_window = nullptr;
             }
@@ -163,7 +163,7 @@
             qDebug() << "************************************************************";
         #endif
 
-        if(Platform::Utility::GetOptionFlag("AssertPopup"))
+        if(Platform::Option::GetFlag("AssertPopup"))
         {
             #if BLIK_WINDOWS
                 WString AssertMessage = WString::Format(
@@ -734,65 +734,93 @@
             return EpochToWindow(QDateTime::currentMSecsSinceEpoch());
         }
 
-        void Platform::Utility::SetClockBaseTime(chars timestring)
+        static sint32 gHotKeyCode = -1;
+        #if BLIK_WINDOWS
+            static HHOOK gHookForHotKey = NULL;
+        #endif
+        sint32 Platform::Utility::LastHotKey()
         {
-            Clock::SetBaseTime(timestring);
+            #if BLIK_WINDOWS
+                if(!gHookForHotKey)
+                    gHookForHotKey = SetWindowsHookEx(WH_KEYBOARD_LL,
+                        [](int nCode, WPARAM wParam, LPARAM lParam)->LRESULT
+                        {
+                            if(nCode == HC_ACTION)
+                            {
+                                auto pmsg = (const KBDLLHOOKSTRUCT*) lParam;
+                                if(pmsg->flags & LLKHF_UP)
+                                    gHotKeyCode = (sint32) pmsg->vkCode;
+                            }
+                            return CallNextHookEx(gHookForHotKey, nCode, wParam, lParam);
+                        }, NULL, 0);
+            #endif
+            sint32 Result = gHotKeyCode;
+            gHotKeyCode = -1;
+            return Result;
         }
 
-        id_clock Platform::Utility::CreateClock(sint32 year, sint32 month, sint32 day,
+        ////////////////////////////////////////////////////////////////////////////////
+        // CLOCK
+        ////////////////////////////////////////////////////////////////////////////////
+        void Platform::Clock::SetBaseTime(chars timestring)
+        {
+            ClockClass::SetBaseTime(timestring);
+        }
+
+        id_clock Platform::Clock::Create(sint32 year, sint32 month, sint32 day,
             sint32 hour, sint32 min, sint32 sec, sint64 nsec)
         {
-            buffer NewClock = Buffer::Alloc<Clock>(BLIK_DBG 1);
-            ((Clock*) NewClock)->SetClock(year, month, day, hour, min, sec, nsec);
+            buffer NewClock = Buffer::Alloc<ClockClass>(BLIK_DBG 1);
+            ((ClockClass*) NewClock)->SetClock(year, month, day, hour, min, sec, nsec);
             return (id_clock) NewClock;
         }
 
-        id_clock Platform::Utility::CreateCurrentClock()
+        id_clock Platform::Clock::CreateAsCurrent()
         {
-            buffer NewClock = Buffer::Alloc<Clock>(BLIK_DBG 1);
+            buffer NewClock = Buffer::Alloc<ClockClass>(BLIK_DBG 1);
             return (id_clock) NewClock;
         }
 
-        id_clock Platform::Utility::CreateClonedClock(id_clock_read clock)
+        id_clock Platform::Clock::CreateAsClone(id_clock_read clock)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", clock);
-            buffer NewClock = Buffer::AllocNoConstructorOnce<Clock>(BLIK_DBG 1);
-            BLIK_CONSTRUCTOR(NewClock, 0, Clock, *((const Clock*) clock));
+            buffer NewClock = Buffer::AllocNoConstructorOnce<ClockClass>(BLIK_DBG 1);
+            BLIK_CONSTRUCTOR(NewClock, 0, ClockClass, *((const ClockClass*) clock));
             return (id_clock) NewClock;
         }
 
-        void Platform::Utility::ReleaseClock(id_clock clock)
+        void Platform::Clock::Release(id_clock clock)
         {
             Buffer::Free((buffer) clock);
         }
 
-        sint64 Platform::Utility::GetClockPeriodNsec(id_clock_read from, id_clock_read to)
+        sint64 Platform::Clock::GetPeriodNsec(id_clock_read from, id_clock_read to)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", from && to);
-            return ((const Clock*) to)->GetLap() - ((const Clock*) from)->GetLap();
+            return ((const ClockClass*) to)->GetLap() - ((const ClockClass*) from)->GetLap();
         }
 
-        void Platform::Utility::AddClockNsec(id_clock dest, sint64 nsec)
+        void Platform::Clock::AddNsec(id_clock dest, sint64 nsec)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", dest);
-            ((Clock*) dest)->AddLap(nsec);
+            ((ClockClass*) dest)->AddLap(nsec);
         }
 
-        uint64 Platform::Utility::GetClockMsec(id_clock clock)
+        uint64 Platform::Clock::GetMsec(id_clock clock)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", clock);
-            return ((const Clock*) clock)->GetTotalSec() * 1000 +
-                (uint64) (((const Clock*) clock)->GetNSecInSec() / 1000000);
+            return ((const ClockClass*) clock)->GetTotalSec() * 1000 +
+                (uint64) (((const ClockClass*) clock)->GetNSecInSec() / 1000000);
         }
 
-        void Platform::Utility::GetClockDetail(id_clock clock, sint64* nsec,
+        void Platform::Clock::GetDetail(id_clock clock, sint64* nsec,
             sint32* sec, sint32* min, sint32* hour, sint32* day, sint32* month, sint32* year)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", clock);
-            const sint64 CurTotalSec = ((const Clock*) clock)->GetTotalSec();
+            const sint64 CurTotalSec = ((const ClockClass*) clock)->GetTotalSec();
             // JulianDay는 BC-4300년을 기점으로 계산된 일수
             const QDate CurDate = QDate::fromJulianDay(CurTotalSec / (60 * 60 * 24));
-            if(nsec) *nsec = ((const Clock*) clock)->GetNSecInSec();
+            if(nsec) *nsec = ((const ClockClass*) clock)->GetNSecInSec();
             if(sec) *sec = CurTotalSec % 60;
             if(min) *min = (CurTotalSec / 60) % 60;
             if(hour) *hour = (CurTotalSec / (60 * 60)) % 24;
@@ -801,32 +829,35 @@
             if(year) *year = CurDate.year();
         }
 
-        void Platform::Utility::SetOptionFlag(chars name, bool flag)
+        ////////////////////////////////////////////////////////////////////////////////
+        // CLOCK
+        ////////////////////////////////////////////////////////////////////////////////
+        void Platform::Option::SetFlag(chars name, bool flag)
         {
             PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
         }
 
-        bool Platform::Utility::GetOptionFlag(chars name)
+        bool Platform::Option::GetFlag(chars name)
         {
             return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
         }
 
-        Strings Platform::Utility::GetOptionFlagNames()
+        Strings Platform::Option::GetFlagNames()
         {
             return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
         }
 
-        void Platform::Utility::SetOptionPayload(chars name, payload data)
+        void Platform::Option::SetPayload(chars name, payload data)
         {
             PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
         }
 
-        payload Platform::Utility::GetOptionPayload(chars name)
+        payload Platform::Option::GetPayload(chars name)
         {
             return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
         }
 
-        Strings Platform::Utility::GetOptionPayloadNames()
+        Strings Platform::Option::GetPayloadNames()
         {
             return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
         }

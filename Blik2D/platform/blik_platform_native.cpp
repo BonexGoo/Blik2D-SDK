@@ -99,7 +99,7 @@
             syslog(LOG_INFO, "************************************************************\n");
         #endif
 
-        if(Platform::Utility::GetOptionFlag("AssertPopup"))
+        if(Platform::Option::GetFlag("AssertPopup"))
         {
             #if BLIK_WINDOWS
                 WString AssertMessage = WString::Format(
@@ -563,36 +563,45 @@
             #endif
         }
 
-        void Platform::Utility::SetClockBaseTime(chars timestring)
+        sint32 Platform::Utility::LastHotKey()
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return -1;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // CLOCK
+        ////////////////////////////////////////////////////////////////////////////////
+        void Platform::Clock::SetBaseTime(chars timestring)
         {
             BLIK_ASSERT("Further development is needed.", false);
         }
 
-        id_clock Platform::Utility::CreateClock(sint32 year, sint32 month, sint32 day,
+        id_clock Platform::Clock::Create(sint32 year, sint32 month, sint32 day,
             sint32 hour, sint32 min, sint32 sec, sint64 nsec)
         {
             BLIK_ASSERT("Further development is needed.", false);
             return nullptr;
         }
 
-        id_clock Platform::Utility::CreateCurrentClock()
+        id_clock Platform::Clock::CreateAsCurrent()
         {
             BLIK_ASSERT("Further development is needed.", false);
             return nullptr;
         }
 
-        id_clock Platform::Utility::CreateClonedClock(id_clock_read clock)
+        id_clock Platform::Clock::CreateAsClone(id_clock_read clock)
         {
             BLIK_ASSERT("Further development is needed.", false);
             return nullptr;
         }
 
-        void Platform::Utility::ReleaseClock(id_clock clock)
+        void Platform::Clock::Release(id_clock clock)
         {
             BLIK_ASSERT("Further development is needed.", false);
         }
 
-        sint64 Platform::Utility::GetClockPeriodNsec(id_clock_read from, id_clock_read to)
+        sint64 Platform::Clock::GetPeriodNsec(id_clock_read from, id_clock_read to)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", from && to);
 
@@ -600,14 +609,14 @@
             return 0;
         }
 
-        void Platform::Utility::AddClockNsec(id_clock dest, sint64 nsec)
+        void Platform::Clock::AddNsec(id_clock dest, sint64 nsec)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", dest);
 
             BLIK_ASSERT("Further development is needed.", false);
         }
 
-        uint64 Platform::Utility::GetClockMsec(id_clock clock)
+        uint64 Platform::Clock::GetMsec(id_clock clock)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", clock);
 
@@ -615,7 +624,7 @@
             return 0;
         }
 
-        void Platform::Utility::GetClockDetail(id_clock clock, sint64* nsec,
+        void Platform::Clock::GetDetail(id_clock clock, sint64* nsec,
             sint32* sec, sint32* min, sint32* hour, sint32* day, sint32* month, sint32* year)
         {
             BLIK_ASSERT("파라미터가 nullptr입니다", clock);
@@ -623,32 +632,35 @@
             BLIK_ASSERT("Further development is needed.", false);
         }
 
-        void Platform::Utility::SetOptionFlag(chars name, bool flag)
+        ////////////////////////////////////////////////////////////////////////////////
+        // CLOCK
+        ////////////////////////////////////////////////////////////////////////////////
+        void Platform::Option::SetFlag(chars name, bool flag)
         {
             PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
         }
 
-        bool Platform::Utility::GetOptionFlag(chars name)
+        bool Platform::Option::GetFlag(chars name)
         {
             return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
         }
 
-        Strings Platform::Utility::GetOptionFlagNames()
+        Strings Platform::Option::GetFlagNames()
         {
             return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
         }
 
-        void Platform::Utility::SetOptionPayload(chars name, payload data)
+        void Platform::Option::SetPayload(chars name, payload data)
         {
             PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
         }
 
-        payload Platform::Utility::GetOptionPayload(chars name)
+        payload Platform::Option::GetPayload(chars name)
         {
             return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
         }
 
-        Strings Platform::Utility::GetOptionPayloadNames()
+        Strings Platform::Option::GetPayloadNames()
         {
             return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
         }

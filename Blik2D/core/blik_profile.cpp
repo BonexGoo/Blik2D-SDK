@@ -31,8 +31,8 @@ private:
         }
         ~Stack()
         {
-            Platform::Utility::ReleaseClock(FirstLapClock);
-            Platform::Utility::ReleaseClock(LastLapClock);
+            Platform::Clock::Release(FirstLapClock);
+            Platform::Clock::Release(LastLapClock);
             BLIK_ASSERT("비활성화된 구간의 Push/Pop이 매칭되지 않습니다", !DisableLevel);
         }
     };
@@ -66,18 +66,18 @@ public:
         Stack& CurStack = Stacks.At(-1);
         if(CurStack.DisableLevel == 0)
         {
-            id_clock ThisClock = Platform::Utility::CreateCurrentClock();
+            id_clock ThisClock = Platform::Clock::CreateAsCurrent();
             if(CurStack.LastLap)
             {
-                const sint64 LapTimeNs = Platform::Utility::GetClockPeriodNsec(CurStack.FirstLapClock, ThisClock);
-                const sint64 SectorTimeNs = Platform::Utility::GetClockPeriodNsec(CurStack.LastLapClock, ThisClock);
+                const sint64 LapTimeNs = Platform::Clock::GetPeriodNsec(CurStack.FirstLapClock, ThisClock);
+                const sint64 SectorTimeNs = Platform::Clock::GetPeriodNsec(CurStack.LastLapClock, ThisClock);
                 CurStack.LastLap->At("_lap_").Set(String::FromFloat(LapTimeNs * 0.000001f) + " ms");
                 CurStack.LastLap->At("_sector_").Set(String::FromFloat(SectorTimeNs * 0.000001f) + " ms");
                 if(1 < Stacks.Count())
-                    Platform::Utility::AddClockNsec(Stacks.At(-2).LastLapClock, LapTimeNs);
+                    Platform::Clock::AddNsec(Stacks.At(-2).LastLapClock, LapTimeNs);
             }
             Stacks.SubtractionOne();
-            Platform::Utility::ReleaseClock(ThisClock);
+            Platform::Clock::Release(ThisClock);
         }
         else CurStack.DisableLevel--;
     }
@@ -88,18 +88,18 @@ public:
         Stack& CurStack = Stacks.At(-1);
         if(CurStack.DisableLevel == 0)
         {
-            id_clock ThisClock = Platform::Utility::CreateCurrentClock();
+            id_clock ThisClock = Platform::Clock::CreateAsCurrent();
             if(CurStack.LastLap)
             {
-                const sint64 LapTimeNs = Platform::Utility::GetClockPeriodNsec(CurStack.FirstLapClock, ThisClock);
-                const sint64 SectorTimeNs = Platform::Utility::GetClockPeriodNsec(CurStack.LastLapClock, ThisClock);
+                const sint64 LapTimeNs = Platform::Clock::GetPeriodNsec(CurStack.FirstLapClock, ThisClock);
+                const sint64 SectorTimeNs = Platform::Clock::GetPeriodNsec(CurStack.LastLapClock, ThisClock);
                 CurStack.LastLap->At("_lap_").Set(String::FromFloat(LapTimeNs * 0.000001f) + " ms");
                 CurStack.LastLap->At("_sector_").Set(String::FromFloat(SectorTimeNs * 0.000001f) + " ms");
             }
-            else CurStack.FirstLapClock = Platform::Utility::CreateClonedClock(ThisClock);
-            CurStack.LastLapClock = Platform::Utility::CreateClonedClock(ThisClock);
+            else CurStack.FirstLapClock = Platform::Clock::CreateAsClone(ThisClock);
+            CurStack.LastLapClock = Platform::Clock::CreateAsClone(ThisClock);
             CurStack.LastLap = &CurStack.GroupLap->At(name);
-            Platform::Utility::ReleaseClock(ThisClock);
+            Platform::Clock::Release(ThisClock);
         }
     }
 
