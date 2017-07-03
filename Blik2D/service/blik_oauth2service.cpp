@@ -4,6 +4,7 @@
 #include <addon/blik_addon.hpp>
 #include <element/blik_image.hpp>
 #include <format/blik_bmp.hpp>
+#include <platform/blik_platform.hpp>
 
 namespace BLIK
 {

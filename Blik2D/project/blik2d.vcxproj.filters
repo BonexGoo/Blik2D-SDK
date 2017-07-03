@@ -45,66 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\addon\blik_addon.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_aac.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_alpr.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_curl.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_git.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_h264.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_jpg.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_addon_tesseract.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_fakewin.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_curl-7.51.0.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_fdk-aac-0.1.4.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_libgit2-0.22.2.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_libssh2-1.6.0.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_openalpr-2.3.0.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_openh264-1.6.0.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_openssl-1.1.0c.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_rtmpdump-2.4.c">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClCompile>
     <ClCompile Include="..\element\blik_clip.cpp">
       <Filter>Blik2D\element</Filter>
     </ClCompile>
@@ -237,6 +177,9 @@
     <ClCompile Include="..\service\blik_brii.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
+    <ClCompile Include="..\service\blik_livechatservice.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
     <ClCompile Include="..\service\blik_oauth2service.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
@@ -246,68 +189,71 @@
     <ClCompile Include="..\service\blik_zay.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
+    <ClCompile Include="..\addon\blik_addon.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_aac.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_alpr.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_curl.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_git.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_h264.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_jpg.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_tesseract.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_fakewin.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_curl-7.51.0.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_fdk-aac-0.1.4.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_libgit2-0.22.2.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_libssh2-1.6.0.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_openalpr-2.3.0.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_openh264-1.6.0.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_openssl-1.1.0c.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_rtmpdump-2.4.c">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_tensorflow-1.2.1.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\addon\blik_addon.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_aac.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_alpr.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_curl.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_git.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_h264.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_jpg.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_addon_tesseract.hpp">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_fakewin.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_curl-7.51.0.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_fdk-aac-0.1.4.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_libgit2-0.22.2.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_libssh2-1.6.0.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_openalpr-2.3.0.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_openh264-1.6.0.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_openssl-1.1.0c.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_rtmpdump-2.4.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h">
-      <Filter>Blik2D\addon</Filter>
-    </ClInclude>
     <ClInclude Include="..\element\blik_clip.hpp">
       <Filter>Blik2D\element</Filter>
     </ClInclude>
@@ -455,6 +401,9 @@
     <ClInclude Include="..\service\blik_brii.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
+    <ClInclude Include="..\service\blik_livechatservice.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
     <ClInclude Include="..\service\blik_oauth2service.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
@@ -463,6 +412,69 @@
     </ClInclude>
     <ClInclude Include="..\service\blik_zay.hpp">
       <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_aac.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_alpr.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_curl.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_git.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_h264.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_jpg.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_tesseract.hpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_fakewin.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_curl-7.51.0.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_fdk-aac-0.1.4.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_libgit2-0.22.2.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_libssh2-1.6.0.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_openalpr-2.3.0.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_opencv-3.1.0_3rdparty_libjpeg.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_openh264-1.6.0.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_openssl-1.1.0c.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_rtmpdump-2.4.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_tensorflow-1.2.1.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h">
+      <Filter>Blik2D\addon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

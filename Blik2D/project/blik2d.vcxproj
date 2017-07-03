@@ -38,6 +38,7 @@
     <ClCompile Include="..\addon\blik_integration_openh264-1.6.0.cpp" />
     <ClCompile Include="..\addon\blik_integration_openssl-1.1.0c.c" />
     <ClCompile Include="..\addon\blik_integration_rtmpdump-2.4.c" />
+    <ClCompile Include="..\addon\blik_integration_tensorflow-1.2.1.cpp" />
     <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp" />
     <ClCompile Include="..\core\blik.cpp" />
     <ClCompile Include="..\core\blik_asset.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="..\service\blik_batchbuilder.cpp" />
     <ClCompile Include="..\service\blik_boxr.cpp" />
     <ClCompile Include="..\service\blik_brii.cpp" />
+    <ClCompile Include="..\service\blik_livechatservice.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_streamingservice.cpp" />
     <ClCompile Include="..\service\blik_zay.cpp" />
@@ -113,6 +115,7 @@
     <ClInclude Include="..\addon\blik_integration_openh264-1.6.0.h" />
     <ClInclude Include="..\addon\blik_integration_openssl-1.1.0c.h" />
     <ClInclude Include="..\addon\blik_integration_rtmpdump-2.4.h" />
+    <ClInclude Include="..\addon\blik_integration_tensorflow-1.2.1.h" />
     <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h" />
     <ClInclude Include="..\core\blik.h" />
     <ClInclude Include="..\core\blik.hpp" />
@@ -162,6 +165,7 @@
     <ClInclude Include="..\service\blik_batchbuilder.hpp" />
     <ClInclude Include="..\service\blik_boxr.hpp" />
     <ClInclude Include="..\service\blik_brii.hpp" />
+    <ClInclude Include="..\service\blik_livechatservice.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
     <ClInclude Include="..\service\blik_streamingservice.hpp" />
     <ClInclude Include="..\service\blik_zay.hpp" />

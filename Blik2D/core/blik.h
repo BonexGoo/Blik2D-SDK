@@ -10,7 +10,7 @@
     - manager그룹: 이미지빌더, 뷰운영
     - platform그룹: 크로스플랫폼 제공
 \section developer 개발자
-    - Onezay Park
+    - Bonex Gu
 */
 
 // About disable warning

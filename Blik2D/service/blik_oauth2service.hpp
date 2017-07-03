@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <platform/blik_platform.hpp>
 #include <element/blik_image.hpp>
 
 namespace BLIK
