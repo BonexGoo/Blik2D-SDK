@@ -10,13 +10,14 @@
 ////////////////////////////////////////
 // AddOn
 ////////////////////////////////////////
-#define BLIK_NEED_ADDON_AAC       0
-#define BLIK_NEED_ADDON_ALPR      0
-#define BLIK_NEED_ADDON_CURL      0
-#define BLIK_NEED_ADDON_GIT       0
-#define BLIK_NEED_ADDON_H264      0
-#define BLIK_NEED_ADDON_JPG       0
-#define BLIK_NEED_ADDON_TESSERACT 0
+#define BLIK_NEED_ADDON_AAC        0
+#define BLIK_NEED_ADDON_ALPR       0
+#define BLIK_NEED_ADDON_CURL       0
+#define BLIK_NEED_ADDON_GIT        0
+#define BLIK_NEED_ADDON_H264       0
+#define BLIK_NEED_ADDON_JPG        0
+#define BLIK_NEED_ADDON_TENSORFLOW 0
+#define BLIK_NEED_ADDON_TESSERACT  0
 
 ////////////////////////////////////////
 // Detail

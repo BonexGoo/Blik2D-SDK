@@ -1093,7 +1093,9 @@
         const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
         {
             BLIK_ASSERT("해당 파일이 없습니다", file);
-            return (sint32) fgets(text, size, (FILE*) file);
+            if(fgets(text, size, (FILE*) file))
+                return blik_strlen(text);
+            return 0;
         }
 
         const sint32 Platform::File::Write(id_file file, bytes data, const sint32 size)

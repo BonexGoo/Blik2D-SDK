@@ -55,6 +55,10 @@ extern "C"
         extern int _wcsicmp(const wchar_t*, const wchar_t*);
         extern int _wcsnicmp(const wchar_t*, const wchar_t*, size_t);
     #endif
+
+    // MFC프로젝트시의 문제해결
+    extern FILE* fopen(char const*, char const*);
+    void _except_handler4_common() {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,11 @@
     #include <element/blik_color.hpp>
     # if BLIK_WINDOWS
     #  include <platform/win32/glew.h>
-    #  pragma comment(lib, "../../Blik2D/platform/win32/lib/Release/Win32/glew32.lib")
+    # if BLIK_X64
+    #    pragma comment(lib, "../../Blik2D/platform/win32/lib/Release/x64/glew32.lib")
+    # else
+    #    pragma comment(lib, "../../Blik2D/platform/win32/lib/Release/Win32/glew32.lib")
+    # endif
     #  pragma comment(lib, "opengl32.lib")
     #  pragma comment(lib, "glu32.lib")
     #  pragma comment(lib, "user32.lib")

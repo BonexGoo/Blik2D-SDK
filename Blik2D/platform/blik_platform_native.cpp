@@ -445,7 +445,16 @@
 
         void Platform::Utility::Sleep(sint32 ms, bool caninput)
         {
-            BLIK_ASSERT("Further development is needed.", false);
+            #if BLIK_WINDOWS
+                ::Sleep(ms);
+            #elif _POSIX_C_SOURCE >= 199309L
+                struct timespec ts;
+                ts.tv_sec = ms / 1000;
+                ts.tv_nsec = (ms % 1000) * 1000000;
+                nanosleep(&ts, NULL);
+            #else
+                usleep(ms * 1000);
+            #endif
         }
 
         void Platform::Utility::SetMinimize()
@@ -508,20 +517,6 @@
         sint64 Platform::Utility::CurrentAvailableMemory(sint64* totalbytes)
         {
             return PlatformImpl::Wrap::Utility_CurrentAvailableMemory(totalbytes);
-        }
-
-        void Platform::Utility::Sleep(sint32 ms, bool caninput)
-        {
-            #if BLIK_WINDOWS
-                ::Sleep(ms);
-            #elif _POSIX_C_SOURCE >= 199309L
-                struct timespec ts;
-                ts.tv_sec = ms / 1000;
-                ts.tv_nsec = (ms % 1000) * 1000000;
-                nanosleep(&ts, NULL);
-            #else
-                usleep(ms * 1000);
-            #endif
         }
 
         void Platform::Utility::Threading(ThreadCB cb, payload data)
@@ -998,7 +993,9 @@
         const sint32 Platform::File::ReadLine(id_file_read file, char* text, const sint32 size)
         {
             BLIK_ASSERT("해당 파일이 없습니다", file);
-            return (sint32) fgets(text, size, (FILE*) file);
+            if(fgets(text, size, (FILE*) file))
+                return blik_strlen(text);
+            return 0;
         }
 
         const sint32 Platform::File::Write(id_file file, bytes data, const sint32 size)

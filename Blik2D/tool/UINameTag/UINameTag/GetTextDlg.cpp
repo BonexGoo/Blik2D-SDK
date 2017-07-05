@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 #include <platform/blik_platform.hpp>
-#include <service/blik_imagebuilder.hpp>
+#include <service/blik_boxr.hpp>
 #include <format/blik_bmp.hpp>
 
 // CGetTextDlg 대화 상자입니다.
@@ -45,20 +45,15 @@ END_MESSAGE_MAP()
 
 void CGetTextDlg::OnBnClickedOk()
 {
-	CString TagNameMFC;
+	CStringW TagNameMFC;
 	Text.GetWindowTextW(TagNameMFC);
-
 	String TagName = String::FromWChars((LPCWSTR) TagNameMFC);
+
 	Platform::File::ResetAssetsRoot(".");
 	Platform::File::ResetAssetsRemRoot(".");
-	id_bitmap NewBitmap = ImageBuilder::MakeTagBitmap("ui_atlaskey.png", TagName);
+	id_bitmap NewBitmap = BoxrBuilder::MakeTagBitmap("ui_atlaskey.png", TagName);
 	if(NewBitmap)
 	{
-		//id_asset NewFile = Asset::OpenForWrite("check.bmp");
-		//Asset::Write(NewFile, (bytes) "BM", 2);
-		//Asset::Write(NewFile, (bytes) NewBitmap, Bmp::GetFileSizeWithoutBM(NewBitmap));
-		//Asset::Close(NewFile);
-
 		const sint32 BitmapSize = Bmp::GetFileSizeWithoutBM(NewBitmap) - sizeof(Bmp::bitmapfile);
 		NewGlobalBitmap = GlobalAlloc(GHND, BitmapSize);
 		void* NewGlobalBitmapPtr = GlobalLock(NewGlobalBitmap);

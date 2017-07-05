@@ -8,6 +8,9 @@
 #include "UINameTag.h"
 #include "MainFrm.h"
 
+#include "UINameTagDoc.h"
+#include "UINameTagView.h"
+
 #include "GetTextDlg.h"
 
 #ifdef _DEBUG
@@ -17,8 +20,11 @@
 
 // CUINameTagApp
 
-BEGIN_MESSAGE_MAP(CUINameTagApp, CWinApp)
+BEGIN_MESSAGE_MAP(CUINameTagApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CUINameTagApp::OnAppAbout)
+	// 표준 파일을 기초로 하는 문서 명령입니다.
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
 
@@ -26,14 +32,7 @@ END_MESSAGE_MAP()
 
 CUINameTagApp::CUINameTagApp()
 {
-	// 다시 시작 관리자 지원
-	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
-#ifdef _MANAGED
-	// 응용 프로그램을 공용 언어 런타임 지원을 사용하여 빌드한 경우(/clr):
-	//     1) 이 추가 설정은 다시 시작 관리자 지원이 제대로 작동하는 데 필요합니다.
-	//     2) 프로젝트에서 빌드하려면 System.Windows.Forms에 대한 참조를 추가해야 합니다.
-	System::Windows::Forms::Application::SetUnhandledExceptionMode(System::Windows::Forms::UnhandledExceptionMode::ThrowException);
-#endif
+	m_bHiColorIcons = TRUE;
 
 	// TODO: 아래 응용 프로그램 ID 문자열을 고유 ID 문자열로 바꾸십시오(권장).
 	// 문자열에 대한 서식: CompanyName.ProductName.SubProduct.VersionInformation
@@ -50,19 +49,11 @@ CUINameTagApp theApp;
 
 // CUINameTagApp 초기화
 
+CGetTextDlg TextDlg;
 BOOL CUINameTagApp::InitInstance()
 {
-	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
-	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다. 
-	// InitCommonControlsEx()를 사용하지 않으면 창을 만들 수 없습니다.
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-	// 응용 프로그램에서 사용할 모든 공용 컨트롤 클래스를 포함하도록
-	// 이 항목을 설정하십시오.
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
+	CWinAppEx::InitInstance();
 
-	CWinApp::InitInstance();
 
 	EnableTaskbarInteraction(FALSE);
 
@@ -77,17 +68,11 @@ BOOL CUINameTagApp::InitInstance()
 	// TODO: 이 문자열을 회사 또는 조직의 이름과 같은
 	// 적절한 내용으로 수정해야 합니다.
 	SetRegistryKey(_T("UINameTag"));
+	LoadStdProfileSettings(0);  // MRU를 포함하여 표준 INI 파일 옵션을 로드합니다.
 
-	CGetTextDlg* pFrame = new CGetTextDlg;
-	m_pMainWnd = pFrame;
-	pFrame->DoModal();
+    m_pMainWnd = &TextDlg;
+	TextDlg.DoModal();
 	return TRUE;
-}
-
-int CUINameTagApp::ExitInstance()
-{
-	//TODO: 추가한 추가 리소스를 처리합니다.
-	return CWinApp::ExitInstance();
 }
 
 // CUINameTagApp 메시지 처리기
@@ -130,6 +115,25 @@ void CUINameTagApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+// CUINameTagApp 사용자 지정 로드/저장 메서드
+
+void CUINameTagApp::PreLoadState()
+{
+	BOOL bNameValid;
+	CString strName;
+	bNameValid = strName.LoadString(IDS_EDIT_MENU);
+	ASSERT(bNameValid);
+	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
+}
+
+void CUINameTagApp::LoadCustomState()
+{
+}
+
+void CUINameTagApp::SaveCustomState()
+{
 }
 
 // CUINameTagApp 메시지 처리기
