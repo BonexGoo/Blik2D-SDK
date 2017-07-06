@@ -10,6 +10,7 @@ namespace BLIK
     BLIK_DECLARE_ID(id_git);
     BLIK_DECLARE_ID(id_tesseract);
     BLIK_DECLARE_ID(id_jpg);
+    BLIK_DECLARE_ID(id_zip);
     enum ProgressType {PT_DownloadPack, PT_DownloadTip, PT_InflateFile};
     typedef size_t (*CurlReadCB)(void* ptr, size_t size, size_t nitems, payload data);
 
@@ -99,6 +100,18 @@ namespace BLIK
             static sint32 GetLength(id_jpg jpg);
             static bytes GetBits(id_jpg jpg);
             static id_bitmap ToBmp(bytes jpg, sint32 length);
+        };
+
+        //! \brief ZIP연동
+        class Zip
+        {
+        public:
+            static id_zip Create(bytes zip, sint32 length, sint32* filecount = nullptr, chars password = nullptr);
+            static void Release(id_zip zip);
+            static buffer ToFile(id_zip zip, sint32 fileindex);
+            static chars GetFileInfo(id_zip zip, sint32 fileindex,
+                bool* isdir = nullptr, uint64* ctime = nullptr, uint64* mtime = nullptr, uint64* atime = nullptr,
+                bool* archive = nullptr, bool* hidden = nullptr, bool* readonly = nullptr, bool* system = nullptr);
         };
     };
 }

@@ -27,6 +27,7 @@
     <ClCompile Include="..\addon\blik_addon_h264.cpp" />
     <ClCompile Include="..\addon\blik_addon_jpg.cpp" />
     <ClCompile Include="..\addon\blik_addon_tesseract.cpp" />
+    <ClCompile Include="..\addon\blik_addon_zip.cpp" />
     <ClCompile Include="..\addon\blik_fakewin.cpp" />
     <ClCompile Include="..\addon\blik_integration_curl-7.51.0.c" />
     <ClCompile Include="..\addon\blik_integration_fdk-aac-0.1.4.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="..\addon\blik_addon_h264.hpp" />
     <ClInclude Include="..\addon\blik_addon_jpg.hpp" />
     <ClInclude Include="..\addon\blik_addon_tesseract.hpp" />
+    <ClInclude Include="..\addon\blik_addon_zip.hpp" />
     <ClInclude Include="..\addon\blik_fakewin.h" />
     <ClInclude Include="..\addon\blik_integration_curl-7.51.0.h" />
     <ClInclude Include="..\addon\blik_integration_fdk-aac-0.1.4.h" />

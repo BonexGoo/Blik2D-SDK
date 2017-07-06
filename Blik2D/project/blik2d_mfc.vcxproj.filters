@@ -231,6 +231,9 @@
     <ClCompile Include="..\addon\blik_integration_tesseract-3.04.01.cpp">
       <Filter>Blik2D\addon</Filter>
     </ClCompile>
+    <ClCompile Include="..\addon\blik_addon_zip.cpp">
+      <Filter>Blik2D\addon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\element\blik_clip.hpp">
@@ -456,6 +459,9 @@
       <Filter>Blik2D\addon</Filter>
     </ClInclude>
     <ClInclude Include="..\addon\blik_integration_tesseract-3.04.01.h">
+      <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addon\blik_addon_zip.hpp">
       <Filter>Blik2D\addon</Filter>
     </ClInclude>
   </ItemGroup>

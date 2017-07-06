@@ -7,16 +7,18 @@ bool __LINK_ADDON_ALPR__();
 bool __LINK_ADDON_CURL__();
 bool __LINK_ADDON_GIT__();
 bool __LINK_ADDON_H264__();
-bool __LINK_ADDON_JPG__();
 bool __LINK_ADDON_TESSERACT__();
+bool __LINK_ADDON_JPG__();
+bool __LINK_ADDON_ZIP__();
 static bool _ =
     __LINK_ADDON_AAC__() |
     __LINK_ADDON_ALPR__() |
     __LINK_ADDON_CURL__() |
     __LINK_ADDON_GIT__() |
     __LINK_ADDON_H264__() |
+    __LINK_ADDON_TESSERACT__() |
     __LINK_ADDON_JPG__() |
-    __LINK_ADDON_TESSERACT__();
+    __LINK_ADDON_ZIP__();
 
 namespace BLIK
 {
@@ -97,7 +99,7 @@ namespace BLIK
     {return Core_AddOn_Curl_RequestRedirectUrl()(curl, url, successcode, postdata, headerdata);}
 
     void AddOn::Curl::SendStream(id_curl curl, chars url, CurlReadCB cb, payload data)
-    {return Core_AddOn_Curl_SendStream()(curl, url, cb, data);}
+    {Core_AddOn_Curl_SendStream()(curl, url, cb, data);}
 
     bool AddOn::Curl::FtpUpload(id_curl curl, chars url, chars filename, buffer data)
     {return Core_AddOn_Curl_FtpUpload()(curl, url, filename, data);}
@@ -130,7 +132,7 @@ namespace BLIK
     {Core_AddOn_H264_Release()(h264);}
 
     void AddOn::H264::EncodeTo(id_h264 h264, const uint32* rgba, id_flash flash, uint64 timems)
-    {return Core_AddOn_H264_EncodeTo()(h264, rgba, flash, timems);}
+    {Core_AddOn_H264_EncodeTo()(h264, rgba, flash, timems);}
 
     ////////////////////////////////////////////////////////////////////////////////
     static void Git_Error() {BLIK_ASSERT("Git애드온이 준비되지 않았습니다", false);}
@@ -174,7 +176,7 @@ namespace BLIK
     {return Core_AddOn_Jpg_Create()(bmp, quality);}
 
     void AddOn::Jpg::Release(id_jpg jpg)
-    {return Core_AddOn_Jpg_Release()(jpg);}
+    {Core_AddOn_Jpg_Release()(jpg);}
 
     sint32 AddOn::Jpg::GetLength(id_jpg jpg)
     {return Core_AddOn_Jpg_GetLength()(jpg);}
@@ -184,4 +186,27 @@ namespace BLIK
 
     id_bitmap AddOn::Jpg::ToBmp(bytes jpg, sint32 length)
     {return Core_AddOn_Jpg_ToBmp()(jpg, length);}
+
+    ////////////////////////////////////////////////////////////////////////////////
+    static void Zip_Error() {BLIK_ASSERT("Zip애드온이 준비되지 않았습니다", false);}
+    BLIK_DEFINE_ADDON_FUNCTION(Zip, Create, id_zip, return nullptr, bytes, sint32, sint32*, chars)
+    BLIK_DEFINE_ADDON_FUNCTION(Zip, Release, void, return, id_zip)
+    BLIK_DEFINE_ADDON_FUNCTION(Zip, ToFile, buffer, return nullptr, id_zip, sint32)
+    BLIK_DEFINE_ADDON_FUNCTION(Zip, GetFileInfo, chars, return "", id_zip, sint32,
+        bool*, uint64*, uint64*, uint64*, bool*, bool*, bool*, bool*)
+
+    id_zip AddOn::Zip::Create(bytes zip, sint32 length, sint32* filecount, chars password)
+    {return Core_AddOn_Zip_Create()(zip, length, filecount, password);}
+
+    void AddOn::Zip::Release(id_zip zip)
+    {Core_AddOn_Zip_Release()(zip);}
+
+    buffer AddOn::Zip::ToFile(id_zip zip, sint32 fileindex)
+    {return Core_AddOn_Zip_ToFile()(zip, fileindex);}
+
+    chars AddOn::Zip::GetFileInfo(id_zip zip, sint32 fileindex,
+        bool* isdir, uint64* ctime, uint64* mtime, uint64* atime,
+        bool* archive, bool* hidden, bool* readonly, bool* system)
+    {return Core_AddOn_Zip_GetFileInfo()(zip, fileindex,
+        isdir, ctime, mtime, atime, archive, hidden, readonly, system);}
 }
