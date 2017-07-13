@@ -209,10 +209,10 @@ namespace BLIK
         ZayObject* next(chars viewclass);
         bool next(View* viewmanager);
         void exit();
-        bool valid(chars uiname = nullptr) const;
-        const rect128& rect(chars uiname = nullptr) const;
-        const float zoom(chars uiname = nullptr) const;
-        const point64& oldxy(chars uiname = nullptr) const;
+        bool valid(chars uiname) const;
+        const rect128& rect(chars uiname) const;
+        const float zoom(chars uiname) const;
+        const point64& oldxy(chars uiname) const;
         void resizeForced(sint32 w = -1, sint32 h = -1);
         bool getResizingValue(sint32& w, sint32& h);
 

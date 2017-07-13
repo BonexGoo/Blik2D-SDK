@@ -130,7 +130,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 후미삭제
+        \brief 후미삭제(메모리공간은 보존)
         \return 삭제 수행여부(배열수량이 0일 경우 false)
         */
         bool SubtractionOne()
@@ -141,7 +141,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 전체삭제
+        \brief 전체삭제(메모리공간은 보존)
         \return 삭제 수행여부(배열수량이 0일 경우 false)
         */
         bool SubtractionAll()

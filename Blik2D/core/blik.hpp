@@ -225,6 +225,12 @@ inline void operator delete[](void*, sblock) {}
     typedef RET_TYPE (*Type_AddOn_##GROUP##_##NAME)(__VA_ARGS__); \
     Type_AddOn_##GROUP##_##NAME& Core_AddOn_##GROUP##_##NAME() \
     {static Type_AddOn_##GROUP##_##NAME _ = Default_AddOn_##GROUP##_##NAME; return _;}
+#define BLIK_DECLARE_NONCOPYABLE_CLASS(NAME) \
+    public: \
+    NAME(const NAME& rhs) {operator=(rhs);} \
+    NAME& operator=(const NAME& rhs) \
+    {BLIK_ASSERT("This class is not allowed to be copied", false); return *this;} \
+    private:
 
 // About opengl
 #if BLIK_ANDROID

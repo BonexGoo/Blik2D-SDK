@@ -9,21 +9,13 @@ namespace BLIK
     public:
         class Message
         {
+            BLIK_DECLARE_NONCOPYABLE_CLASS(Message)
         public:
-            Message() {mUserId = 0;}
-            Message(const Message& rhs) {operator=(rhs);}
+            Message() {mUserId = -1;}
             ~Message() {}
-            Message& operator=(const Message& rhs)
-            {
-                mUserId = rhs.mUserId;
-                mText = rhs.mText;
-                return *this;
-            }
-
         public:
-            inline void DestroyMe()
-            {Buffer::Free((buffer) this);}
-
+            inline static Message* Create() {return (Message*) Buffer::Alloc<Message>(BLIK_DBG 1);}
+            inline void DestroyMe() {Buffer::Free((buffer) this);}
         public:
             sint32 mUserId;
             String mText;
@@ -41,15 +33,15 @@ namespace BLIK
 
     // 서비스함수
     public:
-        void AddService(chars service, chars key);
-        void SubService(chars service, chars key);
-        sint32 TryNextMessage(String& text);
-        const String& GetName(sint32 userid);
-        const Image& GetPicture(sint32 userid);
+        bool AddService(chars service, chars id, id_bitmap clipper = nullptr);
+        bool SubService(chars service, chars id);
+        Message* TryNextMessage();
+        const String& GetName(const Message* message);
+        const Image& GetPicture(const Message* message);
 
     // 데이터(공유모델)
     protected:
         const Share* mShare;
     };
-    typedef Array<LiveChatService::Message> LiveChatMessages;
+    typedef Array<LiveChatService::Message*, datatype_pod_canmemcpy_zeroset> LiveChatMessagePtrs;
 }
