@@ -131,7 +131,7 @@ namespace BLIK
                                 mTimestamps(Id) = MessageRenderer("timestampUsec").GetFloat();
                                 cb(data,
                                     MessageRenderer("message")("runs")[0]("text").GetString(),
-                                    MessageRenderer("authorName")("runs")[0]("text").GetString(),
+                                    MessageRenderer("authorName")("simpleText").GetString(),
                                     MessageRenderer("authorPhoto")("thumbnails")[0]("url").GetString());
                             }
                         }
