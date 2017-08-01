@@ -25,7 +25,7 @@ namespace BLIK
     float Math::CycleF(const float v, const float low, const float len)
     {
         BLIK_ASSERT("len은 0보다 커야 합니다", 0 < len);
-        const float C = fmod(v - low, len);
+        const float C = fmodf(v - low, len);
         return C + low + len * (C < 0);
     }
 
@@ -46,7 +46,7 @@ namespace BLIK
 
     float Math::Mod(const float a, const float b)
     {
-        return fmod(a, b);
+        return fmodf(a, b);
     }
 
     float Math::Sqrt(const float v)
@@ -73,6 +73,6 @@ namespace BLIK
     {
         const float X = x1 - x2;
         const float Y = y1 - y2;
-        return Sqrt(X * X + Y * Y);
+        return sqrtf(X * X + Y * Y);
     }
 }

@@ -234,6 +234,9 @@
     <ClCompile Include="..\addon\blik_addon_zip.cpp">
       <Filter>Blik2D\addon</Filter>
     </ClCompile>
+    <ClCompile Include="..\element\blik_solver.cpp">
+      <Filter>Blik2D\element</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\element\blik_clip.hpp">
@@ -463,6 +466,9 @@
     </ClInclude>
     <ClInclude Include="..\addon\blik_addon_zip.hpp">
       <Filter>Blik2D\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\element\blik_solver.hpp">
+      <Filter>Blik2D\element</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

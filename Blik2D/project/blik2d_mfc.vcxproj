@@ -71,6 +71,7 @@
     <ClCompile Include="..\element\blik_point.cpp" />
     <ClCompile Include="..\element\blik_rect.cpp" />
     <ClCompile Include="..\element\blik_size.cpp" />
+    <ClCompile Include="..\element\blik_solver.cpp" />
     <ClCompile Include="..\element\blik_tween.cpp" />
     <ClCompile Include="..\element\blik_vector.cpp" />
     <ClCompile Include="..\format\blik_bmp.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="..\element\blik_point.hpp" />
     <ClInclude Include="..\element\blik_rect.hpp" />
     <ClInclude Include="..\element\blik_size.hpp" />
+    <ClInclude Include="..\element\blik_solver.hpp" />
     <ClInclude Include="..\element\blik_tween.hpp" />
     <ClInclude Include="..\element\blik_vector.hpp" />
     <ClInclude Include="..\format\blik_bmp.hpp" />

@@ -4,7 +4,7 @@
 namespace BLIK
 {
     //! \brief 공유객체지원
-    template<typename TYPE, datatype DATATYPE = datatype_class_nomemcpy>
+    template<typename TYPE, datatype DATATYPE = datatype_class_nomemcpy, bool BASEALLOC = false>
     class Object
     {
     public:
@@ -197,7 +197,7 @@ namespace BLIK
         \brief 생성자
         \param doalloc : 버퍼 생성여부
         */
-        Object(bool doAlloc = false) : share((doAlloc)? Share::Create(Buffer::Alloc<TYPE, DATATYPE>(BLIK_DBG 1)) : nullptr) {}
+        Object(bool doAlloc = BASEALLOC) : share((doAlloc)? Share::Create(Buffer::Alloc<TYPE, DATATYPE>(BLIK_DBG 1)) : nullptr) {}
 
         /*!
         \brief 생성자

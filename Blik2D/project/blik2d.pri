@@ -128,6 +128,7 @@ HEADERS += ../../Blik2D/element/blik_matrix.hpp
 HEADERS += ../../Blik2D/element/blik_point.hpp
 HEADERS += ../../Blik2D/element/blik_rect.hpp
 HEADERS += ../../Blik2D/element/blik_size.hpp
+HEADERS += ../../Blik2D/element/blik_solver.hpp
 HEADERS += ../../Blik2D/element/blik_tween.hpp
 HEADERS += ../../Blik2D/element/blik_vector.hpp
 SOURCES += ../../Blik2D/element/blik_clip.cpp
@@ -138,6 +139,7 @@ SOURCES += ../../Blik2D/element/blik_matrix.cpp
 SOURCES += ../../Blik2D/element/blik_point.cpp
 SOURCES += ../../Blik2D/element/blik_rect.cpp
 SOURCES += ../../Blik2D/element/blik_size.cpp
+SOURCES += ../../Blik2D/element/blik_solver.cpp
 SOURCES += ../../Blik2D/element/blik_tween.cpp
 SOURCES += ../../Blik2D/element/blik_vector.cpp
 

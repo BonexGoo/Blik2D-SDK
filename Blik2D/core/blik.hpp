@@ -231,6 +231,12 @@ inline void operator delete[](void*, sblock) {}
     NAME& operator=(const NAME& rhs) \
     {BLIK_ASSERT("This class is not allowed to be copied", false); return *this;} \
     private:
+#define BLIK_DECLARE_NONCOPYABLE_INITIALIZED_CLASS(NAME, ...) \
+    public: \
+    NAME(const NAME& rhs) : __VA_ARGS__ {operator=(rhs);} \
+    NAME& operator=(const NAME& rhs) \
+    {BLIK_ASSERT("This class is not allowed to be copied", false); return *this;} \
+    private:
 
 // About opengl
 #if BLIK_ANDROID
