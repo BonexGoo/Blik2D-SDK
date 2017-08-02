@@ -280,14 +280,21 @@ namespace BLIK
         \param value : 컨버팅할 정수
         \return 객체
         */
-        static String FromInteger(sint32 value);
+        static String FromInteger(const sint32 value);
 
         /*!
-        \brief 실수식 객체생성
+        \brief 실수식 객체생성(float)
         \param value : 컨버팅할 실수
         \return 객체
         */
-        static String FromFloat(float value);
+        static String FromFloat(const float value);
+
+        /*!
+        \brief 실수식 객체생성(double)
+        \param value : 컨버팅할 실수
+        \return 객체
+        */
+        static String FromFloat(const double value);
 
         /*!
         \brief strcmp식 비교

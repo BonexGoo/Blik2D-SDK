@@ -12,7 +12,7 @@ namespace BLIK
 
         // 가상 인터페이스
         public: void PrintString(String& collector) const override
-        {collector += String::Format("%lf", (double) mValue);}
+        {collector += String::FromFloat(mValue);}
         public: void UpdateChain(Solver* solver, SolverChain* chain) override {}
         public: float reliable() const override {return 1;}
         public: SolverFloat result(SolverFloat zero) const override {return mValue;}
@@ -80,6 +80,7 @@ namespace BLIK
         {
             buffer NewBuffer = Buffer::AllocNoConstructorOnce<Variable>(BLIK_DBG 1);
             BLIK_CONSTRUCTOR(NewBuffer, 0, Variable, mName);
+            ((Variable*) NewBuffer)->UpdateChain(mSolver, mChain);
             return NewBuffer;
         }
 
@@ -160,10 +161,10 @@ namespace BLIK
         public: OperandObject* mOperandP; // 부모항
     };
 
-    void SolverChainPair::ResetDest(Solver* solver)
+    void SolverChainPair::ResetDest(Solver* solver, bool needupdate)
     {
         mDest = solver;
-        RenualAllObservers();
+        if(needupdate) RenualAllObservers();
     }
 
     bool SolverChainPair::RemoveDest()
@@ -197,7 +198,7 @@ namespace BLIK
             }
         }
         // 배열길이 줄임
-        while(mObservers.Count() && !mObservers[-1])
+        while(0 < mObservers.Count() && !mObservers[-1])
             mObservers.SubtractionOne();
         return (!mDest && mObservers.Count() == 0);
     }
@@ -205,16 +206,16 @@ namespace BLIK
     void SolverChainPair::RenualAllObservers()
     {
         for(sint32 i = 0, iend = mObservers.Count(); i < iend; ++i)
-            if(mObservers[i])
-                mObservers.At(i)->renual_execute();
+            if(mObservers[i] && !mObservers[i]->result_updated())
+                mObservers.At(i)->Execute();
     }
 
     Solver::Solver()
     {
         mLinkedChain = nullptr;
-        mNeedExecute = false;
         mReliable = 0;
         mResult = 0;
+        mResultUpdated = false;
     }
 
     Solver::~Solver()
@@ -229,16 +230,16 @@ namespace BLIK
         mLinkedVariable = rhs.mLinkedVariable;
         mParsedFormula = rhs.mParsedFormula;
         mOperandTop = rhs.mOperandTop;
-        mNeedExecute = rhs.mNeedExecute;
         mReliable = rhs.mReliable;
         mResult = rhs.mResult;
+        mResultUpdated = rhs.mResultUpdated;
 
         // 강제적 권리이양
         ((Solver*) &rhs)->Unlink();
         ((Solver*) &rhs)->mOperandTop = OperandObject(true);
         if(mLinkedChain)
         {
-            (*mLinkedChain)(mLinkedVariable).ResetDest(this);
+            (*mLinkedChain)(mLinkedVariable).ResetDest(this, false);
             // 업데이드된 내용의 전달
             mOperandTop->UpdateChain(this, mLinkedChain);
         }
@@ -246,12 +247,12 @@ namespace BLIK
     }
 
     Map<SolverChain> gSolverChains;
-    void Solver::Link(chars chain, chars variable)
+    void Solver::Link(chars chain, chars variable, bool needupdate)
     {
         Unlink();
         mLinkedChain = &gSolverChains(chain);
         mLinkedVariable = variable;
-        (*mLinkedChain)(variable).ResetDest(this);
+        (*mLinkedChain)(variable).ResetDest(this, needupdate);
         // 업데이드된 내용의 전달
         mOperandTop->UpdateChain(this, mLinkedChain);
     }
@@ -366,13 +367,10 @@ namespace BLIK
         mOperandTop->PrintString(mParsedFormula);
         // 체인을 업데이트
         mOperandTop->UpdateChain(this, mLinkedChain);
-        // Execute과정이 필요
-        renual_execute();
     }
 
     void Solver::Execute()
     {
-        mNeedExecute = false;
         const float OldReliable = mReliable;
         const SolverFloat OldResult = mResult;
         mReliable = mOperandTop->reliable();
@@ -381,6 +379,9 @@ namespace BLIK
         // 현재 결과에 종속된 계산식들을 리뉴얼
         if(mLinkedChain)
         if(OldReliable != mReliable || OldResult != mResult)
+        {
+            mResultUpdated = true;
             (*mLinkedChain)(mLinkedVariable).RenualAllObservers();
+        }
     }
 }

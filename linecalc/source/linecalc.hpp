@@ -10,6 +10,7 @@ public:
 
 public:
     void DeleteSolver(sint32 i);
+    void ClearAllUpdateMark();
 
 public:
     String CurVariable;

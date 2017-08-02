@@ -388,17 +388,28 @@ namespace BLIK
         return String(NewWords);
     }
 
-    String String::FromInteger(sint32 value)
+    String String::FromInteger(const sint32 value)
     {
         char Result[1024];
         const sint32 ResultLength = blik_snprintf(Result, 1024, "%d", value);
         return String(Result, ResultLength);
     }
 
-    String String::FromFloat(float value)
+    String String::FromFloat(const float value)
     {
         char Result[1024];
-        const sint32 ResultLength = blik_snprintf(Result, 1024, "%f", value);
+        sint32 ResultLength = blik_snprintf(Result, 1024, "%f", value);
+        while(Result[ResultLength - 1] == '0') ResultLength--;
+        if(Result[ResultLength - 1] == '.') ResultLength--;
+        return String(Result, ResultLength);
+    }
+
+    String String::FromFloat(const double value)
+    {
+        char Result[1024];
+        sint32 ResultLength = blik_snprintf(Result, 1024, "%lf", value);
+        while(Result[ResultLength - 1] == '0') ResultLength--;
+        if(Result[ResultLength - 1] == '.') ResultLength--;
         return String(Result, ResultLength);
     }
 

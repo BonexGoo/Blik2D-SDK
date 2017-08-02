@@ -15,7 +15,7 @@ namespace BLIK
         public: ~SolverChainPair() {}
 
         // 인터페이스
-        public: void ResetDest(Solver* solver);
+        public: void ResetDest(Solver* solver, bool needupdate);
         public: bool RemoveDest();
         public: void AddObserver(Solver* solver);
         public: bool SubObserver(Solver* solver);
@@ -67,25 +67,25 @@ namespace BLIK
         public: Solver& operator=(const Solver& rhs);
 
         // 인터페이스
-        public: void Link(chars chain, chars variable);
+        public: void Link(chars chain, chars variable, bool needupdate);
         public: void Unlink();
         public: void Parse(chars formula);
         public: void Execute();
-        public: const String& linked_variable() const {return mLinkedVariable;}
-        public: const String& parsed_formula() const {return mParsedFormula;}
-        public: inline bool need_execute() const {return mNeedExecute;}
-        public: inline void renual_execute() {mNeedExecute = true;}
+        public: inline const String& linked_variable() const {return mLinkedVariable;}
+        public: inline const String& parsed_formula() const {return mParsedFormula;}
         public: inline float reliable() const {return mReliable;}
         public: inline SolverFloat result() const {return mResult;}
+        public: inline bool result_updated() const {return mResultUpdated;}
+        public: inline void ClearUpdateMark() {mResultUpdated = false;}
 
         // 멤버
         private: SolverChain* mLinkedChain;
         private: String mLinkedVariable;
         private: String mParsedFormula;
         private: OperandObject mOperandTop;
-        private: bool mNeedExecute;
         private: float mReliable;
         private: SolverFloat mResult;
+        private: bool mResultUpdated;
     };
     typedef Array<Solver> Solvers;
 }
