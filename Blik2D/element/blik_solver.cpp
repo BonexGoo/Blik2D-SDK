@@ -161,15 +161,21 @@ namespace BLIK
         public: OperandObject* mOperandP; // 부모항
     };
 
+    static uint32 gSolverUpdateId = 1;
     void SolverChainPair::ResetDest(Solver* solver, bool needupdate)
     {
         mDest = solver;
-        if(needupdate) RenualAllObservers();
+        if(needupdate)
+        {
+            gSolverUpdateId++; // UpdateId증가
+            RenualAllObservers();
+        }
     }
 
     bool SolverChainPair::RemoveDest()
     {
         mDest = nullptr;
+        gSolverUpdateId++; // UpdateId증가
         RenualAllObservers();
         return (mObservers.Count() == 0);
     }
@@ -206,8 +212,11 @@ namespace BLIK
     void SolverChainPair::RenualAllObservers()
     {
         for(sint32 i = 0, iend = mObservers.Count(); i < iend; ++i)
-            if(mObservers[i] && !mObservers[i]->result_updated())
+            if(mObservers[i] && !mObservers[i]->is_result_matched(gSolverUpdateId))
+            {
+                gSolverUpdateId--; // Execute호출에 따른 UpdateId증가를 방지
                 mObservers.At(i)->Execute();
+            }
     }
 
     Solver::Solver()
@@ -215,7 +224,7 @@ namespace BLIK
         mLinkedChain = nullptr;
         mReliable = 0;
         mResult = 0;
-        mResultUpdated = false;
+        mResultUpdateId = 0;
     }
 
     Solver::~Solver()
@@ -232,7 +241,7 @@ namespace BLIK
         mOperandTop = rhs.mOperandTop;
         mReliable = rhs.mReliable;
         mResult = rhs.mResult;
-        mResultUpdated = rhs.mResultUpdated;
+        mResultUpdateId = rhs.mResultUpdateId;
 
         // 강제적 권리이양
         ((Solver*) &rhs)->Unlink();
@@ -246,7 +255,7 @@ namespace BLIK
         return *this;
     }
 
-    Map<SolverChain> gSolverChains;
+    static Map<SolverChain> gSolverChains;
     void Solver::Link(chars chain, chars variable, bool needupdate)
     {
         Unlink();
@@ -371,6 +380,7 @@ namespace BLIK
 
     void Solver::Execute()
     {
+        gSolverUpdateId++; // UpdateId증가
         const float OldReliable = mReliable;
         const SolverFloat OldResult = mResult;
         mReliable = mOperandTop->reliable();
@@ -380,7 +390,7 @@ namespace BLIK
         if(mLinkedChain)
         if(OldReliable != mReliable || OldResult != mResult)
         {
-            mResultUpdated = true;
+            mResultUpdateId = gSolverUpdateId;
             (*mLinkedChain)(mLinkedVariable).RenualAllObservers();
         }
     }

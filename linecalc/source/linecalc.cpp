@@ -87,10 +87,10 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
             {
                 if(t == GT_InReleased && IsAddActived)
                 {
+                    m->ClearAllUpdateMark(); // 업데이트상황 클리어
                     Solver& NewSolver = m->CollectedSolvers.AtAdding();
                     NewSolver.Link("local", m->CurVariable, false);
                     NewSolver.Parse(m->CurFormula);
-                    m->ClearAllUpdateMark();
                     NewSolver.Execute();
                     m->CurVariable.Empty();
                     m->CurFormula.Empty();
@@ -125,7 +125,7 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
                 // 계산식
                 ZAY_LTRB(panel, 0, 0, panel.w() - panel.h(), panel.h())
                 {
-                    const bool IsUpdated = m->CollectedSolvers[i].result_updated();
+                    const bool IsUpdated = m->CollectedSolvers[i].is_result_updated();
                     String CurSolver = String::Format(" %s = %s ▶ %s (%s%%)",
                         (chars) m->CollectedSolvers[i].linked_variable(),
                         (chars) m->CollectedSolvers[i].parsed_formula(),
@@ -143,7 +143,7 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
                     {
                         if(t == GT_InReleased)
                         {
-                            m->ClearAllUpdateMark();
+                            m->ClearAllUpdateMark(); // 업데이트상황 클리어
                             m->CollectedSolvers.At(i).Execute();
                         }
                     })
@@ -187,7 +187,6 @@ linecalcData::~linecalcData()
 
 void linecalcData::DeleteSolver(sint32 i)
 {
-    ClearAllUpdateMark();
     for(sint32 j = i, jend = CollectedSolvers.Count() - 1; j < jend; ++j)
         CollectedSolvers.At(j) = CollectedSolvers.At(j + 1);
     CollectedSolvers.SubtractionOne();

@@ -75,8 +75,9 @@ namespace BLIK
         public: inline const String& parsed_formula() const {return mParsedFormula;}
         public: inline float reliable() const {return mReliable;}
         public: inline SolverFloat result() const {return mResult;}
-        public: inline bool result_updated() const {return mResultUpdated;}
-        public: inline void ClearUpdateMark() {mResultUpdated = false;}
+        public: inline bool is_result_updated() const {return (mResultUpdateId != 0);}
+        public: inline bool is_result_matched(uint32 id) const {return (mResultUpdateId == id);}
+        public: inline void ClearUpdateMark() {mResultUpdateId = 0;}
 
         // 멤버
         private: SolverChain* mLinkedChain;
@@ -85,7 +86,7 @@ namespace BLIK
         private: OperandObject mOperandTop;
         private: float mReliable;
         private: SolverFloat mResult;
-        private: bool mResultUpdated;
+        private: uint32 mResultUpdateId;
     };
     typedef Array<Solver> Solvers;
 }
