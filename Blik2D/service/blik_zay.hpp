@@ -12,96 +12,96 @@
 
 // 옵션스택관련
 #define ZAY_LTRB(PANEL, L, T, R, B) \
-    for(bool _ = (PANEL)._push_clip(L, T, R, B, false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(L, T, R, B, false))
 #define ZAY_LTRB_UI(PANEL, L, T, R, B, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(L, T, R, B, false, NAME, __VA_ARGS__))
 #define ZAY_LTRB_SCISSOR(PANEL, L, T, R, B) \
-    for(bool _ = (PANEL)._push_clip(L, T, R, B, true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(L, T, R, B, true))
 #define ZAY_LTRB_UI_SCISSOR(PANEL, L, T, R, B, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(L, T, R, B, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(L, T, R, B, true, NAME, __VA_ARGS__))
 
 #define ZAY_XYWH(PANEL, X, Y, W, H) \
-    for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false))
 #define ZAY_XYWH_UI(PANEL, X, Y, W, H, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, NAME, __VA_ARGS__))
 #define ZAY_XYWH_SCISSOR(PANEL, X, Y, W, H) \
-    for(bool _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true))
 #define ZAY_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, NAME, __VA_ARGS__))
 
 #define ZAY_XYRR(PANEL, X, Y, RW, RH) \
-    for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false))
 #define ZAY_XYRR_UI(PANEL, X, Y, RW, RH, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, NAME, __VA_ARGS__))
 #define ZAY_XYRR_SCISSOR(PANEL, X, Y, RW, RH) \
-    for(bool _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true))
 #define ZAY_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, NAME, __VA_ARGS__))
 
 #define ZAY_RECT(PANEL, R) \
-    for(bool _ = (PANEL)._push_clip_by_rect(R, false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_rect(R, false))
 #define ZAY_RECT_UI(PANEL, R, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_rect(R, false, NAME, __VA_ARGS__))
 #define ZAY_RECT_SCISSOR(PANEL, R) \
-    for(bool _ = (PANEL)._push_clip_by_rect(R, true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_rect(R, true))
 #define ZAY_RECT_UI_SCISSOR(PANEL, R, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_rect(R, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_rect(R, true, NAME, __VA_ARGS__))
 
 #define ZAY_INNER(PANEL, V) \
-    for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false))
 #define ZAY_INNER_UI(PANEL, V, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, NAME, __VA_ARGS__))
 #define ZAY_INNER_SCISSOR(PANEL, V) \
-    for(bool _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true))
 #define ZAY_INNER_UI_SCISSOR(PANEL, V, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, NAME, __VA_ARGS__))
 
 #define ZAY_CHILD(PANEL) \
-    for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false))
 #define ZAY_CHILD_UI(PANEL, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, NAME, __VA_ARGS__))
 #define ZAY_CHILD_SCISSOR(PANEL) \
-    for(bool _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true))
 #define ZAY_CHILD_UI_SCISSOR(PANEL, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, NAME, __VA_ARGS__))
 
 #define ZAY_CHILD_AT(PANEL, IX, IY) \
-    for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false))
 #define ZAY_CHILD_AT_UI(PANEL, IX, IY, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, NAME, __VA_ARGS__))
 #define ZAY_CHILD_AT_SCISSOR(PANEL, IX, IY) \
-    for(bool _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true))
 #define ZAY_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, NAME, __VA_ARGS__))
 
 #define ZAY_CHILD_SECTION(PANEL, IX, IY, XC, YC) \
-    for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false))
 #define ZAY_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, NAME, __VA_ARGS__))
 #define ZAY_CHILD_SECTION_SCISSOR(PANEL, IX, IY, XC, YC) \
-    for(bool _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true))
 #define ZAY_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, NAME, ...) \
-    for(bool _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, NAME, __VA_ARGS__); _; _ = (PANEL)._pop_clip())
+    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, NAME, __VA_ARGS__))
 
 #define ZAY_RGB(PANEL, R, G, B) \
-    for(bool _ = (PANEL)._push_color(R, G, B, 0xFF); _; _ = (PANEL)._pop_color())
+    if(auto& _ = (PANEL)._push_color(R, G, B, 0xFF))
 #define ZAY_RGB_IF(PANEL, R, G, B, QUERY) \
-    for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(R, G, B, 0xFF); _; _ = __ && (PANEL)._pop_color())
+    if(auto& _ = (QUERY)? (PANEL)._push_color(R, G, B, 0xFF) : (PANEL)._push_pass())
 #define ZAY_RGBA(PANEL, R, G, B, A) \
-    for(bool _ = (PANEL)._push_color(R, G, B, A); _; _ = (PANEL)._pop_color())
+    if(auto& _ = (PANEL)._push_color(R, G, B, A))
 #define ZAY_RGBA_IF(PANEL, R, G, B, A, QUERY) \
-    for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(R, G, B, A); _; _ = __ && (PANEL)._pop_color())
+    if(auto& _ = (QUERY)? (PANEL)._push_color(R, G, B, A) : (PANEL)._push_pass())
 #define ZAY_COLOR(PANEL, COLOR) \
-    for(bool _ = (PANEL)._push_color(COLOR); _; _ = (PANEL)._pop_color())
+    if(auto& _ = (PANEL)._push_color(COLOR))
 #define ZAY_COLOR_IF(PANEL, COLOR, QUERY) \
-    for(bool __ = QUERY, _ = !__ || (PANEL)._push_color(COLOR); _; _ = __ && (PANEL)._pop_color())
+    if(auto& _ = (QUERY)? (PANEL)._push_color(COLOR) : (PANEL)._push_pass())
 #define ZAY_COLOR_CLEAR(PANEL) \
-    for(bool _ = (PANEL)._push_color_clear(); _; _ = (PANEL)._pop_color())
+    if(auto& _ = (PANEL)._push_color_clear())
 
 #define ZAY_FONT(PANEL, ...) \
-    for(bool _ = (PANEL)._push_font(__VA_ARGS__); _; _ = (PANEL)._pop_font())
+    if(auto& _ = (PANEL)._push_font(__VA_ARGS__))
 #define ZAY_ZOOM(PANEL, ZOOM) \
-    for(bool _ = (PANEL)._push_zoom(ZOOM); _; _ = (PANEL)._pop_zoom())
+    if(auto& _ = (PANEL)._push_zoom(ZOOM))
 
 // 서브패널관련
 #define ZAY_MAKE_SUB(PANEL, SURFACE) \
@@ -284,21 +284,50 @@ namespace BLIK
         {return m_stack_zoom[-1];}
 
     public:
-        didstack _push_clip(float l, float t, float r, float b, bool doScissor);
-        didstack _push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
-        didstack _push_clip_by_rect(const Rect& r, bool doScissor);
-        didstack _push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
-        didstack _push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor);
-        didstack _push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
-        didstack _push_color(sint32 r, sint32 g, sint32 b, sint32 a);
-        didstack _push_color(const Color& color);
-        didstack _push_color_clear();
-        didstack _push_font(float size, chars name = nullptr);
-        didstack _push_zoom(float zoom);
-        endstack _pop_clip();
-        endstack _pop_color();
-        endstack _pop_font();
-        endstack _pop_zoom();
+        enum StackType {ST_Null, ST_Pass, ST_Clip, ST_Color, ST_Font, ST_Zoom};
+        class StackBinder
+        {
+            friend class ZayPanel;
+        private:
+            StackBinder(ZayPanel* panel, StackType type = ST_Null) : mPanel(panel) {mType = type;}
+        public:
+            ~StackBinder()
+            {
+                switch(mType)
+                {
+                case ST_Clip: mPanel->_pop_clip(); break;
+                case ST_Color: mPanel->_pop_color(); break;
+                case ST_Font: mPanel->_pop_font(); break;
+                case ST_Zoom: mPanel->_pop_zoom(); break;
+                }
+            }
+            StackBinder(const StackBinder& rhs) : mPanel(rhs.mPanel) {mType = rhs.mType; rhs.mType = ST_Pass;}
+            StackBinder& operator=(const StackBinder& rhs)
+            {BLIK_ASSERT("This class is not allowed to be copied", false); return *this;}
+            operator bool() const {return (mType != ST_Null);}
+        private:
+            ZayPanel* const mPanel;
+            mutable StackType mType;
+        };
+
+    public:
+        StackBinder _push_clip(float l, float t, float r, float b, bool doScissor);
+        StackBinder _push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
+        StackBinder _push_clip_by_rect(const Rect& r, bool doScissor);
+        StackBinder _push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
+        StackBinder _push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor);
+        StackBinder _push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb = nullptr, bool hoverpass = true);
+        StackBinder _push_color(sint32 r, sint32 g, sint32 b, sint32 a);
+        StackBinder _push_color(const Color& color);
+        StackBinder _push_color_clear();
+        StackBinder _push_font(float size, chars name = nullptr);
+        StackBinder _push_zoom(float zoom);
+        StackBinder _push_pass();
+    private:
+        void _pop_clip();
+        void _pop_color();
+        void _pop_font();
+        void _pop_zoom();
 
     private:
         bool _push_scissor(float l, float t, float r, float b);

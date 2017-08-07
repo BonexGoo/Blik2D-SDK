@@ -668,7 +668,7 @@ namespace BLIK
         }
     }
 
-    didstack ZayPanel::_push_clip(float l, float t, float r, float b, bool doScissor)
+    ZayPanel::StackBinder ZayPanel::_push_clip(float l, float t, float r, float b, bool doScissor)
     {
         Clip& NewClip = m_stack_clip.AtAdding();
         const Clip& LastClip = m_stack_clip[-2];
@@ -677,17 +677,17 @@ namespace BLIK
         if(doScissor && !_push_scissor(NewClip.l, NewClip.t, NewClip.r, NewClip.b))
         {
             m_stack_clip.SubtractionOne();
-            return didstack_null;
+            return StackBinder(this);
         }
 
         m_clipped_width = NewClip.Width();
         m_clipped_height = NewClip.Height();
-        return didstack_ok;
+        return StackBinder(this, ST_Clip);
     }
 
-    didstack ZayPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    ZayPanel::StackBinder ZayPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
-        if(_push_clip(l, t, r, b, doScissor))
+        if(auto& CurBinder = _push_clip(l, t, r, b, doScissor))
         {
             if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
             {
@@ -702,22 +702,22 @@ namespace BLIK
                 const float& LastZoom = m_stack_zoom[-1];
                 CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            return didstack_ok;
+            return CurBinder;
         }
-        return didstack_null;
+        return StackBinder(this);
     }
 
-    didstack ZayPanel::_push_clip_by_rect(const Rect& r, bool doScissor)
+    ZayPanel::StackBinder ZayPanel::_push_clip_by_rect(const Rect& r, bool doScissor)
     {
         return _push_clip(r.l, r.t, r.r, r.b, doScissor);
     }
 
-    didstack ZayPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    ZayPanel::StackBinder ZayPanel::_push_clip_ui_by_rect(const Rect& r, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
         return _push_clip_ui(r.l, r.t, r.r, r.b, doScissor, uiname, cb, hoverpass);
     }
 
-    didstack ZayPanel::_push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor)
+    ZayPanel::StackBinder ZayPanel::_push_clip_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor)
     {
         Rect CalcedRect;
         if(!m_child_image) CalcedRect = m_child_guide;
@@ -731,9 +731,9 @@ namespace BLIK
         return _push_clip(l, t, r, b, doScissor);
     }
 
-    didstack ZayPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
+    ZayPanel::StackBinder ZayPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
-        if(_push_clip_by_child(ix, iy, xcount, ycount, doScissor))
+        if(auto& CurBinder = _push_clip_by_child(ix, iy, xcount, ycount, doScissor))
         {
             if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
             {
@@ -748,12 +748,12 @@ namespace BLIK
                 const float& LastZoom = m_stack_zoom[-1];
                 CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            return didstack_ok;
+            return CurBinder;
         }
-        return didstack_null;
+        return StackBinder(this);
     }
 
-    didstack ZayPanel::_push_color(sint32 r, sint32 g, sint32 b, sint32 a)
+    ZayPanel::StackBinder ZayPanel::_push_color(sint32 r, sint32 g, sint32 b, sint32 a)
     {
         Color& NewColor = m_stack_color.AtAdding();
         const Color& LastColor = m_stack_color[-2];
@@ -766,24 +766,24 @@ namespace BLIK
         if(a < 0) NewColor.a = -a;
 
         Platform::Graphics::SetColor(NewColor.r, NewColor.g, NewColor.b, NewColor.a);
-        return didstack_ok;
+        return StackBinder(this, ST_Color);
     }
 
-    didstack ZayPanel::_push_color(const Color& color)
+    ZayPanel::StackBinder ZayPanel::_push_color(const Color& color)
     {
         return _push_color(color.r, color.g, color.b, color.a);
     }
 
-    didstack ZayPanel::_push_color_clear()
+    ZayPanel::StackBinder ZayPanel::_push_color_clear()
     {
         Color& NewColor = m_stack_color.AtAdding();
         NewColor = Color(Color::ColoringDefault);
 
         Platform::Graphics::SetColor(NewColor.r, NewColor.g, NewColor.b, NewColor.a);
-        return didstack_ok;
+        return StackBinder(this, ST_Color);
     }
 
-    didstack ZayPanel::_push_font(float size, chars name)
+    ZayPanel::StackBinder ZayPanel::_push_font(float size, chars name)
     {
         Font& NewFont = m_stack_font.AtAdding();
         const Font& LastFont = m_stack_font[-2];
@@ -791,10 +791,10 @@ namespace BLIK
         NewFont.size = LastFont.size * size;
 
         Platform::Graphics::SetFont(NewFont.name, NewFont.size);
-        return didstack_ok;
+        return StackBinder(this, ST_Font);
     }
 
-    didstack ZayPanel::_push_zoom(float zoom)
+    ZayPanel::StackBinder ZayPanel::_push_zoom(float zoom)
     {
         float& NewZoom = m_stack_zoom.AtAdding();
         const float& LastZoom = m_stack_zoom[-2];
@@ -813,44 +813,45 @@ namespace BLIK
         NewRect = Rect(LastRect.l / zoom, LastRect.t / zoom, LastRect.r / zoom, LastRect.b / zoom);
 
         Platform::Graphics::SetScissor(NewRect.l, NewRect.t, NewRect.Width(), NewRect.Height());
-        return didstack_ok;
+        return StackBinder(this, ST_Zoom);
     }
 
-    endstack ZayPanel::_pop_clip()
+    ZayPanel::StackBinder ZayPanel::_push_pass()
+    {
+        return StackBinder(this, ST_Pass);
+    }
+
+    void ZayPanel::_pop_clip()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_clip.Count());
         if(m_stack_clip[-1].didscissor)
             _pop_scissor();
-
         m_stack_clip.SubtractionOne();
 
         const Clip& LastClip = m_stack_clip[-1];
         m_clipped_width = LastClip.Width();
         m_clipped_height = LastClip.Height();
-        return endstack_null;
     }
 
-    endstack ZayPanel::_pop_color()
+    void ZayPanel::_pop_color()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_color.Count());
         m_stack_color.SubtractionOne();
 
         const Color& LastColor = m_stack_color[-1];
         Platform::Graphics::SetColor(LastColor.r, LastColor.g, LastColor.b, LastColor.a);
-        return endstack_null;
     }
 
-    endstack ZayPanel::_pop_font()
+    void ZayPanel::_pop_font()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_font.Count());
         m_stack_font.SubtractionOne();
 
         const Font& LastFont = m_stack_font[-1];
         Platform::Graphics::SetFont(LastFont.name, LastFont.size);
-        return endstack_null;
     }
 
-    endstack ZayPanel::_pop_zoom()
+    void ZayPanel::_pop_zoom()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_zoom.Count());
         m_stack_zoom.SubtractionOne();
@@ -859,7 +860,6 @@ namespace BLIK
         Platform::Graphics::SetZoom(LastZoom);
 
         _pop_clip();
-        return endstack_null;
     }
 
     bool ZayPanel::_push_scissor(float l, float t, float r, float b)

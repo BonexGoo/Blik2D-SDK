@@ -77,8 +77,6 @@ namespace BLIK
         datatype_class_canmemcpy,
         datatype_pod_canmemcpy,
         datatype_pod_canmemcpy_zeroset};
-    enum didstack:bool   {didstack_null = false, didstack_ok = true};
-    enum endstack:bool   {endstack_null = false};
     enum haschild:bool   {haschild_null = false, haschild_ok = true};
     enum roottype:uint08 {roottype_null = 0,
         roottype_assets, roottype_assetsrem,
