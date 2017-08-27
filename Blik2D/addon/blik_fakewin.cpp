@@ -1179,6 +1179,7 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         if(FileAttributes == -1)
             return -1;
 
+        Memory::Set(_Stat, 0x00, sizeof(struct blik_fakewin_stat64));
         _Stat->st_mode = 0;
         if(FileAttributes & FILE_ATTRIBUTE_DIRECTORY) _Stat->st_mode |= S_IFDIR;
         else
@@ -1195,9 +1196,15 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         _Stat->st_gid = 0;
         _Stat->st_rdev = 0;
         _Stat->st_size = GetSize;
-        _Stat->st_atime = WindowToEpoch(GetAccessTime / 10000) / 1000;
-        _Stat->st_mtime = WindowToEpoch(GetModifyTime / 10000) / 1000;
-        _Stat->st_ctime = WindowToEpoch(GetCreateTime / 10000) / 1000;
+        #if BLIK_MAC_OSX || BLIK_IPHONE
+            _Stat->st_atimespec.tv_sec = WindowToEpoch(GetAccessTime / 10000) / 1000;
+            _Stat->st_mtimespec.tv_sec = WindowToEpoch(GetModifyTime / 10000) / 1000;
+            _Stat->st_ctimespec.tv_sec = WindowToEpoch(GetCreateTime / 10000) / 1000;
+        #else
+            _Stat->st_atime = WindowToEpoch(GetAccessTime / 10000) / 1000;
+            _Stat->st_mtime = WindowToEpoch(GetModifyTime / 10000) / 1000;
+            _Stat->st_ctime = WindowToEpoch(GetCreateTime / 10000) / 1000;
+        #endif
         return 0;
     }
 
@@ -1425,12 +1432,31 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
         return 0;
     }
 
+    #if BLIK_MAC_OSX || BLIK_IPHONE
+        namespace std
+        {
+            #define stringstream
+            blik_fakewin_stringstream::blik_fakewin_stringstream()
+            {
+                mStr = (void*) new std::string();
+            }
+            blik_fakewin_stringstream::~blik_fakewin_stringstream()
+            {
+                delete (std::string*) mStr;
+            }
+            void blik_fakewin_stringstream::str(const char* s)
+            {
+                *((std::string*) mStr) = std::string(s);
+            }
+        }
+    #endif
+
     namespace std
     {
         #undef ifstream
         blik_fakewin_ifstream::blik_fakewin_ifstream(const char* filename, ios_base::openmode mode)
         {
-            string modeStr("r");
+            std::string modeStr("r");
             printf("Open file (read): %s\n", filename);
             if (mode & ios_base::binary)
                 modeStr += "b";
@@ -1450,7 +1476,7 @@ extern "C" DWORD blik_fakewin_GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR l
                 blik_fakewin_fseek(f, 0, SEEK_SET);
                 if (blik_fakewin_fread(buf, 1, sz, f) == sz)
                 {
-                    this->str(std::string(buf, sz));
+                    this->str(std::string(buf, sz).c_str());
                 }
                 free(buf);
             }

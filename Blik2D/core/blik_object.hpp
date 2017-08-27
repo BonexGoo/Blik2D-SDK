@@ -42,6 +42,19 @@ namespace BLIK
         }
 
         /*!
+        \brief 이동
+        \param rhs : 이동할 인스턴스
+        \return 자기 객체
+        */
+        Object& operator=(Object&& rhs)
+        {
+            Share::Remove(share);
+            share = rhs.share;
+            rhs.share = nullptr;
+            return *this;
+        }
+
+        /*!
         \brief 복사
         \param rhs : 복사할 인스턴스
         \return 자기 객체
@@ -200,25 +213,31 @@ namespace BLIK
         Object(bool doAlloc = BASEALLOC) : share((doAlloc)? Share::Create(Buffer::Alloc<TYPE, DATATYPE>(BLIK_DBG 1)) : nullptr) {}
 
         /*!
-        \brief 생성자
+        \brief 복사생성자
         \param rhs : 복사할 인스턴스
         */
         Object(const Object& rhs) : share(nullptr) {operator=(rhs);}
 
         /*!
-        \brief 생성자
+        \brief 이동생성자
+        \param rhs : 이동할 인스턴스
+        */
+        Object(Object&& rhs) : share(nullptr) {operator=(rhs);}
+
+        /*!
+        \brief 특수생성자
         \param rhs : 복사할 TYPE 인스턴스
         */
         Object(const TYPE& rhs) : share(nullptr) {operator=(rhs);}
 
         /*!
-        \brief 생성자(버퍼로부터)
+        \brief 특수생성자(버퍼로부터)
         \param rhs : 인수할 버퍼
         */
         Object(buffer rhs) : share(nullptr) {operator=(rhs);}
 
         /*!
-        \brief 생성자(공유ID로부터)
+        \brief 특수생성자(공유ID로부터)
         \param rhs : 복사할 공유ID
         */
         Object(id_share_read rhs) : share(nullptr) {operator=(rhs);}

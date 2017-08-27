@@ -3,7 +3,7 @@
 
 #include <format/blik_bmp.hpp>
 #include <platform/blik_platform.hpp>
-#include <addon\/blik_addon.hpp>
+#include <addon/blik_addon.hpp>
 
 namespace BLIK
 {

@@ -57,6 +57,19 @@ namespace BLIK
         }
 
         /*!
+        \brief 이동
+        \param rhs : 이동할 인스턴스
+        \return 자기 객체
+        */
+        Array& operator=(Array&& rhs)
+        {
+            Share::Remove(share);
+            share = rhs.share;
+            rhs.share = nullptr;
+            return *this;
+        }
+
+        /*!
         \brief 읽기접근
         \param index : 인덱스(음수는 역인덱스)
         \return 해당 객체
@@ -184,13 +197,19 @@ namespace BLIK
         Array() : share(Share::Create(SampleBuffer(), MINCOUNT)) {}
 
         /*!
-        \brief 생성자
+        \brief 복사생성자
         \param rhs : 복사할 인스턴스
         */
         Array(const Array& rhs) : share(rhs.share->Clone()) {}
 
         /*!
-        \brief 생성자(값으로부터)
+        \brief 이동생성자
+        \param rhs : 복사할 인스턴스
+        */
+        Array(Array&& rhs) : share(rhs.share) {rhs.share = nullptr;}
+
+        /*!
+        \brief 특수생성자(값으로부터)
         \param rhs : 복사할 값
         */
         Array(const TYPE& rhs) : share(Share::Create(SampleBuffer(), MINCOUNT))
@@ -199,7 +218,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 생성자(공유ID로부터)
+        \brief 특수생성자(공유ID로부터)
         \param rhs : 복사할 공유ID
         */
         Array(id_share_read rhs) : share(((Share*) rhs)->Clone())
@@ -209,7 +228,7 @@ namespace BLIK
         }
 
         /*!
-        \brief 생성자(복제된 공유ID로부터)
+        \brief 특수생성자(복제된 공유ID로부터)
         \param rhs : 복사할 공유ID
         */
         Array(id_cloned_share_read rhs) : share((Share*) rhs)

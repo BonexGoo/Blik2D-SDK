@@ -13,6 +13,10 @@ namespace BLIK
     {
     }
 
+    String::String(String&& rhs) : m_words(ToReference(rhs.m_words)), m_findmap(ToReference(rhs.m_findmap))
+    {
+    }
+
     String::String(const chararray& rhs) : m_words(rhs), m_findmap(sint32s::Null())
     {
     }
@@ -54,6 +58,13 @@ namespace BLIK
     {
         m_words = rhs.m_words;
         m_findmap = rhs.m_findmap;
+        return *this;
+    }
+
+    String& String::operator=(String&& rhs)
+    {
+        m_words = ToReference(rhs.m_words);
+        m_findmap = ToReference(rhs.m_findmap);
         return *this;
     }
 

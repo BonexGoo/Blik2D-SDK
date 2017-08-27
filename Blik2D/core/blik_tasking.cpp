@@ -173,7 +173,7 @@ namespace BLIK
 
     void Tasking::Release(id_tasking tasking, bool doWait)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return;
         if(((TaskingClass*) tasking)->SetStateByCheck(TaskingClass::BS_OnlyUser,
             (doWait)? TaskingClass::BS_WaitForTask : TaskingClass::BS_OnlyTask))
             Buffer::Free((buffer) tasking);
@@ -187,19 +187,19 @@ namespace BLIK
 
     void Tasking::Pause(id_tasking tasking)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return;
         ((TaskingClass*) tasking)->SetPause(true);
     }
 
     void Tasking::Resume(id_tasking tasking)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return;
         ((TaskingClass*) tasking)->SetPause(false);
     }
 
     bool Tasking::IsAlive(id_tasking tasking)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return false;
         return ((TaskingClass*) tasking)->IsAlive();
     }
 
@@ -210,31 +210,31 @@ namespace BLIK
 
     void Tasking::SendQuery(id_tasking tasking, buffer query)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) {Buffer::Free(query); return;}
         ((TaskingClass*) tasking)->m_query.Enqueue(query);
     }
 
     buffer Tasking::GetAnswer(id_tasking tasking)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return nullptr;
         return ((TaskingClass*) tasking)->m_answer.Dequeue();
     }
 
     sint32 Tasking::GetAnswerCount(id_tasking tasking)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return 0;
         return ((TaskingClass*) tasking)->m_answer.Count();
     }
 
     void Tasking::KeepAnswer(id_tasking tasking, buffer answer)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) {Buffer::Free(answer); return;}
         ((TaskingClass*) tasking)->m_answer.Enqueue(answer);
     }
 
     buffer Tasking::LockCommon(id_tasking tasking, bool autounlock)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) return nullptr;
         buffer Result = ((TaskingClass*) tasking)->m_common.Lock();
         if(autounlock && !Result)
             ((TaskingClass*) tasking)->m_common.Unlock(nullptr);
@@ -243,14 +243,14 @@ namespace BLIK
 
     nullbuffer Tasking::UnlockCommon(id_tasking tasking, buffer buf)
     {
-        BLIK_ASSERT("tasking인수가 nullptr입니다", tasking);
+        if(!tasking) {Buffer::Free(buf); return nullptr;}
         ((TaskingClass*) tasking)->m_common.Unlock(buf);
         return nullptr;
     }
 
     buffer Tasking::LockCommonForTask(id_common common, bool autounlock)
     {
-        BLIK_ASSERT("common인수가 nullptr입니다", common);
+        if(!common) return nullptr;
         buffer Result = ((CommonClass*) common)->Lock();
         if(autounlock && !Result)
             ((CommonClass*) common)->Unlock(nullptr);
@@ -259,7 +259,7 @@ namespace BLIK
 
     nullbuffer Tasking::UnlockCommonForTask(id_common common, buffer buf)
     {
-        BLIK_ASSERT("common인수가 nullptr입니다", common);
+        if(!common) {Buffer::Free(buf); return nullptr;}
         ((CommonClass*) common)->Unlock(buf);
         return nullptr;
     }

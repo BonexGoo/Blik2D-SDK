@@ -7,6 +7,9 @@
 #if BLIK_WINDOWS
     #include <windows.h>
 #elif BLIK_MAC_OSX || BLIK_IPHONE
+    #include <sys/stat.h>
+    #include <dirent.h>
+    #include <unistd.h>
     #include <CoreFoundation/CoreFoundation.h>
 #elif BLIK_ANDROID
     #include <dirent.h>
@@ -214,6 +217,8 @@ public:
                 fclose((FILE*) mFilePointer);
             #elif BLIK_ANDROID
                 AAsset_close((AAsset*) mFilePointer);
+            #elif BLIK_MAC_OSX || BLIK_IPHONE
+                fclose((FILE*) mFilePointer);
             #else
                 #error 준비되지 않은 플랫폼입니다
             #endif
@@ -240,6 +245,10 @@ public:
                     fseek((FILE*) mFilePointer, 0, SEEK_SET);
                 #elif BLIK_ANDROID
                     mFileSize = AAsset_getLength((AAsset*) mFilePointer);
+                #elif BLIK_MAC_OSX || BLIK_IPHONE
+                    fseek((FILE*) mFilePointer, 0, SEEK_END);
+                    mFileSize = ftell((FILE*) mFilePointer);
+                    fseek((FILE*) mFilePointer, 0, SEEK_SET);
                 #else
                     #error 준비되지 않은 플랫폼입니다
                 #endif
@@ -267,6 +276,9 @@ public:
                 #elif BLIK_ANDROID
                     const void* AssetBuffer = AAsset_getBuffer((AAsset*) mFilePointer);
                     Memory::Copy(mContent->AtDumping(0, mFileSize), AssetBuffer, mFileSize);
+                #elif BLIK_MAC_OSX || BLIK_IPHONE
+                    fread(mContent->AtDumping(0, mFileSize), 1, mFileSize, (FILE*) mFilePointer);
+                    fseek((FILE*) mFilePointer, 0, SEEK_SET);
                 #else
                     #error 준비되지 않은 플랫폼입니다
                 #endif
@@ -395,6 +407,11 @@ extern "C" void* blik_fopen(char const* filename, char const* mode)
                 filename = FilenameAtAssets;
                 AAsset* NewAssetsPointer = AAssetManager_open(GetAAssetManager(), filename, AASSET_MODE_BUFFER);
                 if(!NewAssetsPointer) return nullptr;
+            #elif BLIK_MAC_OSX || BLIK_IPHONE
+                const String FilenameAtAssets = String("../assets") + &filename[7];
+                filename = FilenameAtAssets;
+                FILE* NewAssetsPointer = fopen(filename, "rb");
+                if(!NewAssetsPointer) return nullptr;
             #else
                 #error 준비되지 않은 플랫폼입니다
             #endif
@@ -504,7 +521,7 @@ extern "C" int blik_fgetc(void* stream)
     {
         CurFile->ValidContent();
         if(CurFile->mFileOffset < CurFile->mFileSize)
-            return (*CurFile->mContent)[CurFile->mFileOffset++];
+            return (*CurFile->mContent)[(sint32) CurFile->mFileOffset++];
     }
     return EOF;
 }
@@ -579,6 +596,8 @@ public:
             if(mTypeAssets)
                 AAssetDir_close((AAssetDir*) mDirHandle);
             else closedir((DIR*) mDirHandle);
+        #elif BLIK_MAC_OSX || BLIK_IPHONE
+            closedir((DIR*) mDirHandle);
         #else
             #error 준비되지 않은 플랫폼입니다
         #endif
@@ -627,6 +646,24 @@ extern "C" void* blik_opendir(const char* dirname)
                 AAssetDir_close(NewDirHandle);
                 return nullptr;
             }
+        #elif BLIK_MAC_OSX || BLIK_IPHONE
+            CFURLRef ResourceURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+            #if BLIK_MAC_OSX
+                char TempString[1024];
+                if(!CFURLGetFileSystemRepresentation(ResourceURL, TRUE, (UInt8*) TempString, 1024))
+                    return nullptr;
+                const String ParentPath = TempString;
+            #else // 아이폰 및 시뮬레이터
+                const String ParentPath = CFStringGetCStringPtr(CFURLGetString(ResourceURL), kCFStringEncodingUTF8) + 7; // 7은 "file://"
+            #endif
+            CFRelease(ResourceURL);
+            String DirnameAtAssets = &dirname[8]; // "assets:/"
+            if(2 < DirnameAtAssets.Length() && DirnameAtAssets[-3] == '/' && DirnameAtAssets[-2] == '*')
+                DirnameAtAssets.Sub(2);
+            dirname = DirnameAtAssets;
+            DIR* NewDirHandle = opendir((chars) (ParentPath + '/' + dirname));
+            if(!NewDirHandle) return nullptr;
+            void* NewFindFileData = nullptr;
         #else
             #error 준비되지 않은 플랫폼입니다
         #endif
@@ -649,6 +686,16 @@ extern "C" void* blik_opendir(const char* dirname)
                 return nullptr;
             }
         #elif BLIK_ANDROID
+            if(dirname[0] == 'Q' && dirname[1] == ':')
+                dirname += 2;
+            String DirnameAtAssets = dirname;
+            if(2 < DirnameAtAssets.Length() && DirnameAtAssets[-3] == '/' && DirnameAtAssets[-2] == '*')
+                DirnameAtAssets.Sub(2);
+            dirname = DirnameAtAssets;
+            DIR* NewDirHandle = opendir(dirname);
+            if(!NewDirHandle) return nullptr;
+            void* NewFindFileData = nullptr;
+        #elif BLIK_MAC_OSX || BLIK_IPHONE
             if(dirname[0] == 'Q' && dirname[1] == ':')
                 dirname += 2;
             String DirnameAtAssets = dirname;
@@ -703,6 +750,13 @@ extern "C" void* blik_readdir(void* dir)
                     CurDir->mLastFilePath = CurDirEnt->d_name;
                     return (void*)(chars) CurDir->mLastFilePath;
                 }
+            }
+        #elif BLIK_MAC_OSX || BLIK_IPHONE
+            struct dirent* CurDirEnt = readdir((DIR*) CurDir->mDirHandle);
+            if(CurDirEnt)
+            {
+                CurDir->mLastFilePath = CurDirEnt->d_name;
+                return (void*)(chars) CurDir->mLastFilePath;
             }
         #else
             #error 준비되지 않은 플랫폼입니다

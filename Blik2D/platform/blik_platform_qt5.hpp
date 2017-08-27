@@ -20,6 +20,18 @@
     #include <QGLFunctions>
     #include <QGLShaderProgram>
 
+    #include <QtBluetooth>
+    #if BLIK_WINDOWS
+        #pragma warning(disable:4068) // 알 수 없는 pragma입니다.
+        #include <setupapi.h>
+        #include <devguid.h>
+        #include <regstr.h>
+        #include <bthdef.h>
+        #include <BluetoothLeAPIs.h>
+        #pragma comment(lib, "SetupAPI")
+        #pragma comment(lib, "BluetoothAPIs.lib")
+    #endif
+
     #include <QtSerialPort>
     #include <QSerialPortInfo>
 
@@ -32,7 +44,9 @@
     #include <QAudioProbe>
     #include <QAudioDeviceInfo>
 
-    #include <QWebEngineView>
+    #if !BLIK_MAC_OSX
+        #include <QWebEngineView>
+    #endif
 
     #if BLIK_ANDROID
         #include <QtAndroidExtras/QAndroidJniObject>
@@ -1679,130 +1693,458 @@
         }
     };
 
-    class WebViewPrivate : public QWebEngineView
+    #if BLIK_MAC_OSX
+        class WebPrivate
+        {
+        public:
+            WebPrivate()
+            {
+            }
+            ~WebPrivate()
+            {
+            }
+
+        public:
+            WebPrivate(const WebPrivate&) {BLIK_ASSERT("사용금지", false);}
+            WebPrivate& operator=(const WebPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
+
+        public:
+            void attachHandle(h_web web)
+            {
+            }
+            void Reload(chars url)
+            {
+            }
+            void Resize(sint32 width, sint32 height)
+            {
+                if(width != mLastImage.width() || height != mLastImage.height())
+                    mLastImage = QImage(width, height, QImage::Format_ARGB32);
+            }
+            void SetCallback(Platform::Web::EventCB cb, payload data)
+            {
+            }
+            void SendTouchEvent(TouchType type, sint32 x, sint32 y)
+            {
+            }
+            void SendKeyEvent(sint32 code, chars text, bool pressed)
+            {
+            }
+            const QPixmap GetPixmap()
+            {
+                return QPixmap::fromImage(GetImage());
+            }
+            const QImage& GetImage()
+            {
+                CanvasClass CurCanvas(&mLastImage);
+                const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
+                return mLastImage;
+            }
+
+        private:
+            QImage mLastImage;
+        };
+    #else
+        class WebViewPrivate : public QWebEngineView
+        {
+            Q_OBJECT
+
+        public:
+            WebViewPrivate(QWidget* parent = nullptr) : QWebEngineView(parent), mHandle(h_web::null())
+            {
+                mCb = nullptr;
+                mData = nullptr;
+                setMouseTracking(true);
+                connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlEvent(QUrl)));
+            }
+            virtual ~WebViewPrivate()
+            {
+                mHandle.set_buf(nullptr);
+            }
+
+        public:
+            WebViewPrivate(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false);}
+            WebViewPrivate& operator=(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
+
+        protected:
+            void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE
+            {
+                event->accept();
+                mHandle.set_buf(nullptr);
+            }
+
+        private slots:
+            virtual void urlEvent(const QUrl& url)
+            {
+                if(mCb)
+                    mCb(mData, "UrlChanged", url.url().toUtf8().constData());
+            }
+
+        public:
+            h_web mHandle;
+            Platform::Web::EventCB mCb;
+            payload mData;
+        };
+
+        class WebPrivate
+        {
+        public:
+            WebPrivate()
+            {
+                mProxy = mScene.addWidget(&mView);
+            }
+            ~WebPrivate()
+            {
+                mScene.removeItem(mProxy);
+            }
+
+        public:
+            WebPrivate(const WebPrivate&) {BLIK_ASSERT("사용금지", false);}
+            WebPrivate& operator=(const WebPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
+
+        public:
+            void attachHandle(h_web web)
+            {
+                mView.mHandle = web;
+            }
+            void Reload(chars url)
+            {
+                mView.load(QUrl(QString(url)));
+            }
+            void Resize(sint32 width, sint32 height)
+            {
+                if(width != mLastImage.width() || height != mLastImage.height())
+                {
+                    mView.resize(width, height);
+                    mLastImage = QImage(width, height, QImage::Format_ARGB32);
+                }
+            }
+            void SetCallback(Platform::Web::EventCB cb, payload data)
+            {
+                mView.mCb = cb;
+                mView.mData = data;
+            }
+            void SendTouchEvent(TouchType type, sint32 x, sint32 y)
+            {
+                QMouseEvent::Type CurType = QMouseEvent::None;
+                switch(type)
+                {
+                case TT_Moving: CurType = QMouseEvent::MouseMove; break;
+                case TT_Press: CurType = QMouseEvent::MouseButtonPress; break;
+                case TT_Dragging: CurType = QMouseEvent::MouseMove; break;
+                case TT_Release: CurType = QMouseEvent::MouseButtonRelease; break;
+                default: BLIK_ASSERT("해당 case가 준비되지 않았습니다", false);
+                }
+                QMouseEvent NewEvent(CurType, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                Q_FOREACH(QObject* obj, mView.page()->view()->children())
+                {
+                    if(qobject_cast<QWidget*>(obj))
+                        QApplication::sendEvent(obj, &NewEvent);
+                }
+            }
+            void SendKeyEvent(sint32 code, chars text, bool pressed)
+            {
+                if(auto CurWidget = mView.focusProxy())
+                {
+                    QKeyEvent NewEvent((pressed)? QKeyEvent::KeyPress : QKeyEvent::KeyRelease, code, Qt::NoModifier, text);
+                    QApplication::sendEvent(CurWidget, &NewEvent);
+                }
+            }
+            const QPixmap GetPixmap()
+            {
+                return QPixmap::fromImage(GetImage());
+            }
+            const QImage& GetImage()
+            {
+                mView.update();
+                CanvasClass CurCanvas(&mLastImage);
+                const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
+                mScene.render(&CurCanvas.painter(), CurRect, CurRect);
+                return mLastImage;
+            }
+
+        private:
+            WebViewPrivate mView;
+            QGraphicsProxyWidget* mProxy;
+            QGraphicsScene mScene;
+            QImage mLastImage;
+        };
+    #endif
+
+    class BluetoothAgentPrivate : public QObject
     {
         Q_OBJECT
 
     public:
-        WebViewPrivate(QWidget* parent = nullptr) : QWebEngineView(parent), mHandle(h_web::null())
+        Strings ReloadAllUuids(chars service_uuid, sint32 timeout, String* spec)
         {
-            mCb = nullptr;
-            mData = nullptr;
-            setMouseTracking(true);
-            connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlEvent(QUrl)));
-        }
-        virtual ~WebViewPrivate()
-        {
-            mHandle.set_buf(nullptr);
-        }
-
-    public:
-        WebViewPrivate(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false);}
-        WebViewPrivate& operator=(const WebViewPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
-
-    protected:
-        void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE
-        {
-            event->accept();
-            mHandle.set_buf(nullptr);
-        }
-
-    private slots:
-        virtual void urlEvent(const QUrl& url)
-        {
-            if(mCb)
-                mCb(mData, "UrlChanged", url.url().toUtf8().constData());
-        }
-
-    public:
-        h_web mHandle;
-        Platform::Web::EventCB mCb;
-        payload mData;
-    };
-
-    class WebPrivate
-    {
-    public:
-        WebPrivate()
-        {
-            mProxy = mScene.addWidget(&mView);
-        }
-        ~WebPrivate()
-        {
-            mScene.removeItem(mProxy);
-        }
-
-    public:
-        WebPrivate(const WebPrivate&) {BLIK_ASSERT("사용금지", false);}
-        WebPrivate& operator=(const WebPrivate&) {BLIK_ASSERT("사용금지", false); return *this;}
-
-    public:
-        void attachHandle(h_web web)
-        {
-            mView.mHandle = web;
-        }
-        void Reload(chars url)
-        {
-            mView.load(QUrl(QString(url)));
-        }
-        void Resize(sint32 width, sint32 height)
-        {
-            if(width != mLastImage.width() || height != mLastImage.height())
-            {
-                mView.resize(width, height);
-                mLastImage = QImage(width, height, QImage::Format_ARGB32);
-            }
-        }
-        void SetCallback(Platform::Web::EventCB cb, payload data)
-        {
-            mView.mCb = cb;
-            mView.mData = data;
-        }
-        void SendTouchEvent(TouchType type, sint32 x, sint32 y)
-        {
-            QMouseEvent::Type CurType = QMouseEvent::None;
-            switch(type)
-            {
-            case TT_Moving: CurType = QMouseEvent::MouseMove; break;
-            case TT_Press: CurType = QMouseEvent::MouseButtonPress; break;
-            case TT_Dragging: CurType = QMouseEvent::MouseMove; break;
-            case TT_Release: CurType = QMouseEvent::MouseButtonRelease; break;
-            default: BLIK_ASSERT("해당 case가 준비되지 않았습니다", false);
-            }
-            QMouseEvent NewEvent(CurType, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            Q_FOREACH(QObject* obj, mView.page()->view()->children())
-            {
-                if(qobject_cast<QWidget*>(obj))
-                    QApplication::sendEvent(obj, &NewEvent);
-            }
-        }
-        void SendKeyEvent(sint32 code, chars text, bool pressed)
-        {
-            if(auto CurWidget = mView.focusProxy())
-            {
-                QKeyEvent NewEvent((pressed)? QKeyEvent::KeyPress : QKeyEvent::KeyRelease, code, Qt::NoModifier, text);
-                QApplication::sendEvent(CurWidget, &NewEvent);
-            }
-        }
-        const QPixmap GetPixmap()
-        {
-            return QPixmap::fromImage(GetImage());
-        }
-        const QImage& GetImage()
-        {
-            mView.update();
-            CanvasClass CurCanvas(&mLastImage);
-            const QRect CurRect(0, 0, mLastImage.width(), mLastImage.height());
-            mScene.render(&CurCanvas.painter(), CurRect, CurRect);
-            return mLastImage;
+            mAgent->setLowEnergyDiscoveryTimeout(timeout);
+            mAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
+            return Strings();
         }
 
     private:
-        WebViewPrivate mView;
-        QGraphicsProxyWidget* mProxy;
-        QGraphicsScene mScene;
-        QImage mLastImage;
+        BluetoothAgentPrivate()
+        {
+            mAgent = new QBluetoothDeviceDiscoveryAgent();
+            connect(mAgent, SIGNAL(deviceDiscovered(const QBluetoothDeviceInfo&)),
+                this, SLOT(addDevice(const QBluetoothDeviceInfo&)));
+            connect(mAgent, SIGNAL(finished()), this, SLOT(deviceScanFinished()));
+            connect(mAgent, SIGNAL(error(QBluetoothDeviceDiscoveryAgent::Error)),
+                this, SLOT(deviceScanError(QBluetoothDeviceDiscoveryAgent::Error)));
+        }
+        ~BluetoothAgentPrivate()
+        {
+            delete mAgent;
+        }
+
+    private:
+        QBluetoothDeviceDiscoveryAgent* mAgent;
+
+    public:
+        static BluetoothAgentPrivate& ST()
+        {static BluetoothAgentPrivate _; return _;}
+
+    private slots:
+        void addDevice(const QBluetoothDeviceInfo& info)
+        {
+        }
+        void deviceScanFinished()
+        {
+        }
+        void deviceScanError(QBluetoothDeviceDiscoveryAgent::Error error)
+        {
+        }
     };
+
+    #if BLIK_WINDOWS
+        class BluetoothAgentForWindows
+        {
+        private:
+            #define OK_CHECK(FUNC, ...) \
+                do {HRESULT HR = FUNC(__VA_ARGS__); BLIK_ASSERT("Ok Check Error", HR == S_OK);} while(false)
+            #define MORE_CHECK(FUNC, ...) \
+                do {HRESULT HR = FUNC(__VA_ARGS__); BLIK_ASSERT("More Check Error", HR == S_OK || HR == HRESULT_FROM_WIN32(ERROR_MORE_DATA));} while(false)
+
+        public:
+            Strings ReloadAllUuids(chars service_uuid, sint32 timeout, String* spec)
+            {
+                mService.Reset();
+                HANDLE CurDevice = GetBLEHandle(service_uuid);
+                if(CurDevice == INVALID_HANDLE_VALUE)
+                    return Strings();
+
+                USHORT GetCount = 0;
+	            MORE_CHECK(BluetoothGATTGetServices, CurDevice, 0, NULL, &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                if(0 < GetCount)
+                {
+                    OK_CHECK(BluetoothGATTGetServices, CurDevice, GetCount,
+                        mService.mDatas.AtDumpingAdded(GetCount), &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                    for(sint32 s = 0, send = mService.mDatas.Count(); s < send; ++s)
+                    {
+                        auto& CurServiceData = mService.mDatas.At(s);
+	                    MORE_CHECK(BluetoothGATTGetCharacteristics, CurDevice, &CurServiceData, 0,
+                            NULL, &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                        if(0 < GetCount)
+                        {
+                            auto& CurCharacter = mService.mCharacters.AtWherever(s);
+                            OK_CHECK(BluetoothGATTGetCharacteristics, CurDevice, &CurServiceData, GetCount,
+                                CurCharacter.mDatas.AtDumpingAdded(GetCount), &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+	                        for(sint32 c = 0, cend = CurCharacter.mDatas.Count(); c < cend; ++c)
+                            {
+		                        auto& CurCharacterData = CurCharacter.mDatas.At(c);
+	                            MORE_CHECK(BluetoothGATTGetDescriptors, CurDevice, &CurCharacterData, 0,
+                                    NULL, &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                                if(0 < GetCount)
+                                {
+                                    auto& CurDescriptor = CurCharacter.mDescriptors.AtWherever(c);
+                                    OK_CHECK(BluetoothGATTGetDescriptors, CurDevice, &CurCharacterData, GetCount,
+                                        CurDescriptor.mDatas.AtDumpingAdded(GetCount), &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                                    for(sint32 d = 0, dend = CurDescriptor.mDatas.Count(); d < dend; ++d)
+                                    {
+                                        auto& CurDescriptorData = CurDescriptor.mDatas.At(d);
+	                                    MORE_CHECK(BluetoothGATTGetDescriptorValue, CurDevice, &CurDescriptorData, 0,
+                                            NULL, &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+                                        if(0 < GetCount)
+                                            OK_CHECK(BluetoothGATTGetDescriptorValue, CurDevice, &CurDescriptorData, GetCount,
+                                                CurDescriptor.mValues.AtDumpingAdded(GetCount), &GetCount, BLUETOOTH_GATT_FLAG_NONE);
+
+                                        if(CurDescriptorData.AttributeHandle < 255)
+                                        {
+					                        BTH_LE_GATT_DESCRIPTOR_VALUE NewDescValue;
+					                        RtlZeroMemory(&NewDescValue, sizeof(BTH_LE_GATT_DESCRIPTOR_VALUE));
+					                        NewDescValue.DescriptorType = ClientCharacteristicConfiguration;
+					                        NewDescValue.ClientCharacteristicConfiguration.IsSubscribeToNotification = TRUE;
+					                        OK_CHECK(BluetoothGATTSetDescriptorValue, CurDevice, &CurDescriptorData,
+                                                &NewDescValue, BLUETOOTH_GATT_FLAG_NONE);
+				                        }
+			                        }
+                                }
+
+		                        BLUETOOTH_GATT_EVENT_HANDLE EventHandle;
+		                        if(CurCharacterData.IsNotifiable)
+                                {
+			                        BTH_LE_GATT_EVENT_TYPE EventType = CharacteristicValueChangedEvent;
+			                        BLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION EventParameterIn;
+			                        EventParameterIn.Characteristics[0] = CurCharacterData;
+			                        EventParameterIn.NumCharacteristics = 1;
+			                        OK_CHECK(BluetoothGATTRegisterEvent, CurDevice, EventType, &EventParameterIn,
+                                        SomethingHappened, NULL, &EventHandle, BLUETOOTH_GATT_FLAG_NONE);
+		                        }
+
+		                        if(CurCharacterData.IsReadable)
+                                {
+                                    BLIK_ASSERT("준비되지 않은 상황!", false);
+			                        /*HRESULT hr = BluetoothGATTGetCharacteristicValue(CurDevice, CurCharBuffer,
+                                        0, NULL, &charValueDataSize, BLUETOOTH_GATT_FLAG_NONE);
+			                        if(HRESULT_FROM_WIN32(ERROR_MORE_DATA) != hr)
+                                        BLIK_TRACE("BluetoothGATTGetCharacteristicValue - Buffer Size %d", hr);
+
+			                        pCharValueBuffer = (PBTH_LE_GATT_CHARACTERISTIC_VALUE) malloc(charValueDataSize);
+			                        if(NULL == pCharValueBuffer) BLIK_TRACE("pCharValueBuffer out of memory\r\n");
+			                        else RtlZeroMemory(pCharValueBuffer, charValueDataSize);
+
+			                        hr = BluetoothGATTGetCharacteristicValue(CurDevice, CurCharBuffer,
+                                        (ULONG) charValueDataSize, pCharValueBuffer, NULL, BLUETOOTH_GATT_FLAG_NONE);
+			                        if(S_OK != hr) BLIK_TRACE("BluetoothGATTGetCharacteristicValue - Actual Data %d", hr);
+
+			                        BLIK_TRACE("Printing a read (not notifiable) characterstic (maybe) body sensor value");
+			                        for(int iii = 0; iii < pCharValueBuffer->DataSize; iii++)
+				                        BLIK_TRACE("%d", pCharValueBuffer->Data[iii]);
+
+			                        free(pCharValueBuffer);
+			                        pCharValueBuffer = NULL;*/
+		                        }
+	                        }
+                        }
+                    }
+                }
+                CloseHandle(CurDevice);
+                return Strings();
+            }
+
+        private:
+            BluetoothAgentForWindows()
+            {
+            }
+            ~BluetoothAgentForWindows()
+            {
+            }
+
+        private:
+            class Descriptor
+            {
+            public:
+                Descriptor() {}
+                ~Descriptor() {}
+                Descriptor(const Descriptor& rhs) {operator=(rhs);}
+                Descriptor& operator=(const Descriptor& rhs)
+                {
+                    mDatas = rhs.mDatas;
+                    mValues = rhs.mValues;
+                    return *this;
+                }
+            public:
+                Array<BTH_LE_GATT_DESCRIPTOR, datatype_pod_canmemcpy_zeroset> mDatas;
+                Array<BTH_LE_GATT_DESCRIPTOR_VALUE, datatype_pod_canmemcpy_zeroset> mValues;
+            };
+            class Character
+            {
+            public:
+                Character() {}
+                ~Character() {}
+                Character(const Character& rhs) {operator=(rhs);}
+                Character& operator=(const Character& rhs)
+                {
+                    mDatas = rhs.mDatas;
+                    mDescriptors = rhs.mDescriptors;
+                    return *this;
+                }
+            public:
+                Array<BTH_LE_GATT_CHARACTERISTIC, datatype_pod_canmemcpy_zeroset> mDatas;
+                Array<Descriptor> mDescriptors;
+            };
+            class Service
+            {
+            public:
+                Service() {}
+                ~Service() {}
+                Service(const Service& rhs) {operator=(rhs);}
+                Service& operator=(const Service& rhs)
+                {
+                    mDatas = rhs.mDatas;
+                    mCharacters = rhs.mCharacters;
+                    return *this;
+                }
+            public:
+                void Reset()
+                {
+                    mDatas.SubtractionAll();
+                    mCharacters.SubtractionAll();
+                }
+            public:
+                Array<BTH_LE_GATT_SERVICE, datatype_pod_canmemcpy_zeroset> mDatas;
+                Array<Character> mCharacters;
+            };
+            Service mService;
+
+        public:
+            static BluetoothAgentForWindows& ST()
+            {static BluetoothAgentForWindows _; return _;}
+
+        private:
+            static HANDLE GetBLEHandle(chars service_uuid)
+            {
+                HANDLE Result = INVALID_HANDLE_VALUE;
+                GUID BluetoothInterfaceGUID;
+                CLSIDFromString(WString::FromChars(service_uuid), &BluetoothInterfaceGUID);
+	            HDEVINFO hDI = SetupDiGetClassDevs(&BluetoothInterfaceGUID,
+                    NULL, NULL, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
+	            if(hDI == INVALID_HANDLE_VALUE) return NULL;
+
+                SP_DEVICE_INTERFACE_DATA did = {0};
+                SP_DEVINFO_DATA dd = {0};
+                did.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+                dd.cbSize = sizeof(SP_DEVINFO_DATA);
+
+	            for(DWORD i = 0; SetupDiEnumDeviceInterfaces(hDI, NULL, &BluetoothInterfaceGUID, i, &did); i++)
+	            {
+                    SP_DEVICE_INTERFACE_DETAIL_DATA DeviceInterfaceDetailData;
+                    DeviceInterfaceDetailData.cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+		            DWORD size = 0;
+		            if(!SetupDiGetDeviceInterfaceDetail(hDI, &did, NULL, 0, &size, 0))
+		            {
+			            int err = GetLastError();
+			            if(err == ERROR_NO_MORE_ITEMS) break;
+			            PSP_DEVICE_INTERFACE_DETAIL_DATA pInterfaceDetailData =
+                            (PSP_DEVICE_INTERFACE_DETAIL_DATA) GlobalAlloc(GPTR, size);
+			            pInterfaceDetailData->cbSize = sizeof (SP_DEVICE_INTERFACE_DETAIL_DATA);
+			            if(!SetupDiGetDeviceInterfaceDetail(hDI, &did, pInterfaceDetailData, size, &size, &dd))
+				            break;
+			            Result = CreateFile(pInterfaceDetailData->DevicePath, GENERIC_WRITE | GENERIC_READ,
+				            FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+			            GlobalFree(pInterfaceDetailData);
+		            }
+	            }
+	            SetupDiDestroyDeviceInfoList(hDI);
+                return Result;
+            }
+            static void SomethingHappened(BTH_LE_GATT_EVENT_TYPE EventType, PVOID EventOutParameter, PVOID Context)
+            {
+	            PBLUETOOTH_GATT_VALUE_CHANGED_EVENT ValueChangedEventParameters =
+                    (PBLUETOOTH_GATT_VALUE_CHANGED_EVENT) EventOutParameter;
+	            HRESULT hr;
+	            if(0 == ValueChangedEventParameters->CharacteristicValue->DataSize)
+		            hr = E_FAIL;
+                else
+                {
+		            BLIK_TRACE("DataSize: %d", ValueChangedEventParameters->CharacteristicValue->DataSize);
+	            }
+            }
+        };
+        typedef BluetoothAgentForWindows BluetoothAgentClass;
+    #else
+        typedef BluetoothAgentPrivate BluetoothAgentClass;
+    #endif
 
     #if BLIK_ANDROID
         class SerialPortForAndroid

@@ -1365,6 +1365,55 @@
         }
 
         ////////////////////////////////////////////////////////////////////////////////
+        // BLUETOOTH
+        ////////////////////////////////////////////////////////////////////////////////
+        Strings Platform::Bluetooth::GetAllUuids(chars service_uuid, sint32 timeout, String* spec)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return Strings();
+        }
+
+        id_bluetooth Platform::Bluetooth::Open(chars uuid)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        void Platform::Bluetooth::Close(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        bool Platform::Bluetooth::Connected(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return false;
+        }
+
+        sint32 Platform::Bluetooth::ReadAvailable(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
+
+        sint32 Platform::Bluetooth::Read(id_bluetooth bluetooth, uint08* data, const sint32 size)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return 0;
+        }
+
+        void Platform::Bluetooth::Write(id_bluetooth bluetooth, const uint08* data, const sint32 size)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+        }
+
+        chars Platform::Bluetooth::EventFlush(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("This is blank platform. You can use BLIK_PLATFORM_XXX.", false);
+            return nullptr;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
         // SERIAL
         ////////////////////////////////////////////////////////////////////////////////
         Strings Platform::Serial::GetAllNames(String* spec)

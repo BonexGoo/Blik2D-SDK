@@ -2323,6 +2323,59 @@
         }
 
         ////////////////////////////////////////////////////////////////////////////////
+        // BLUETOOTH
+        ////////////////////////////////////////////////////////////////////////////////
+        Strings Platform::Bluetooth::GetAllUuids(chars service_uuid, sint32 timeout, String* spec)
+        {
+            // service_uuid는 Windows10에서 일반적 블루투스가 아닐 경우
+            // 설정창의 "Bluetooth 및 기타 디바이스"에서 추가버튼을 눌러
+            // 수동으로 연결해주고 장치관리자의 해당 속성의 "자세히"에서
+            // "버스 관련"이라는 항목의 하위 UUID중에서 확인가능.
+            // 또는 아이폰에 블루투스터미널 앱깔아서 확인가능.
+            return BluetoothAgentClass::ST().ReloadAllUuids(service_uuid, timeout, spec);
+        }
+
+        id_bluetooth Platform::Bluetooth::Open(chars uuid)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return nullptr;
+        }
+
+        void Platform::Bluetooth::Close(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        bool Platform::Bluetooth::Connected(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return false;
+        }
+
+        sint32 Platform::Bluetooth::ReadAvailable(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return 0;
+        }
+
+        sint32 Platform::Bluetooth::Read(id_bluetooth bluetooth, uint08* data, const sint32 size)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return 0;
+        }
+
+        void Platform::Bluetooth::Write(id_bluetooth bluetooth, const uint08* data, const sint32 size)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+        }
+
+        chars Platform::Bluetooth::EventFlush(id_bluetooth bluetooth)
+        {
+            BLIK_ASSERT("Further development is needed.", false);
+            return nullptr;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
         // SERIAL
         ////////////////////////////////////////////////////////////////////////////////
         Strings Platform::Serial::GetAllNames(String* spec)

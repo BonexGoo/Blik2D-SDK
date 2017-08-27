@@ -88,6 +88,7 @@
     <ClCompile Include="..\service\blik_batchbuilder.cpp" />
     <ClCompile Include="..\service\blik_boxr.cpp" />
     <ClCompile Include="..\service\blik_brii.cpp" />
+    <ClCompile Include="..\service\blik_camera360service.cpp" />
     <ClCompile Include="..\service\blik_livechatservice.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_streamingservice.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="..\service\blik_batchbuilder.hpp" />
     <ClInclude Include="..\service\blik_boxr.hpp" />
     <ClInclude Include="..\service\blik_brii.hpp" />
+    <ClInclude Include="..\service\blik_camera360service.hpp" />
     <ClInclude Include="..\service\blik_livechatservice.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
     <ClInclude Include="..\service\blik_streamingservice.hpp" />

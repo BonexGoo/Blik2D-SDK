@@ -6,6 +6,8 @@ namespace BLIK
     //! \brief 서비스-Streaming
     class StreamingService
     {
+    BLIK_DECLARE_NONCOPYABLE_CLASS(StreamingService)
+
     public:
         class Frame
         {
@@ -51,16 +53,16 @@ namespace BLIK
             static sint32 OnCodecTask(buffer& self, Queue<buffer>& query, Queue<buffer>& answer, id_common common);
 
         private:
-            mutable id_tasking mTasking;
+            id_tasking mTasking;
             bool mNeedCreate;
             Queue<Frame>* mFrameQueueRef;
         };
 
     public:
         StreamingService();
-        StreamingService(const StreamingService& rhs);
         ~StreamingService();
-        StreamingService& operator=(const StreamingService& rhs);
+        StreamingService(StreamingService&& rhs);
+        StreamingService& operator=(StreamingService&& rhs);
 
     public:
         void InitForBroadcast(chars servicename, chars streamkey);
@@ -76,6 +78,6 @@ namespace BLIK
 
     private:
         String mServiceName;
-        mutable id_tasking mTasking;
+        id_tasking mTasking;
     };
 }

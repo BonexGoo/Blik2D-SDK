@@ -12,96 +12,96 @@
 
 // 옵션스택관련
 #define ZAY_LTRB(PANEL, L, T, R, B) \
-    if(auto& _ = (PANEL)._push_clip(L, T, R, B, false))
-#define ZAY_LTRB_UI(PANEL, L, T, R, B, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(L, T, R, B, false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(L, T, R, B, false))
+#define ZAY_LTRB_UI(PANEL, L, T, R, B, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(L, T, R, B, false, __VA_ARGS__))
 #define ZAY_LTRB_SCISSOR(PANEL, L, T, R, B) \
-    if(auto& _ = (PANEL)._push_clip(L, T, R, B, true))
-#define ZAY_LTRB_UI_SCISSOR(PANEL, L, T, R, B, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(L, T, R, B, true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(L, T, R, B, true))
+#define ZAY_LTRB_UI_SCISSOR(PANEL, L, T, R, B, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(L, T, R, B, true, __VA_ARGS__))
 
 #define ZAY_XYWH(PANEL, X, Y, W, H) \
-    if(auto& _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false))
-#define ZAY_XYWH_UI(PANEL, X, Y, W, H, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), false))
+#define ZAY_XYWH_UI(PANEL, X, Y, W, H, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), false, __VA_ARGS__))
 #define ZAY_XYWH_SCISSOR(PANEL, X, Y, W, H) \
-    if(auto& _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true))
-#define ZAY_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(X, Y, (X) + (W), (Y) + (H), true))
+#define ZAY_XYWH_UI_SCISSOR(PANEL, X, Y, W, H, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(X, Y, (X) + (W), (Y) + (H), true, __VA_ARGS__))
 
 #define ZAY_XYRR(PANEL, X, Y, RW, RH) \
-    if(auto& _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false))
-#define ZAY_XYRR_UI(PANEL, X, Y, RW, RH, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false))
+#define ZAY_XYRR_UI(PANEL, X, Y, RW, RH, ...) \
+    if(auto _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), false, __VA_ARGS__))
 #define ZAY_XYRR_SCISSOR(PANEL, X, Y, RW, RH) \
-    if(auto& _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true))
-#define ZAY_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true))
+#define ZAY_XYRR_UI_SCISSOR(PANEL, X, Y, RW, RH, ...) \
+    if(auto _ = (PANEL)._push_clip_ui((X) - (RW), (Y) - (RH), (X) + (RW), (Y) + (RH), true, __VA_ARGS__))
 
 #define ZAY_RECT(PANEL, R) \
-    if(auto& _ = (PANEL)._push_clip_by_rect(R, false))
-#define ZAY_RECT_UI(PANEL, R, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_rect(R, false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_rect(R, false))
+#define ZAY_RECT_UI(PANEL, R, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_rect(R, false, __VA_ARGS__))
 #define ZAY_RECT_SCISSOR(PANEL, R) \
-    if(auto& _ = (PANEL)._push_clip_by_rect(R, true))
-#define ZAY_RECT_UI_SCISSOR(PANEL, R, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_rect(R, true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_rect(R, true))
+#define ZAY_RECT_UI_SCISSOR(PANEL, R, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_rect(R, true, __VA_ARGS__))
 
 #define ZAY_INNER(PANEL, V) \
-    if(auto& _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false))
-#define ZAY_INNER_UI(PANEL, V, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false))
+#define ZAY_INNER_UI(PANEL, V, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), false, __VA_ARGS__))
 #define ZAY_INNER_SCISSOR(PANEL, V) \
-    if(auto& _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true))
-#define ZAY_INNER_UI_SCISSOR(PANEL, V, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true))
+#define ZAY_INNER_UI_SCISSOR(PANEL, V, ...) \
+    if(auto _ = (PANEL)._push_clip_ui(V, V, (PANEL).w() - (V), (PANEL).h() - (V), true, __VA_ARGS__))
 
 #define ZAY_CHILD(PANEL) \
-    if(auto& _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false))
-#define ZAY_CHILD_UI(PANEL, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, false))
+#define ZAY_CHILD_UI(PANEL, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, false, __VA_ARGS__))
 #define ZAY_CHILD_SCISSOR(PANEL) \
-    if(auto& _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true))
-#define ZAY_CHILD_UI_SCISSOR(PANEL, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(0, 0, 0xFFFF, 0xFFFF, true))
+#define ZAY_CHILD_UI_SCISSOR(PANEL, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(0, 0, 0xFFFF, 0xFFFF, true, __VA_ARGS__))
 
 #define ZAY_CHILD_AT(PANEL, IX, IY) \
-    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false))
-#define ZAY_CHILD_AT_UI(PANEL, IX, IY, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, false))
+#define ZAY_CHILD_AT_UI(PANEL, IX, IY, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, false, __VA_ARGS__))
 #define ZAY_CHILD_AT_SCISSOR(PANEL, IX, IY) \
-    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true))
-#define ZAY_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(IX, IY, 1, 1, true))
+#define ZAY_CHILD_AT_UI_SCISSOR(PANEL, IX, IY, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(IX, IY, 1, 1, true, __VA_ARGS__))
 
 #define ZAY_CHILD_SECTION(PANEL, IX, IY, XC, YC) \
-    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false))
-#define ZAY_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, false))
+#define ZAY_CHILD_SECTION_UI(PANEL, IX, IY, XC, YC, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, false, __VA_ARGS__))
 #define ZAY_CHILD_SECTION_SCISSOR(PANEL, IX, IY, XC, YC) \
-    if(auto& _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true))
-#define ZAY_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, NAME, ...) \
-    if(auto& _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, NAME, __VA_ARGS__))
+    if(auto _ = (PANEL)._push_clip_by_child(IX, IY, XC, YC, true))
+#define ZAY_CHILD_SECTION_UI_SCISSOR(PANEL, IX, IY, XC, YC, ...) \
+    if(auto _ = (PANEL)._push_clip_ui_by_child(IX, IY, XC, YC, true, __VA_ARGS__))
 
 #define ZAY_RGB(PANEL, R, G, B) \
-    if(auto& _ = (PANEL)._push_color(R, G, B, 0xFF))
+    if(auto _ = (PANEL)._push_color(R, G, B, 0xFF))
 #define ZAY_RGB_IF(PANEL, R, G, B, QUERY) \
-    if(auto& _ = (QUERY)? (PANEL)._push_color(R, G, B, 0xFF) : (PANEL)._push_pass())
+    if(auto _ = (QUERY)? (PANEL)._push_color(R, G, B, 0xFF) : (PANEL)._push_pass())
 #define ZAY_RGBA(PANEL, R, G, B, A) \
-    if(auto& _ = (PANEL)._push_color(R, G, B, A))
+    if(auto _ = (PANEL)._push_color(R, G, B, A))
 #define ZAY_RGBA_IF(PANEL, R, G, B, A, QUERY) \
-    if(auto& _ = (QUERY)? (PANEL)._push_color(R, G, B, A) : (PANEL)._push_pass())
+    if(auto _ = (QUERY)? (PANEL)._push_color(R, G, B, A) : (PANEL)._push_pass())
 #define ZAY_COLOR(PANEL, COLOR) \
-    if(auto& _ = (PANEL)._push_color(COLOR))
+    if(auto _ = (PANEL)._push_color(COLOR))
 #define ZAY_COLOR_IF(PANEL, COLOR, QUERY) \
-    if(auto& _ = (QUERY)? (PANEL)._push_color(COLOR) : (PANEL)._push_pass())
+    if(auto _ = (QUERY)? (PANEL)._push_color(COLOR) : (PANEL)._push_pass())
 #define ZAY_COLOR_CLEAR(PANEL) \
-    if(auto& _ = (PANEL)._push_color_clear())
+    if(auto _ = (PANEL)._push_color_clear())
 
 #define ZAY_FONT(PANEL, ...) \
-    if(auto& _ = (PANEL)._push_font(__VA_ARGS__))
+    if(auto _ = (PANEL)._push_font(__VA_ARGS__))
 #define ZAY_ZOOM(PANEL, ZOOM) \
-    if(auto& _ = (PANEL)._push_zoom(ZOOM))
+    if(auto _ = (PANEL)._push_zoom(ZOOM))
 
 // 서브패널관련
 #define ZAY_MAKE_SUB(PANEL, SURFACE) \
@@ -287,6 +287,7 @@ namespace BLIK
         enum StackType {ST_Null, ST_Pass, ST_Clip, ST_Color, ST_Font, ST_Zoom};
         class StackBinder
         {
+            BLIK_DECLARE_NONCOPYABLE_INITIALIZED_CLASS(StackBinder, mPanel(rhs.mPanel))
             friend class ZayPanel;
         private:
             StackBinder(ZayPanel* panel, StackType type = ST_Null) : mPanel(panel) {mType = type;}
@@ -301,13 +302,13 @@ namespace BLIK
                 case ST_Zoom: mPanel->_pop_zoom(); break;
                 }
             }
-            StackBinder(const StackBinder& rhs) : mPanel(rhs.mPanel) {mType = rhs.mType; rhs.mType = ST_Pass;}
-            StackBinder& operator=(const StackBinder& rhs)
-            {BLIK_ASSERT("This class is not allowed to be copied", false); return *this;}
+        public:
+            StackBinder(StackBinder&& rhs) : mPanel(rhs.mPanel) {mType = rhs.mType; rhs.mType = ST_Null;}
+            StackBinder& operator=(StackBinder&& rhs) {mType = rhs.mType; rhs.mType = ST_Null; return *this;}
             operator bool() const {return (mType != ST_Null);}
         private:
             ZayPanel* const mPanel;
-            mutable StackType mType;
+            StackType mType;
         };
 
     public:

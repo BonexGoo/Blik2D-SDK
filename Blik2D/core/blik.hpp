@@ -71,6 +71,20 @@ namespace BLIK
         return _IsTypePointer(Variable);
     }
 
+    // About reference converter
+    template<class TYPE>
+	struct _ToReference {typedef TYPE type;};
+    template<class TYPE>
+	struct _ToReference<TYPE&> {typedef TYPE type;};
+    template<class TYPE>
+	struct _ToReference<TYPE&&> {typedef TYPE type;};
+    template<typename TYPE>
+    inline typename _ToReference<TYPE>::type&& ToReference(TYPE&& param)
+    {
+        using ReturnType = typename _ToReference<TYPE>::type&&;
+        return static_cast<ReturnType>(param);
+    }
+
     // About enum
     enum datatype:uint08 {
         datatype_class_nomemcpy,
@@ -251,6 +265,7 @@ namespace BLIK
     BLIK_DECLARE_ID(id_file);
     BLIK_DECLARE_ID(id_socket);
     BLIK_DECLARE_ID(id_server);
+    BLIK_DECLARE_ID(id_bluetooth);
     BLIK_DECLARE_ID(id_serial);
     BLIK_DECLARE_ID(id_bitmap);
     BLIK_DECLARE_ID(id_flash);

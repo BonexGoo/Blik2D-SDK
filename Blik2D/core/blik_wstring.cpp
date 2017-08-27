@@ -101,6 +101,10 @@ namespace BLIK
     {
     }
 
+    WString::WString(WString&& rhs) : m_words(ToReference(rhs.m_words))
+    {
+    }
+
     WString::WString(const wchararray& rhs) : m_words(rhs)
     {
     }
@@ -141,6 +145,12 @@ namespace BLIK
     WString& WString::operator=(const WString& rhs)
     {
         m_words = rhs.m_words;
+        return *this;
+    }
+
+    WString& WString::operator=(WString&& rhs)
+    {
+        m_words = ToReference(rhs.m_words);
         return *this;
     }
 

@@ -2,17 +2,7 @@
 #define BLIK_NOT_INCLUDE_FOR_INTELLIGENCE
 #include <blik.hpp>
 
-#if BLIK_ANDROID
-    #define BLIK_API(PACK, TYPE, FUNC, ...) \
-        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, "Java_com_" #PACK "_" #FUNC, #__VA_ARGS__); \
-        BLIK_API_FUNC(PACK, TYPE, FUNC)(void* env, void*, __VA_ARGS__)
-    #define BLIK_API_VOID(PACK, TYPE, FUNC) \
-        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, "Java_com_" #PACK "_" #FUNC, "void"); \
-        BLIK_API_FUNC(PACK, TYPE, FUNC)(void* env, void*)
-    #define BLIK_API_FUNC(PACK, TYPE, FUNC) \
-        extern "C" TYPE Java_com_##PACK##_##FUNC
-    #define BLIK_API_ENV env
-#else
+#if BLIK_WINDOWS
     #define BLIK_API(PACK, TYPE, FUNC, ...) \
         static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, #PACK "_" #FUNC, #__VA_ARGS__); \
         BLIK_API_FUNC(PACK, TYPE, FUNC)(__VA_ARGS__)
@@ -22,6 +12,28 @@
     #define BLIK_API_FUNC(PACK, TYPE, FUNC) \
         extern "C" __declspec(dllexport) TYPE PACK##_##FUNC
     #define BLIK_API_ENV nullptr
+#elif BLIK_ANDROID
+    #define BLIK_API(PACK, TYPE, FUNC, ...) \
+        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, "Java_com_" #PACK "_" #FUNC, #__VA_ARGS__); \
+        BLIK_API_FUNC(PACK, TYPE, FUNC)(void* env, void*, __VA_ARGS__)
+    #define BLIK_API_VOID(PACK, TYPE, FUNC) \
+        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, "Java_com_" #PACK "_" #FUNC, "void"); \
+        BLIK_API_FUNC(PACK, TYPE, FUNC)(void* env, void*)
+    #define BLIK_API_FUNC(PACK, TYPE, FUNC) \
+        extern "C" TYPE Java_com_##PACK##_##FUNC
+    #define BLIK_API_ENV env
+#elif BLIK_MAC_OSX || BLIK_IPHONE
+    #define BLIK_API(PACK, TYPE, FUNC, ...) \
+        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, #PACK "_" #FUNC, #__VA_ARGS__); \
+        BLIK_API_FUNC(PACK, TYPE, FUNC)(__VA_ARGS__)
+    #define BLIK_API_VOID(PACK, TYPE, FUNC) \
+        static autorun API_##PACK##_##FUNC = CollectForPlatform(#TYPE, #FUNC, #PACK "_" #FUNC, "void"); \
+        BLIK_API_FUNC(PACK, TYPE, FUNC)()
+    #define BLIK_API_FUNC(PACK, TYPE, FUNC) \
+        extern "C" TYPE PACK##_##FUNC
+    #define BLIK_API_ENV nullptr
+#else
+    #error 준비되지 않은 플랫폼입니다
 #endif
 #define BLIK_API_IMPL(CODE) \
     { \

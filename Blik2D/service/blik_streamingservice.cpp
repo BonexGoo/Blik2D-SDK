@@ -440,25 +440,23 @@ namespace BLIK
         mTasking = nullptr;
     }
 
-    StreamingService::StreamingService(const StreamingService& rhs)
+    StreamingService::~StreamingService()
+    {
+        if(mTasking)
+        BLIK_COMMON(mTasking, common_buffer)
+        if(auto CodecR = (CodecReceiver*) common_buffer)
+            CodecR->mKilled = true;
+        Tasking::Release(mTasking, true);
+    }
+
+    StreamingService::StreamingService(StreamingService&& rhs)
     {
         operator=(rhs);
     }
 
-    StreamingService::~StreamingService()
+    StreamingService& StreamingService::operator=(StreamingService&& rhs)
     {
-        if(mTasking)
-        {
-            BLIK_COMMON(mTasking, common_buffer)
-            if(auto CodecR = (CodecReceiver*) common_buffer)
-                CodecR->mKilled = true;
-            Tasking::Release(mTasking, true);
-        }
-    }
-
-    StreamingService& StreamingService::operator=(const StreamingService& rhs)
-    {
-        mServiceName = rhs.mServiceName;
+        mServiceName = ToReference(rhs.mServiceName);
         mTasking = rhs.mTasking;
         rhs.mTasking = nullptr;
         return *this;

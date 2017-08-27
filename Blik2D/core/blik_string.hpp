@@ -19,32 +19,38 @@ namespace BLIK
         String(const String& rhs);
 
         /*!
-        \brief 생성자(공유배열로부터)
+        \brief 이동생성자
+        \param rhs : 이동할 인스턴스
+        */
+        String(String&& rhs);
+
+        /*!
+        \brief 특수생성자(공유배열로부터)
         \param rhs : 공유배열
         */
         String(const chararray& rhs);
 
         /*!
-        \brief 생성자(공유ID로부터)
+        \brief 특수생성자(공유ID로부터)
         \param rhs : 복사할 인스턴스
         */
         String(id_share_read rhs);
 
         /*!
-        \brief 생성자(복제된 공유ID로부터)
+        \brief 특수생성자(복제된 공유ID로부터)
         \param rhs : 복사할 인스턴스
         */
         String(id_cloned_share_read rhs);
 
         /*!
-        \brief 생성자(네이티브 스트링으로부터)
+        \brief 특수생성자(네이티브 스트링으로부터)
         \param rhs : 네이티브 스트링
         \param length : 적용할 길이(-1이면 자동설정)
         */
         String(chars rhs, sint32 length = -1);
 
         /*!
-        \brief 생성자(캐릭터로부터)
+        \brief 특수생성자(캐릭터로부터)
         \param rhs : 캐릭터
         */
         String(char rhs);
@@ -60,6 +66,13 @@ namespace BLIK
         \return 자기 객체
         */
         String& operator=(const String& rhs);
+
+        /*!
+        \brief 이동
+        \param rhs : 이동할 인스턴스
+        \return 자기 객체
+        */
+        String& operator=(String&& rhs);
 
         /*!
         \brief 복사(chars)

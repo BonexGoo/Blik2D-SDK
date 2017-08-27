@@ -158,16 +158,29 @@
 #  include <sys/poll.h>
 #endif
 
-#define CURL_SIZEOF_LONG           4
-#define CURL_TYPEOF_CURL_SOCKLEN_T int
-#define CURL_SIZEOF_CURL_SOCKLEN_T 4
-#define CURL_TYPEOF_CURL_OFF_T     long long
-#define CURL_FORMAT_CURL_OFF_T     "lld"
-#define CURL_FORMAT_CURL_OFF_TU    "llu"
-#define CURL_FORMAT_OFF_T          "%lld"
-#define CURL_SIZEOF_CURL_OFF_T     8
-#define CURL_SUFFIX_CURL_OFF_T     LL
-#define CURL_SUFFIX_CURL_OFF_TU    ULL
+#if BLIK_MAC_OSX || BLIK_IPHONE
+    #define CURL_SIZEOF_LONG           8
+    #define CURL_TYPEOF_CURL_SOCKLEN_T int
+    #define CURL_SIZEOF_CURL_SOCKLEN_T 4
+    #define CURL_TYPEOF_CURL_OFF_T     long long
+    #define CURL_FORMAT_CURL_OFF_T     "lld"
+    #define CURL_FORMAT_CURL_OFF_TU    "llu"
+    #define CURL_FORMAT_OFF_T          "%lld"
+    #define CURL_SIZEOF_CURL_OFF_T     8
+    #define CURL_SUFFIX_CURL_OFF_T     LL
+    #define CURL_SUFFIX_CURL_OFF_TU    ULL
+#else
+    #define CURL_SIZEOF_LONG           4
+    #define CURL_TYPEOF_CURL_SOCKLEN_T int
+    #define CURL_SIZEOF_CURL_SOCKLEN_T 4
+    #define CURL_TYPEOF_CURL_OFF_T     long long
+    #define CURL_FORMAT_CURL_OFF_T     "lld"
+    #define CURL_FORMAT_CURL_OFF_TU    "llu"
+    #define CURL_FORMAT_OFF_T          "%lld"
+    #define CURL_SIZEOF_CURL_OFF_T     8
+    #define CURL_SUFFIX_CURL_OFF_T     LL
+    #define CURL_SUFFIX_CURL_OFF_TU    ULL
+#endif
 
 /* The size of `long', as computed by sizeof. */
 //#undef CURL_SIZEOF_LONG

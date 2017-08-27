@@ -687,7 +687,7 @@ namespace BLIK
 
     ZayPanel::StackBinder ZayPanel::_push_clip_ui(float l, float t, float r, float b, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
-        if(auto& CurBinder = _push_clip(l, t, r, b, doScissor))
+        if(auto CurBinder = _push_clip(l, t, r, b, doScissor))
         {
             if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
             {
@@ -702,7 +702,7 @@ namespace BLIK
                 const float& LastZoom = m_stack_zoom[-1];
                 CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            return CurBinder;
+            return StackBinder(ToReference(CurBinder));
         }
         return StackBinder(this);
     }
@@ -733,7 +733,7 @@ namespace BLIK
 
     ZayPanel::StackBinder ZayPanel::_push_clip_ui_by_child(sint32 ix, sint32 iy, sint32 xcount, sint32 ycount, bool doScissor, chars uiname, SubGestureCB cb, bool hoverpass)
     {
-        if(auto& CurBinder = _push_clip_by_child(ix, iy, xcount, ycount, doScissor))
+        if(auto CurBinder = _push_clip_by_child(ix, iy, xcount, ycount, doScissor))
         {
             if(auto CurCollector = (TouchCollector*) m_ref_touch_collector)
             {
@@ -748,7 +748,7 @@ namespace BLIK
                 const float& LastZoom = m_stack_zoom[-1];
                 CurTouch->update(uiname, LastClip.l, LastClip.t, LastClip.r, LastClip.b, LastZoom, cb, hoverpass);
             }
-            return CurBinder;
+            return StackBinder(ToReference(CurBinder));
         }
         return StackBinder(this);
     }
@@ -799,7 +799,6 @@ namespace BLIK
         float& NewZoom = m_stack_zoom.AtAdding();
         const float& LastZoom = m_stack_zoom[-2];
         NewZoom = LastZoom * zoom;
-
         Platform::Graphics::SetZoom(NewZoom);
 
         Clip& NewClip = m_stack_clip.AtAdding();
@@ -824,8 +823,7 @@ namespace BLIK
     void ZayPanel::_pop_clip()
     {
         BLIK_ASSERT("Pop할 잔여스택이 없습니다", 1 < m_stack_clip.Count());
-        if(m_stack_clip[-1].didscissor)
-            _pop_scissor();
+        if(m_stack_clip[-1].didscissor) _pop_scissor();
         m_stack_clip.SubtractionOne();
 
         const Clip& LastClip = m_stack_clip[-1];
@@ -858,7 +856,6 @@ namespace BLIK
 
         const float& LastZoom = m_stack_zoom[-1];
         Platform::Graphics::SetZoom(LastZoom);
-
         _pop_clip();
     }
 

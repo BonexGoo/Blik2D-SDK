@@ -1409,6 +1409,76 @@ namespace BLIK
         };
 
         ////////////////////////////////////////////////////////////////////////////////
+        //! \brief 블루투스(BLE)지원
+        ////////////////////////////////////////////////////////////////////////////////
+        class Bluetooth
+        {
+        public:
+            /*!
+            \brief 블루투스이름 리스팅
+            \param service_uuid : 블루투스기기의 서비스Uuid("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}")
+            \param timeout : 검색제한시간(ms)
+            \param spec : json형태로 블루투스들의 스펙을 받음(선택사항)
+            \return 검색된 모든 블루투스Uuid
+            */
+            static Strings GetAllUuids(chars service_uuid, sint32 timeout, String* spec = nullptr);
+
+            /*!
+            \brief 블루투스ID 할당
+            \param uuid : 블루투스Uuid
+            \return 블루투스ID(nullptr은 실패)
+            \see Close
+            */
+            static id_bluetooth Open(chars uuid);
+
+            /*!
+            \brief 블루투스ID 반환
+            \param bluetooth : 블루투스ID
+            \see Open
+            */
+            static void Close(id_bluetooth bluetooth);
+
+            /*!
+            \brief 현재 접속상황
+            \param bluetooth : 블루투스ID
+            \return 접속여부
+            */
+            static bool Connected(id_bluetooth bluetooth);
+
+            /*!
+            \brief 현재 읽기스트림의 사이즈얻기
+            \param bluetooth : 블루투스ID
+            \return 대기중인 읽기스트림의 바이트길이(에러시 -1)
+            */
+            static sint32 ReadAvailable(id_bluetooth bluetooth);
+
+            /*!
+            \brief 읽기스트림에서 읽기
+            \param bluetooth : 블루투스ID
+            \param data : 데이터를 받을 공간
+            \param size : data의 크기(바이트단위)
+            \return 읽은 크기(바이트단위, 에러시 -1)
+            */
+            static sint32 Read(id_bluetooth bluetooth, uint08* data, const sint32 size);
+
+            /*!
+            \brief 쓰기스트림에 쓰기
+            \param bluetooth : 블루투스ID
+            \param data : 보낼 데이터
+            \param size : data의 크기(바이트단위)
+            \return 에러여부
+            */
+            static void Write(id_bluetooth bluetooth, const uint08* data, const sint32 size);
+
+            /*!
+            \brief 적재된 이벤트메시지를 소환
+            \param bluetooth : 블루투스ID
+            \return 이벤트메시지를 반환(없으면 nullptr)
+            */
+            static chars EventFlush(id_bluetooth bluetooth);
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////
         //! \brief 시리얼통신지원
         ////////////////////////////////////////////////////////////////////////////////
         class Serial

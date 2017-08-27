@@ -193,9 +193,11 @@
     #include <fcntl.h>
 
     #ifdef __cplusplus
-        #include <iostream>
-        #include <fstream>
-        #include <sstream>
+        #if !BLIK_MAC_OSX && !BLIK_IPHONE
+            #include <iostream>
+            #include <fstream>
+            #include <sstream>
+        #endif
     #endif
 
     #define socket blik_fakewin_socket
@@ -503,22 +505,6 @@
         }
     #endif
 
-    #ifdef __cplusplus
-        namespace std
-        {
-            #define ifstream blik_fakewin_ifstream
-            class blik_fakewin_ifstream : public stringstream
-            {
-                FILE* f;
-            public:
-                blik_fakewin_ifstream(const char* filename, ios_base::openmode mode = ios_base::in);
-                ~blik_fakewin_ifstream();
-                bool is_open() const;
-                void close();
-            };
-        }
-    #endif
-
     #if BLIK_WINDOWS
         typedef unsigned long u_long;
         typedef long long longlong_t;
@@ -555,6 +541,47 @@
         #  else
         #   define _vsntprintf _vsnprintf
         #  endif
+    #elif BLIK_MAC_OSX || BLIK_IPHONE
+        typedef unsigned long u_long;
+        #ifdef __cplusplus
+            namespace std
+            {
+                #define stringstream blik_fakewin_stringstream
+                class blik_fakewin_stringstream
+                {
+                public:
+                    stringstream();
+                    ~stringstream();
+                    void str(const char* s);
+                private:
+                    void* mStr;
+                };
+                #define ios_base blik_fakewin_ios_base
+                class blik_fakewin_ios_base
+                {
+                public:
+                    enum openmode {in, binary};
+                };
+            }
+        #endif
+        #define __POCC__ 0
+        #define __POCC__OLDNAMES
+    #endif
+
+    #ifdef __cplusplus
+        namespace std
+        {
+            #define ifstream blik_fakewin_ifstream
+            class blik_fakewin_ifstream : public stringstream
+            {
+                FILE* f;
+            public:
+                blik_fakewin_ifstream(const char* filename, ios_base::openmode mode = ios_base::in);
+                ~blik_fakewin_ifstream();
+                bool is_open() const;
+                void close();
+            };
+        }
     #endif
 
     #define WINAPI

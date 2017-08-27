@@ -19,32 +19,38 @@ namespace BLIK
         WString(const WString& rhs);
 
         /*!
-        \brief 생성자(공유배열로부터)
+        \brief 이동생성자
+        \param rhs : 이동할 인스턴스
+        */
+        WString(WString&& rhs);
+
+        /*!
+        \brief 특수생성자(공유배열로부터)
         \param rhs : 공유배열
         */
         WString(const wchararray& rhs);
 
         /*!
-        \brief 생성자(공유ID로부터)
+        \brief 특수생성자(공유ID로부터)
         \param rhs : 복사할 인스턴스
         */
         WString(id_share_read rhs);
 
         /*!
-        \brief 생성자(복제된 공유ID로부터)
+        \brief 특수생성자(복제된 공유ID로부터)
         \param rhs : 복사할 인스턴스
         */
         WString(id_cloned_share_read rhs);
 
         /*!
-        \brief 생성자(네이티브 와이드스트링으로부터)
+        \brief 특수생성자(네이티브 와이드스트링으로부터)
         \param rhs : 네이티브 와이드스트링
         \param length : 적용할 길이(-1이면 자동설정)
         */
         WString(wchars rhs, sint32 length = -1);
 
         /*!
-        \brief 생성자(와이드캐릭터로부터)
+        \brief 특수생성자(와이드캐릭터로부터)
         \param rhs : 와이드캐릭터
         */
         WString(wchar_t rhs);
@@ -60,6 +66,13 @@ namespace BLIK
         \return 자기 객체
         */
         WString& operator=(const WString& rhs);
+
+        /*!
+        \brief 이동
+        \param rhs : 이동할 인스턴스
+        \return 자기 객체
+        */
+        WString& operator=(WString&& rhs);
 
         /*!
         \brief 복사(wchars)
