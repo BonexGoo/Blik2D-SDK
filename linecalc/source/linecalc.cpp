@@ -7,20 +7,6 @@ ZAY_DECLARE_VIEW_CLASS("linecalcView", linecalcData)
 
 ZAY_VIEW_API OnCommand(CommandType type, chars topic, id_share in, id_cloned_share* out)
 {
-    if(type == CT_Tick)
-    {
-        static uint64 LastUpdateCheckTime = Platform::Utility::CurrentTimeMsec();
-        uint64 CurUpdateCheckTime = Platform::Utility::CurrentTimeMsec();
-        if(LastUpdateCheckTime + 1000 < CurUpdateCheckTime)
-        {
-            LastUpdateCheckTime = CurUpdateCheckTime;
-            if(R::IsAtlasUpdated())
-            {
-                R::RebuildAll();
-                m->invalidate();
-            }
-        }
-    }
 }
 
 ZAY_VIEW_API OnNotify(chars sender, chars topic, id_share in, id_cloned_share* out)

@@ -284,6 +284,11 @@
             }
         }
 
+        void Platform::AddWindowProcedure(WindowEvent event, ProcedureCB cb, payload data)
+        {
+            PlatformImpl::Wrap::AddWindowProcedure(event, cb, data);
+        }
+
         void Platform::SetStatusText(chars text, UIStack stack)
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
@@ -490,6 +495,18 @@
                     if(Param->canceled) return;
                     Param->canceled = Param->cb(view->get(), Param->data);
                 }, &Param);
+            }
+        }
+
+        void Platform::UpdateAllViews()
+        {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data && g_window);
+            if(auto Views = View::Search(nullptr, SC_Search))
+            {
+                Views->AccessByCallback([](const MapPath*, const h_view* view, payload param)->void
+                {
+                    ((ViewAPI*) view->get())->dirtyAndUpdate();
+                }, nullptr);
             }
         }
 
@@ -834,32 +851,32 @@
         ////////////////////////////////////////////////////////////////////////////////
         void Platform::Option::SetFlag(chars name, bool flag)
         {
-            PlatformImpl::Wrap::Utility_SetOptionFlag(name, flag);
+            PlatformImpl::Wrap::Option_SetOptionFlag(name, flag);
         }
 
         bool Platform::Option::GetFlag(chars name)
         {
-            return PlatformImpl::Wrap::Utility_GetOptionFlag(name);
+            return PlatformImpl::Wrap::Option_GetOptionFlag(name);
         }
 
         Strings Platform::Option::GetFlagNames()
         {
-            return PlatformImpl::Wrap::Utility_GetOptionFlagNames();
+            return PlatformImpl::Wrap::Option_GetOptionFlagNames();
         }
 
         void Platform::Option::SetPayload(chars name, payload data)
         {
-            PlatformImpl::Wrap::Utility_SetOptionPayload(name, data);
+            PlatformImpl::Wrap::Option_SetOptionPayload(name, data);
         }
 
         payload Platform::Option::GetPayload(chars name)
         {
-            return PlatformImpl::Wrap::Utility_GetOptionPayload(name);
+            return PlatformImpl::Wrap::Option_GetOptionPayload(name);
         }
 
         Strings Platform::Option::GetPayloadNames()
         {
-            return PlatformImpl::Wrap::Utility_GetOptionPayloadNames();
+            return PlatformImpl::Wrap::Option_GetOptionPayloadNames();
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -1351,6 +1368,9 @@
 
         id_surface Platform::Graphics::CreateSurface(sint32 width, sint32 height)
         {
+            BLIK_ASSERT("호출시점이 적절하지 않습니다", g_data);
+            if(!g_data->getGLWidget()) return nullptr;
+
             QOpenGLFramebufferObjectFormat SurfaceFormat;
             SurfaceFormat.setSamples(4);
             SurfaceFormat.setMipmap(false);

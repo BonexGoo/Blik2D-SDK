@@ -23,6 +23,7 @@ namespace BLIK
             m_size = size;
             m_name = name;
             Copy = nullptr;
+            Move = nullptr;
             Create = nullptr;
             Remove = nullptr;
             ResetOne = nullptr;
@@ -39,6 +40,7 @@ namespace BLIK
         inline sint32 SizeOf() const {return m_size;}
         inline chars NameOf() const {return m_name;}
         void (*Copy)(void*, const void*, const sint32);
+        void (*Move)(void*, void*, const sint32);
         void (*Create)(void*, const sint32);
         void (*Remove)(void*, const sint32);
         void (*ResetOne)(void*, const sint32);
@@ -69,6 +71,7 @@ namespace BLIK
             static BufferSpec Spec([](BufferSpec* self)->void
             {
                 self->Copy = Copy_class_nomemcpy;
+                self->Move = Move_class_nomemcpy;
                 self->Create = Create_class;
                 self->Remove = Remove_class;
                 self->ResetOne = ResetOne_class;
@@ -81,6 +84,7 @@ namespace BLIK
             static BufferSpec Spec([](BufferSpec* self)->void
             {
                 self->Copy = Copy_default;
+                self->Move = Move_default;
                 self->Create = Create_class;
                 self->Remove = Remove_class;
                 self->ResetOne = ResetOne_class;
@@ -93,6 +97,7 @@ namespace BLIK
             static BufferSpec Spec([](BufferSpec* self)->void
             {
                 self->Copy = Copy_default;
+                self->Move = Move_default;
                 self->Create = Create_default;
                 self->Remove = Remove_default;
                 self->ResetOne = ResetOne_default;
@@ -105,6 +110,7 @@ namespace BLIK
             static BufferSpec Spec([](BufferSpec* self)->void
             {
                 self->Copy = Copy_default;
+                self->Move = Move_default;
                 self->Create = Create_pod_canmemcpy_zeroset;
                 self->Remove = Remove_default;
                 self->ResetOne = ResetOne_pod_canmemcpy_zeroset;
@@ -143,6 +149,8 @@ namespace BLIK
     private:
         static void Copy_class_nomemcpy(void* dst, const void* src, const sint32 count) {for(sint32 i = 0; i < count; ++i) ((TYPE*) dst)[i] = ((const TYPE*) src)[i];}
         static void Copy_default(void* dst, const void* src, const sint32 count) {Memory::Copy(dst, src, sizeof(TYPE) * count);}
+        static void Move_class_nomemcpy(void* dst, void* src, const sint32 count) {for(sint32 i = 0; i < count; ++i) ((TYPE*) dst)[i] = ToReference(((TYPE*) src)[i]);}
+        static void Move_default(void* dst, void* src, const sint32 count) {Memory::Copy(dst, src, sizeof(TYPE) * count);}
         static void Create_class(void* dst, const sint32 count) {for(sint32 i = 0; i < count; ++i) new(BLIK_PTR_TO_SBLOCK(&((TYPE*) dst)[i])) TYPE;}
         static void Create_pod_canmemcpy_zeroset(void* dst, const sint32 count) {Memory::Set(dst, 0, sizeof(TYPE) * count);}
         static void Create_default(void* dst, const sint32 count) {}

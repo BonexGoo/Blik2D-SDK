@@ -64,14 +64,16 @@ namespace BLIK
         ~TouchCollector() {}
 
     public:
+        static Map<TouchCollector>& STMAP()
+        {return *BLIK_STORAGE_SYS(Map<TouchCollector>);}
         static TouchCollector* ST(chars name)
-        {return &(*BLIK_STORAGE_SYS(Map<TouchCollector>))(name);}
+        {return &STMAP()(name);}
 
     public:
         float mWidth;
         float mHeight;
         void* mRefTouch;
-        bool mDirty;
+        mutable bool mDirty;
         TouchRectObjects mTouchRects;
     };
 
@@ -234,7 +236,19 @@ namespace BLIK
     ZayPanel::ZayPanel(id_surface surface, float width, float height, chars uigroup)
         : m_width(width), m_height(height)
     {
-        BLIK_ASSERT("surface가 nullptr입니다", surface);
+        if(surface == nullptr) // OpenGL모드가 아니라면 nullptr이 올 수 있음
+        {
+            m_dirty = false; // ZAY_MAKE_SUB계열에서의 자연스런 탈출을 유발
+            m_ref_surface = nullptr;
+            m_ref_touch = nullptr;
+            m_ref_touch_collector = nullptr;
+            m_clipped_width = m_width;
+            m_clipped_height = m_height;
+            m_child_image = nullptr;
+            m_child_guide = Rect(0, 0, m_width, m_height);
+            m_test_scissor = false;
+            return;
+        }
 
         if(uigroup)
         {
@@ -642,7 +656,8 @@ namespace BLIK
         CurCollector->mRefTouch = m_ref_touch;
         CurCollector->mDirty = DirtyTest;
 
-        stretchNative(Platform::Graphics::GetImageFromSurface(surface));
+        if(surface)
+            stretchNative(Platform::Graphics::GetImageFromSurface(surface));
     }
 
     PanelState ZayPanel::state(chars uiname) const
@@ -961,6 +976,15 @@ namespace BLIK
     void ZayView::SetCallback(UpdaterCB cb, payload data)
     {
         ((ZayController*) m_class)->setCallback(_finder, this, cb, data);
+    }
+
+    void ZayView::DirtyAllSurfaces()
+    {
+        TouchCollector::STMAP().AccessByCallback(
+            [](const MapPath*, const TouchCollector* collector, payload param)->void
+            {
+                collector->mDirty = true;
+            }, nullptr);
     }
 
     void ZayView::OnCreate()

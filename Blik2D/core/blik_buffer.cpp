@@ -129,7 +129,7 @@ namespace BLIK
 
         buffer NewBuffer = BufferImpl::Alloc(BLIK_DBG_ARG count, OldSpec, false);
         if(const sint32 CopyCount = Math::Min(count, OldNaked[0]))
-            OldSpec->Copy(NewBuffer, buf, CopyCount);
+            OldSpec->Move(NewBuffer, buf, CopyCount);
         Free(buf);
         return NewBuffer;
     }

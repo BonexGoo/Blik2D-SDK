@@ -78,6 +78,10 @@ namespace BLIK
     {
     }
 
+    void View::DirtyAllSurfaces()
+    {
+    }
+
     void View::OnCreate()
     {
     }

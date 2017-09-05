@@ -574,6 +574,7 @@ namespace BLIK
         void* GetClass() override;
         void SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out) override;
         void SetCallback(UpdaterCB cb, payload data) override;
+        void DirtyAllSurfaces() override;
 
     public:
         void OnCreate() override;

@@ -8,6 +8,9 @@ namespace BLIK
         // 일반함수와 전역인스턴스
         namespace Core
         {
+            sint32 GetProcedureCount();
+            ProcedureCB GetProcedureCB(sint32 i);
+            payload GetProcedureData(sint32 i);
             chars NormalPath(chars itemname, bool QCodeTest = true);
             wchars NormalPathW(wchars itemname, bool QCodeTest = true);
             sint32 CreateManager(buffer manager);
@@ -30,13 +33,14 @@ namespace BLIK
         // 래핑함수
         namespace Wrap
         {
+            void AddWindowProcedure(WindowEvent event, ProcedureCB cb, payload data);
             sint64 Utility_CurrentAvailableMemory(sint64* totalbytes);
-            void Utility_SetOptionFlag(chars name, bool flag);
-            bool Utility_GetOptionFlag(chars name);
-            Strings Utility_GetOptionFlagNames();
-            void Utility_SetOptionPayload(chars name, payload data);
-            payload Utility_GetOptionPayload(chars name);
-            Strings Utility_GetOptionPayloadNames();
+            void Option_SetOptionFlag(chars name, bool flag);
+            bool Option_GetOptionFlag(chars name);
+            Strings Option_GetOptionFlagNames();
+            void Option_SetOptionPayload(chars name, payload data);
+            payload Option_GetOptionPayload(chars name);
+            Strings Option_GetOptionPayloadNames();
             bool Popup_FileDialog(String& path, String* shortpath, chars title, bool isdir);
             void Popup_WebBrowserDialog(String url);
             WString File_GetDirName(wchars itemname, wchar_t badslash, wchar_t goodslash);

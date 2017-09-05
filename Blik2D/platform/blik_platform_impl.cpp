@@ -257,6 +257,33 @@ namespace BLIK
         ////////////////////////////////////////////////////////////////////////////////
         namespace Core
         {
+            class ProcedureClass
+            {
+                BLIK_DECLARE_NONCOPYABLE_CLASS(ProcedureClass)
+            public:
+                ProcedureClass() {mCb = nullptr; mData = nullptr;}
+                ~ProcedureClass() {}
+            public:
+                ProcedureCB mCb;
+                payload mData;
+            };
+            Array<ProcedureClass, datatype_pod_canmemcpy> g_AllProcedures;
+
+            sint32 GetProcedureCount()
+            {
+                return g_AllProcedures.Count();
+            }
+
+            ProcedureCB GetProcedureCB(sint32 i)
+            {
+                return g_AllProcedures[i].mCb;
+            }
+
+            payload GetProcedureData(sint32 i)
+            {
+                return g_AllProcedures[i].mData;
+            }
+
             chars NormalPath(chars itemname, bool QCodeTest)
             {
                 itemname = (itemname[0] == '\\' &&
@@ -311,6 +338,13 @@ namespace BLIK
         ////////////////////////////////////////////////////////////////////////////////
         namespace Wrap
         {
+            void AddWindowProcedure(WindowEvent event, ProcedureCB cb, payload data)
+            {
+                auto& NewProcedure = Core::g_AllProcedures.AtAdding();
+                NewProcedure.mCb = cb;
+                NewProcedure.mData = data;
+            }
+
             sint64 Utility_CurrentAvailableMemory(sint64* totalbytes)
             {
                 #if BLIK_WINDOWS
@@ -367,14 +401,14 @@ namespace BLIK
 
             static Map<bool> g_OptionFlagMap;
             static StaticalMutexClass g_OptionFlagMutex;
-            void Utility_SetOptionFlag(chars name, bool flag)
+            void Option_SetOptionFlag(chars name, bool flag)
             {
                 g_OptionFlagMutex.Lock();
                 g_OptionFlagMap(name) = flag;
                 g_OptionFlagMutex.Unlock();
             }
 
-            bool Utility_GetOptionFlag(chars name)
+            bool Option_GetOptionFlag(chars name)
             {
                 g_OptionFlagMutex.Lock();
                 bool* Result = g_OptionFlagMap.Access(name);
@@ -382,7 +416,7 @@ namespace BLIK
                 return (Result)? *Result : false;
             }
 
-            Strings Utility_GetOptionFlagNames()
+            Strings Option_GetOptionFlagNames()
             {
                 Strings Result;
                 payload Param = (payload) &Result;
@@ -399,14 +433,14 @@ namespace BLIK
 
             static Map<payload> g_OptionPayloadMap;
             static StaticalMutexClass g_OptionPayloadMutex;
-            void Utility_SetOptionPayload(chars name, payload data)
+            void Option_SetOptionPayload(chars name, payload data)
             {
                 g_OptionPayloadMutex.Lock();
                 g_OptionPayloadMap(name) = data;
                 g_OptionPayloadMutex.Unlock();
             }
 
-            payload Utility_GetOptionPayload(chars name)
+            payload Option_GetOptionPayload(chars name)
             {
                 g_OptionPayloadMutex.Lock();
                 payload* Result = g_OptionPayloadMap.Access(name);
@@ -414,7 +448,7 @@ namespace BLIK
                 return (Result)? *Result : nullptr;
             }
 
-            Strings Utility_GetOptionPayloadNames()
+            Strings Option_GetOptionPayloadNames()
             {
                 Strings Result;
                 payload Param = (payload) &Result;

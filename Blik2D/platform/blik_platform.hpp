@@ -6,6 +6,7 @@
 
 namespace BLIK
 {
+    enum WindowEvent {WE_Tick, WE_Max};
     enum UIRole {UIR_Menu = 0x1, UIR_Tool = 0x2, UIR_Both = 0x3};
     static UIRole operator|(UIRole a, UIRole b) {return (UIRole) (int(a) | int(b));}
     enum UIAllow {UIA_Left = 0x1, UIA_Top = 0x2, UIA_Right = 0x4, UIA_Bottom = 0x8, UIA_Wherever = 0xF};
@@ -25,6 +26,7 @@ namespace BLIK
     enum UIStack {UIS_PushPop, UIS_Push, UIS_Current, UIS_Pop};
     class ViewClass;
     class ViewManager;
+    typedef void (*ProcedureCB)(payload);
     typedef bool (*PassCB)(void*, payload);
     typedef void (*ThreadCB)(void*);
     typedef sint32 (*SerialDecodeCB)(bytes data, sint32 length, uint08s& outdata, sint32* outtype);
@@ -83,6 +85,14 @@ namespace BLIK
         \param normally : 전체화면화된 경우 노멀값을 사용할지의 여부
         */
         static void GetWindowRect(rect128& rect, bool normally = false);
+
+        /*!
+        \brief 윈도우프로시저 추가
+        \param event : 호출시점
+        \param cb : 콜백함수
+        \param data : 콜백함수에 전달할 데이터
+        */
+        static void AddWindowProcedure(WindowEvent event, ProcedureCB cb, payload data = nullptr);
 
         /*!
         \brief 상태창 설정
@@ -223,6 +233,11 @@ namespace BLIK
         \param data : 콜백함수에 전달할 데이터
         */
         static void PassAllViews(PassCB cb, payload data);
+
+        /*!
+        \brief 모든 뷰의 화면을 갱신
+        */
+        static void UpdateAllViews();
 
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief 팝업개체지원

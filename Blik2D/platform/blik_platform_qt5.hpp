@@ -22,7 +22,7 @@
 
     #include <QtBluetooth>
     #if BLIK_WINDOWS
-        #pragma warning(disable:4068) // 알 수 없는 pragma입니다.
+        #pragma warning(disable:4068) // "알 수 없는 pragma입니다."
         #include <setupapi.h>
         #include <devguid.h>
         #include <regstr.h>
@@ -360,6 +360,12 @@
         {
             if(0 < m_paintcount)
                 m_paintcount--;
+        }
+
+        void dirtyAndUpdate()
+        {
+            m_view_manager->DirtyAllSurfaces();
+            update(1);
         }
 
         void update(sint32 count)
@@ -955,7 +961,14 @@
         {
             m_viewGL = new MainViewGL(m_parent);
             m_viewGL->m_api->renewParent(m_viewGL);
-            m_parent->setCentralWidget(m_viewGL);
+            // Qt5.9.1부터는 m_parent->setCentralWidget(m_viewGL)식의 접합은
+            // 윈도우즈OS에서 다중 모니터상황에서 레이아웃의 정렬불량 문제가 발생
+            QWidget* MainWidget = new QWidget();
+            QHBoxLayout* MainLayout = new QHBoxLayout();
+            MainLayout->setMargin(0);
+            MainLayout->addWidget(m_viewGL);
+            MainWidget->setLayout(MainLayout);
+            m_parent->setCentralWidget(MainWidget);
             if(frameless)
             {
                 #if BLIK_MAC_OSX
@@ -1045,10 +1058,13 @@
         {
             setUnifiedTitleAndToolBarOnMac(true);
             g_data = new MainData(this);
+            connect(&m_tick_timer, &QTimer::timeout, this, &MainWindow::tick_timeout);
+            m_tick_timer.start(17);
         }
 
         ~MainWindow()
         {
+            m_tick_timer.stop();
             delete g_data;
             g_data = nullptr;
         }
@@ -1063,6 +1079,16 @@
         void OnSlot()
         {
         }
+
+    private:
+        void tick_timeout()
+        {
+            for(sint32 i = 0, iend = PlatformImpl::Core::GetProcedureCount(); i < iend; ++i)
+                PlatformImpl::Core::GetProcedureCB(i)(PlatformImpl::Core::GetProcedureData(i));
+        }
+
+    private:
+        QTimer m_tick_timer;
     };
 
     class StackMessage

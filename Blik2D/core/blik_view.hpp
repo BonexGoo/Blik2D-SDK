@@ -38,6 +38,7 @@ namespace BLIK
         virtual void* GetClass();
         virtual void SendNotify(chars sender, chars topic, id_share in, id_cloned_share* out);
         virtual void SetCallback(UpdaterCB cb, payload data);
+        virtual void DirtyAllSurfaces();
 
     public:
         virtual void OnCreate();
