@@ -165,6 +165,20 @@ namespace BLIK
         }
 
         /*!
+        \brief 구간삭제(메모리공간은 보존)
+        \return 삭제 정상수행여부
+        */
+        bool SubtractionSection(sint32 index, sint32 length = 1)
+        {
+            BLIK_ASSERT("length는 0보다 커야 합니다", 0 < length);
+            for(sint32 i = index, iend = share->count() - length; i < iend; ++i)
+                At(i) = ToReference(At(i + length));
+            bool IsSuccess = true;
+            while(length--) IsSuccess &= SubtractionOne();
+            return IsSuccess;
+        }
+
+        /*!
         \brief 타입명 구하기
         \return 타입명
         */

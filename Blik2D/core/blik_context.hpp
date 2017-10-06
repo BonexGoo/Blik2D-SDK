@@ -299,6 +299,12 @@ namespace BLIK
         */
         Context& operator=(const Context& rhs);
 
+        /*!
+        \brief bool형변환
+        \return 자신의 유효여부
+        */
+        inline operator bool() const {return IsValid();}
+
     private:
         static inline const Context& NullChild()
         {static const Context _; return _;}

@@ -240,6 +240,9 @@
     <ClCompile Include="..\service\blik_camera360service.cpp">
       <Filter>Blik2D\service</Filter>
     </ClCompile>
+    <ClCompile Include="..\service\blik_tryworld.cpp">
+      <Filter>Blik2D\service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\element\blik_clip.hpp">
@@ -474,6 +477,9 @@
       <Filter>Blik2D\element</Filter>
     </ClInclude>
     <ClInclude Include="..\service\blik_camera360service.hpp">
+      <Filter>Blik2D\service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\service\blik_tryworld.hpp">
       <Filter>Blik2D\service</Filter>
     </ClInclude>
   </ItemGroup>

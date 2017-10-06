@@ -92,6 +92,7 @@
     <ClCompile Include="..\service\blik_livechatservice.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_streamingservice.cpp" />
+    <ClCompile Include="..\service\blik_tryworld.cpp" />
     <ClCompile Include="..\service\blik_zay.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="..\service\blik_livechatservice.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
     <ClInclude Include="..\service\blik_streamingservice.hpp" />
+    <ClInclude Include="..\service\blik_tryworld.hpp" />
     <ClInclude Include="..\service\blik_zay.hpp" />
     <ClInclude Include="..\platform\win32\glew.h" />
   </ItemGroup>

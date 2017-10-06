@@ -195,13 +195,14 @@
             return (m_view_manager != nullptr);
         }
 
-        void setViewAndCreate(h_view view)
+        void setViewAndCreateAndSize(h_view view)
         {
             BLIK_ASSERT("잘못된 시나리오입니다", m_view_manager);
             g_view = getWidget();
             m_view_manager->SetView(view);
 
             sendCreate();
+            sendSizeWhenValid();
         }
 
         h_view changeViewManagerAndDestroy(View* manager)
@@ -265,7 +266,7 @@
             if(m_next_manager)
             {
                 h_view OldViewHandle = changeViewManagerAndDestroy(m_next_manager);
-                setViewAndCreate(OldViewHandle);
+                setViewAndCreateAndSize(OldViewHandle);
                 m_next_manager = nullptr;
             }
         }
@@ -314,6 +315,16 @@
             }
         }
 
+        inline void sendSizeWhenValid()
+        {
+            if(0 < m_width && 0 < m_height)
+            if(m_view_manager != nullptr)
+            {
+                g_view = getWidget();
+                m_view_manager->OnSize(m_width, m_height);
+            }
+        }
+
         inline void sendTick() const
         {
             if(m_view_manager != nullptr)
@@ -345,7 +356,7 @@
         {
             m_width = width;
             m_height = height;
-            m_view_manager->OnSize(width, height);
+            sendSizeWhenValid();
         }
 
         void paint()

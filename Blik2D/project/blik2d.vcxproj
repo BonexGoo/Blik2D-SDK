@@ -88,6 +88,7 @@
     <ClCompile Include="..\service\blik_livechatservice.cpp" />
     <ClCompile Include="..\service\blik_oauth2service.cpp" />
     <ClCompile Include="..\service\blik_streamingservice.cpp" />
+    <ClCompile Include="..\service\blik_tryworld.cpp" />
     <ClCompile Include="..\service\blik_zay.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_blik_platform_qt5.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -174,6 +175,7 @@
     <ClInclude Include="..\service\blik_livechatservice.hpp" />
     <ClInclude Include="..\service\blik_oauth2service.hpp" />
     <ClInclude Include="..\service\blik_streamingservice.hpp" />
+    <ClInclude Include="..\service\blik_tryworld.hpp" />
     <ClInclude Include="..\service\blik_zay.hpp" />
     <CustomBuild Include="..\platform\blik_platform_qt5.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

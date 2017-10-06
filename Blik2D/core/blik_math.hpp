@@ -130,6 +130,14 @@ namespace BLIK
         static float Mod(const float a, const float b);
 
         /*!
+        \brief 제곱 구하기
+        \param v : 인수
+        \return 제곱
+        */
+        inline static float Pow(const float v)
+        {return v * v;}
+
+        /*!
         \brief 제곱근 구하기
         \param v : 인수
         \return 제곱근

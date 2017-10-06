@@ -11,6 +11,7 @@ namespace BLIK
     class Tween1D : public Updater
     {
     public:
+        Tween1D() {BLIK_ASSERT("기본생성자의 호출은 금지되어 있습니다", false);}
         Tween1D(Updater* neighbor, float value = 0,
             TweenUpdateCB cb = [](bool needRedraw){return needRedraw;});
         Tween1D(chars uigroup_literal, Updater* neighbor, float value = 0,
@@ -46,6 +47,7 @@ namespace BLIK
     class Tween2D : public Updater
     {
     public:
+        Tween2D() {BLIK_ASSERT("기본생성자의 호출은 금지되어 있습니다", false);}
         Tween2D(Updater* neighbor);
         Tween2D(chars uigroup_literal, Updater* neighbor);
         Tween2D(const Tween2D& rhs);

@@ -251,7 +251,7 @@
             g_data->getMainAPI()->changeViewManagerAndDestroy(NewViewManager);
 
             h_view NewViewHandle = h_view::create_by_ptr(BLIK_DBG g_data->getMainAPI());
-            g_data->getMainAPI()->setViewAndCreate(NewViewHandle);
+            g_data->getMainAPI()->setViewAndCreateAndSize(NewViewHandle);
             return NewViewHandle;
         }
 
@@ -950,6 +950,7 @@
         {
             BLIK_ASSERT("호출시점이 적절하지 않습니다", CanvasClass::get());
             CanvasClass::get()->painter().setPen(QPen(QBrush(CanvasClass::get()->color()), thick));
+            CanvasClass::get()->painter().setBrush(Qt::NoBrush);
             CanvasClass::get()->painter().drawRect(QRectF(x - thick / 2, y - thick / 2, w + thick, h + thick));
         }
 
